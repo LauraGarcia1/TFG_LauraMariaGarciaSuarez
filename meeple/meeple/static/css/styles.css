@@ -1,0 +1,209 @@
+/******************************************************/
+/************************ BODY ************************/
+
+body {
+    background: linear-gradient(45deg, #08439c, #a920ff);
+    background-size: 400% 400%;
+    height: 100vh;
+}
+
+.negative-padding-bottom {
+    margin-top: 20px;
+    /* Aquí puedes ajustar el valor según tus necesidades */
+}
+
+.form-rounded {
+    border-radius: 1rem;
+}
+
+.custom-container {
+    height: 100vh;
+    /* Asegura que el contenedor ocupe toda la altura de la ventana */
+}
+
+.custom-box {
+    width: 600px;
+    height: 55%;
+    /* 40% de la altura del viewport */
+}
+
+.btn-terracota {
+    color: black;
+    /* Color del texto */
+    background-color: #fc5f38;
+    /* Color de fondo terracota */
+    border-color: #fc5f38;
+    /* Color del borde terracota */
+}
+
+.btn-terracota:hover {
+    color: black;
+    /* Color del texto en estado hover */
+    background-color: #fc5f38;
+    /* Color de fondo en estado hover terracota */
+    border-color: #fc5f38;
+    /* Color del borde en estado hover terracota */
+}
+
+.btn-mostaza {
+    color: black;
+    /* Color del texto */
+    background-color: #f5b820;
+    /* Color de fondo mostaza */
+    border-color: #f5b820;
+    /* Color del borde mostaza */
+}
+
+.btn-mostaza:hover {
+    color: black;
+    /* Color del texto en estado hover */
+    background-color: #f5b820;
+    /* Color de fondo en estado hover mostaza */
+    border-color: #f5b820;
+    /* Color del borde en estado hover mostaza */
+}
+
+.btn-inverse-light {
+    color: #000000;
+    /* Color del texto */
+    background-color: #FFFFFF;
+    /* Color de fondo personalizado */
+    border-color: #FFFFFF;
+    /* Color del borde personalizado */
+}
+
+.btn-inverse-light:hover {
+    color: #FFFFFF;
+    /* Color del texto en estado hover */
+    background-color: #000000;
+    /* Color de fondo en estado hover */
+    border-color: #000000;
+    /* Color del borde en estado hover */
+}
+
+.background-div {
+    z-index: -5;
+}
+
+.front {
+    z-index: 1000;
+}
+
+.custom-max-width {
+    max-width: 100px;
+}
+
+.custom-max-height {
+    max-height: 85%;
+}
+
+.background-creme {
+    background-color: #e9d9c2;
+}
+
+.background-orangehigh {
+    background-color: #f55949;
+}
+
+.btn-primary:disabled {
+    background-color: #cccccc; /* Gris */
+    color: #666666;
+    border: #666666;
+    cursor: not-allowed;
+}
+
+/*------------------------------*/
+
+#autocomplete {
+    width: 300px;
+    padding: 8px;
+    margin: 10px;
+}
+#results {
+    margin-top: 20px;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+}
+.result-item {
+    padding: 8px;
+    cursor: pointer;
+}
+.result-item:hover {
+    background-color: #f0f0f0;
+}
+
+.scroll-hover {
+    overflow: hidden;
+    /* Ocultar el scroll por defecto */
+    transition: overflow 0.3s ease;
+    /* Suavizar la transición */
+    max-height: 55vh;
+    /* Ocupa máximo 100% de la altura disponible */
+    max-width: 80%;
+    /* Ocupa máximo 100% del ancho disponible */
+}
+
+/* Mostrar el scroll al hacer hover */
+.scroll-hover:hover {
+    overflow-y: auto;
+    /* Mostrar solo scroll vertical */
+}
+
+/* Personalización del scrollbar */
+.scroll-hover::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scroll-hover::-webkit-scrollbar-thumb {
+    background-color: #888;
+    /* Color del scrollbar */
+    border-radius: 4px;
+}
+
+.scroll-hover::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+    /* Color del scrollbar en hover */
+}
+
+/*--------------------------------*/
+
+/* Colocar el asterisco rojo al lado del label de campos obligatorios */
+label.required::after {
+    content: ' *';
+    color: red; /* Asterisco rojo por defecto */
+}
+
+/* Cambiar el color del asterisco si el campo está correcto */
+label.required.valid::after {
+    color: green; /* Asterisco verde si es válido */
+}
+
+/*--------------------------------*/
+
+.tab {
+    display: inline-block;
+    width: 40px; /* Ajusta el ancho a lo que desees para tu "tabulador" */
+}
+
+/*---------------------------------*/
+
+.rounded-div {
+    border-radius: 15px; /* Bordes redondeados */
+    padding: 20px; /* Espacio interno */
+    background-color: #979797; /* Color de fondo */
+    text-align: center; /* Centrar texto */
+    margin-bottom: 20px; /* Espacio inferior entre divs */
+    object-fit: contain;
+    transition: background-color 0.3s ease;
+}
+
+.checked {
+    background-color: #f9d95a;
+}
+
+.scroll-hover {
+    max-width: 100%;
+    max-height: 100%;
+}

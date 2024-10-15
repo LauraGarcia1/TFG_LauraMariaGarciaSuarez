@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+<div class="position-relative custom-container">
+    <div class="position-absolute top-50 start-0 translate-middle-y negative-padding-bottom">
+        <img src="{% static 'images/dicesReverse.png' %}" alt="Image" draggable="false" class="w-75">
+    </div>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <div
+            class="row d-flex justify-content-center shadow-lg p-4 bg-body rounded rounded-5 position-absolute top-50 end-0 translate-middle-y me-5 custom-box border border-dark border-2">
+            <div class="col-9 align-items-center">
+                <h1 class="pb-4 fw-bold">¿?</h1>
+                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                    value="game-style" name="button">Detectivesca</button>
+
+                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                    value="game-style" name="button">Naturaleza</button>
+
+                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                    value="game-style" name="button">Medieval</button>
+
+                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                    value="game-style" name="button">Gastronómica</button>
+
+                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                    value="game-style" name="button">Egipto</button>
+
+                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                    value="game-style" name="button">Piratas</button>
+
+                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                    value="game-style" name="button">Fantasía</button>
+
+                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                    value="game-style" name="button">Misterio</button>
+
+                <button type="submit" class="btn btn-secondary rounded-pill px-4 fw-bold m-2"
+                    value="game-style" name="button">Cualquiera</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock body %}

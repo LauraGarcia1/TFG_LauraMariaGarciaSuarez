@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+<div class="position-relative custom-container zindex-0">
+    <div class="position-absolute top-50 start-50 translate-middle negative-padding-bottom zindex-0">
+        <img src="{% static 'images/dicesNoback.png' %}" alt="Image" draggable="false"
+            style="transform: rotate(31deg);">
+    </div>
+
+    <div class="shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-50 start-50 translate-middle border border-dark border-2 w-75"
+        style="max-height: 85vh; max-width: 720px;">
+        <h2 class="pb-4 text-center fw-bold">Sign up</h2>
+        <form action="" method="post" class="d-flex flex-column justify-content-center align-items-center w-100 h-100"
+            style="max-height: 75vh;">
+            {% csrf_token %}
+            <div class="scroll-hover p-2 w-100">
+                <div class="mb-4 w-100">
+                    <label for="username" class="form-label fw-bold required">Username:</label>
+                    <input type="text" id="username" name="username" class="form-control rounded-pill w-100"
+                        value="{{ username }}" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-bold required">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control rounded-pill"
+                        value="{{ password }}" required>
+                    <div id="password-error-message" class="text-danger"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="name" class="form-label fw-bold required">Name:</label>
+                    <input type="text" id="name" name="name" class="form-control rounded-pill" required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="form-label fw-bold required">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control rounded-pill" required>
+                    <div id="email-error-message" class="text-danger"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="location" class="form-label fw-bold required">Location:</label>
+                    <input type="text" id="location" name="location" class="form-control rounded-pill" required>
+                    <div id="results"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="age" class="form-label fw-bold required">Age:</label>
+                    <input type="number" id="age" name="age" class="form-control rounded-pill" min="0" max="120"
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold required" id="frequencyLabel">Frequently played table
+                        games:</label>
+                    <div>
+                        <span class="tab"></span><input type="radio" id="morethan" name="option" value="3">
+                        <label for="morethan">More than once in a week</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="week" name="option" value="2">
+                        <label for="week">Once a week</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="lifetime" name="option" value="1">
+                        <label for="lifetime">One in a lifetime</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="never" name="option" value="0">
+                        <label for="never">Never</label>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold required" id="expertiseLabel">Gaming expertise:</label>
+                    <div>
+                        <span class="tab"></span><input type="radio" id="beginner" name="optionSecond" value="0">
+                        <label for="beginner">Beginner</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="intermediate" name="optionSecond" value="1">
+                        <label for="intermediate">Intermediate</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="advanced" name="optionSecond" value="2">
+                        <label for="advanced">Advanced</label>
+                    </div>
+
+                </div>
+
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50" id="submitButton"
+                disabled>Sign up</button>
+            <span class="text-muted" id="infoMessage">* Please fill all required fields to enable this button.</span>
+    </div>
+
+
+    </form>
+</div>
+
+</div>
+</div>
+</div>
+
+
+<script>
+    /* SCRIPT QUE GESTIONA EL CAMPO DE LOCALIZACIÓN */
+    const input = document.getElementById('location');
+    const resultsContainer = document.getElementById('results');
+    let locationSelected = false;  // Bandera para verificar si se seleccionó una ubicación
+
+    input.addEventListener('input', function () {
+        const query = this.value;
+        locationSelected = false;  // Resetear bandera cuando se empieza a escribir
+        input.classList.remove('is-valid', 'is-invalid');  // Remover clases de validación mientras se escribe
+        resultsContainer.innerHTML = ''; // Limpiar resultados anteriores si no hay nada
+
+        if (query.length < 3) {
+            return; // No hacer la petición si hay menos de 3 caracteres
+        }
+
+        // Hacer la solicitud a la API de Nominatim
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                resultsContainer.innerHTML = ''; // Limpiar resultados anteriores
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        div.textContent = item.display_name;
+                        div.className = 'result-item';
+                        div.onclick = () => selectLocation(item);  // Al hacer clic, selecciona la ubicación
+                        resultsContainer.appendChild(div);
+                    });
+                } else {
+                    // Si no hay resultados, marcar el input como inválido
+                    input.classList.add('is-invalid');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+    function selectLocation(item) {
+        // Establecer el valor del input al nombre del lugar seleccionado
+        input.value = item.display_name;
+
+        // Limpiar los resultados
+        resultsContainer.innerHTML = '';
+
+        // Marcar el campo como válido
+        input.classList.add('is-valid');
+        input.classList.remove('is-invalid');
+
+        // Activar bandera de que se seleccionó una ubicación
+        locationSelected = true;
+
+        // Comprobar el formulario nuevamente
+        checkForm();
+    }
+
+    // Función para verificar si la ubicación es válida
+    function isLocationValid() {
+        return locationSelected;  // Devuelve verdadero solo si se seleccionó una ubicación
+    }
+
+    /* SCRIPT QUE GESTIONA EL BOTON DE SUBMIT */
+    // Función para comprobar si todos los campos están completos
+    function checkForm() {
+        // Seleccionar todos los inputs requeridos, excepto email, password y location
+        const inputs = document.querySelectorAll('input[required]');
+        let allFilled = true;
+
+        // Validar campos generales excepto password, email y location
+        inputs.forEach(input => {
+            if (input.id === 'email' || input.id === 'password' || input.id === 'location') {
+                return; // Saltar la validación de estos campos aquí
+            }
+
+            // Verificar si el input tiene valor
+            if (input.value.trim() !== '') {
+                input.classList.add('is-valid');      // Añade clase visualmente válida al campo de input
+                input.classList.remove('is-invalid'); // Remueve el estado visual de inválido del campo de input
+            } else {
+                input.classList.add('is-invalid');    // Añade clase visualmente inválida al campo de input
+                input.classList.remove('is-valid');   // Remueve la clase visual válida del campo de input
+                allFilled = false;
+            }
+        });
+
+        // Validar el grupo de botones de radio
+        const radios = document.getElementsByName('option');
+        const radiosSecond = document.getElementsByName('optionSecond');
+        const label = document.getElementById('frequencyLabel');
+        const labelSecond = document.getElementById('expertiseLabel');
+        let isRadioChecked = false;
+        let isRadioSecChecked = false;
+
+        for (const radio of radios) {
+            if (radio.checked) {
+                isRadioChecked = true;
+                label.classList.add('valid');
+                break;
+            }
+        }
+
+        for (const radio of radiosSecond) {
+            if (radio.checked) {
+                isRadioSecChecked = true;
+                labelSecond.classList.add('valid');
+                break;
+            }
+        }
+
+        if (!isRadioChecked) {
+            allFilled = false;
+        }
+
+        if (!isRadioSecChecked) {
+            allFilled = false;
+        }
+
+        // Verificar el campo de password
+        if (!validatePassword()) {
+            allFilled = false;
+        }
+
+        // Verificar el campo de email
+        if (!validateEmail()) {
+            allFilled = false;
+        }
+
+        // Verificar si la localización es válida
+        if (!isLocationValid()) {
+            allFilled = false;
+        }
+
+        // Habilitar o deshabilitar el botón según si todos los campos están llenos
+        document.getElementById('submitButton').disabled = !allFilled;
+        document.getElementById('infoMessage').style.display = submitButton.disabled ? 'block' : 'none';
+    }
+
+    // Escuchar cambios en los campos del formulario
+    document.addEventListener('DOMContentLoaded', () => {
+        const inputs = document.querySelectorAll('input[required]');
+        inputs.forEach(input => input.addEventListener('input', checkForm));
+
+        // Escuchar cambios en los botones de radio
+        const radios = document.getElementsByName('option');
+        radios.forEach(radio => radio.addEventListener('change', checkForm));
+
+        const radiosSecond = document.getElementsByName('optionSecond');
+        radiosSecond.forEach(radio => radio.addEventListener('change', checkForm));
+    });
+
+    // Validación del campo password
+    function validatePassword() {
+        const passwordInput = document.getElementById('password');
+        const password = passwordInput.value;
+        const minLength = 8;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumbers = /\d/.test(password);
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+        let errorMessage = '';
+
+        if (password.length < minLength) {
+            errorMessage += 'Password must be at least 8 characters long.<br>';
+        }
+        if (!hasUpperCase) {
+            errorMessage += 'Password must contain at least one uppercase letter.<br>';
+        }
+        if (!hasLowerCase) {
+            errorMessage += 'Password must contain at least one lowercase letter.<br>';
+        }
+        if (!hasNumbers) {
+            errorMessage += 'Password must contain at least one number.<br>';
+        }
+        if (!hasSpecialChar) {
+            errorMessage += 'Password must contain at least one special character.<br>';
+        }
+
+        const messageDiv = document.getElementById('password-error-message');
+        messageDiv.innerHTML = errorMessage;
+
+        if (errorMessage === '') {
+            passwordInput.classList.add('is-valid');
+            passwordInput.classList.remove('is-invalid');
+            return true; // Password es válido
+        } else {
+            passwordInput.classList.add('is-invalid');
+            passwordInput.classList.remove('is-valid');
+            return false; // Password no es válido
+        }
+    }
+
+    // Validación del campo email
+    function validateEmail() {
+        const emailInput = document.getElementById('email');
+        const email = emailInput.value;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const allowedDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'estudiante.uam.es', 'msn.com'];
+
+        let errorMessage = '';
+
+        // Validar formato de email
+        if (!emailRegex.test(email)) {
+            errorMessage += 'Please enter a valid email address.<br>';
+        }
+
+        // Validar dominio permitido (opcional)
+        const domain = email.split('@')[1];
+        if (domain && !allowedDomains.includes(domain)) {
+            errorMessage += `Only email addresses from ${allowedDomains.join(', ')} are allowed.<br>`;
+        }
+
+        const messageDiv = document.getElementById('email-error-message');
+        messageDiv.innerHTML = errorMessage;
+
+        if (errorMessage === '') {
+            emailInput.classList.add('is-valid');
+            emailInput.classList.remove('is-invalid');
+            return true; // Email es válido
+        } else {
+            emailInput.classList.add('is-invalid');
+            emailInput.classList.remove('is-valid');
+            return false; // Email no es válido
+        }
+    }
+
+
+</script>
+
+
+{% endblock body %}

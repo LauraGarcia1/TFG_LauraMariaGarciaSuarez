@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+<div class="position-relative custom-container">
+    <div class="position-absolute top-50 end-0 translate-middle-y negative-padding-bottom .zindex-0">
+        <img src="{% static 'images/dicesHome.png' %}" alt="Image" draggable="false">
+    </div>
+
+
+    <form action="" method="post"
+        class="container h-100 d-flex align-items-center position-absolute top-0 start-0 p-5 pl-5 w-100">
+        {% csrf_token %}
+        <div class="custom-div d-flex flex-column justify-content-center align-items-center shadow-lg p-5 bg-body rounded rounded-5 border border-dark border-2 w-100"
+            style="max-width: 500px;">
+            <h2 class="">Welcome!</h2>
+            <br>
+            <div class="form-control form-rounded mb-4">
+                <label for="username" class="form-label">Username:</label>
+                <input type="username" id="username" name="username" class="form-control rounded-pill">
+                <br>
+                <label for="password" class="form-label">Contraseña:</label>
+                <div class="input-group">
+                    <input type="password" id="password" name="password" class="form-control rounded-pill">
+                    <span class="input-group-text bg-white border-0" id="togglePassword"
+                        style="cursor: pointer;"></span>
+                    <i class="bi bi-eye-slash" id="icono"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between w-75">
+                <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4" value="signin"
+                    name="button">Login</button>
+                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4" value="signup"
+                    name="button">Sign
+                    up</button>
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordInput = document.querySelector('#password');
+    const icono = document.querySelector('#icono');
+
+    togglePassword.addEventListener('click', function () {
+        // Alternar el tipo entre password y text
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Alternar el ícono entre el ojo y el ojo con barra
+        icono.classList.toggle('bi-eye');
+        icono.classList.toggle('bi-eye-slash');
+    });
+</script>
+
+{% endblock body %}

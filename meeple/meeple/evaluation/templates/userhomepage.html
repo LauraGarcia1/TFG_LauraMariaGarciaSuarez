@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+
+
+<div class="position-relative custom-container">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div
+        class="row d-flex justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-50 start-50 translate-middle border border-dark border-2 w-75 h-75">
+        <div class="col-6 align-items-center">
+            <img src="{% static 'images/dicesNoback.png' %}" alt="Image" draggable="false"
+            style="transform: rotate(31deg); width: 80px; height: 80px">
+            <h2>En proceso...</h2>
+            <button type="submit" class="position-absolute top-100 start-100 translate-middle btn btn-warning btn-floating rounded-circle" value="recommendations" name="button" data-mdb-ripple-init>
+                <img src="{% static 'icons/recommendation.png' %}" alt="Image" draggable="false" class="m-auto">
+              </button>
+        </div>
+    </div>
+</form>
+</div>
+
+
+{% endblock body %}

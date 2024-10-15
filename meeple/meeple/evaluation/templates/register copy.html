@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+<style>
+    .scroll-hover {
+        overflow: hidden;
+        /* Ocultar el scroll por defecto */
+        transition: overflow 0.3s ease;
+        /* Suavizar la transición */
+        max-height: 55vh;
+        /* Ocupa máximo 100% de la altura disponible */
+        max-width: 80%;
+        /* Ocupa máximo 100% del ancho disponible */
+    }
+
+    /* Mostrar el scroll al hacer hover */
+    .scroll-hover:hover {
+        overflow-y: auto;
+        /* Mostrar solo scroll vertical */
+    }
+
+    /* Personalización del scrollbar */
+    .scroll-hover::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .scroll-hover::-webkit-scrollbar-thumb {
+        background-color: #888;
+        /* Color del scrollbar */
+        border-radius: 4px;
+    }
+
+    .scroll-hover::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+        /* Color del scrollbar en hover */
+    }
+</style>
+
+<div class="position-relative custom-container">
+    <div class="position-absolute top-50 start-50 translate-middle negative-padding-bottom">
+        <img src="{% static 'images/dicesNoback.png' %}" alt="Image" draggable="false"
+            style="transform: rotate(31deg);">
+    </div>
+
+    <div class="shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-50 start-50 translate-middle border border-dark border-2 w-75"
+        style="max-height: 85vh;">
+        <h2 class="pb-4 text-center fw-bold">Sign up</h2>
+        <form action="" method="post" class="d-flex flex-column justify-content-center align-items-center"
+            style="max-height: 75vh;">
+            {% csrf_token %}
+            <div class="scroll-hover p-2">
+                <div class="mb-4">
+                    <label for="user" class="form-label fw-bold required">Username:</label>
+                    <input type="text" id="user" name="user" class="form-control rounded-pill"
+                        value="{{ user }}" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-bold required">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control rounded-pill"
+                        value="{{ password }}" required>
+                </div>
+                <div class="mb-4">
+                    <label for="full-name" class="form-label fw-bold required">Name:</label>
+                    <input type="text" id="full-name" name="full_name" class="form-control rounded-pill" required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="form-label fw-bold required">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control rounded-pill" required>
+                </div>
+                <div class="mb-4">
+                    <label for="location" class="form-label fw-bold required">Location:</label>
+                    <input type="text" id="location" name="location" class="form-control rounded-pill" required>
+                    <div id="results"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="age" class="form-label fw-bold required">Age:</label>
+                    <input type="number" id="age" name="age" class="form-control rounded-pill" min="0" max="120"
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold required">Frequently played table games:</label>
+                    <div>
+                        <span class="tab"></span><input type="radio" id="morethan" name="option" value="3">
+                        <label for="morethan">More than once in a week</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="week" name="option" value="2">
+                        <label for="week">Once a week</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="lifetime" name="option" value="1">
+                        <label for="lifetime">One in a lifetime</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="never" name="option" value="0">
+                        <label for="never">Never</label>
+                    </div>
+
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold required">Gaming expertise:</label>
+                    <div>
+                        <span class="tab"></span><input type="radio" id="beginner" name="option2" value="0">
+                        <label for="beginner">Beginner</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="intermediate" name="option2" value="1">
+                        <label for="intermediate">Intermediate</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="advanced" name="option2" value="2">
+                        <label for="advanced">Advanced</label>
+                    </div>
+
+                </div>
+
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50" id="submitButton"
+                disabled>Sign up</button>
+    </div>
+
+
+    </form>
+</div>
+
+</div>
+</div>
+</div>
+
+
+<script>
+    /* SCRIPT QUE GESTIONA EL CAMPO DE LOCALIZACIÓN */
+    const input = document.getElementById('location');
+    const resultsContainer = document.getElementById('results');
+
+    input.addEventListener('input', function () {
+        const query = this.value;
+        if (query.length < 3) {
+            resultsContainer.innerHTML = ''; // Limpiar resultados si hay menos de 3 caracteres
+            return;
+        }
+
+        // Hacer la solicitud a la API de Nominatim
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                resultsContainer.innerHTML = ''; // Limpiar resultados anteriores
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.textContent = item.display_name;
+                    div.className = 'result-item';
+                    div.onclick = () => selectLocation(item);
+                    resultsContainer.appendChild(div);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+    function selectLocation(item) {
+        // Establecer el valor del input al nombre del lugar seleccionado
+        input.value = item.display_name;
+
+        // Limpiar los resultados
+        resultsContainer.innerHTML = '';
+
+        // Aquí puedes hacer algo más, como obtener las coordenadas
+        console.log('Selected location:', item);
+        console.log('Latitude:', item.lat);
+        console.log('Longitude:', item.lon);
+    }
+</script>
+
+<script>
+    /* SCRIPT QUE GESTIONA EL BOTON DE SUBMIT */
+    // Función para comprobar si todos los campos están completos
+    function checkForm() {
+        const inputs = document.querySelectorAll('input[required]');
+        let allFilled = true;
+
+        inputs.forEach(input => {
+            const label = document.querySelector(`label[for=${input.id}]`);
+            if (input.value.trim() !== '') {
+                label.classList.add('valid'); // Cambia el color del asterisco a verde
+            } else {
+                label.classList.remove('valid'); // Mantiene el asterisco rojo
+                allFilled = false;
+            }
+        });
+
+        // Habilitar o deshabilitar el botón según si todos los campos están llenos
+        document.getElementById('submitButton').disabled = !allFilled;
+    }
+
+    // Escuchar cambios en los campos del formulario
+    document.addEventListener('DOMContentLoaded', () => {
+        const inputs = document.querySelectorAll('input[required]');
+        inputs.forEach(input => input.addEventListener('input', checkForm));
+    });
+</script>
+
+
+{% endblock body %}
