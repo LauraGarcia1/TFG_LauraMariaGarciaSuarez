@@ -24,7 +24,7 @@ def home(request):
 
             if user is not None:
                 login(request, user)
-                return redirect('preferences')
+                return redirect('user-home')
 
     return render(request, 'home.html')
 
@@ -52,7 +52,7 @@ def signup(request):
 
             if user is not None:
                 login(request, user)
-                return redirect('preferences')
+                return redirect('user-home')
         else:
             print(form.errors)
     else:

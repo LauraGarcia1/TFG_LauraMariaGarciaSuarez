@@ -39,9 +39,9 @@ body {
 .btn-terracota:hover {
     color: black;
     /* Color del texto en estado hover */
-    background-color: #fc5f38;
+    background-color: #d24a28;
     /* Color de fondo en estado hover terracota */
-    border-color: #fc5f38;
+    border-color: #d24a28;
     /* Color del borde en estado hover terracota */
 }
 
@@ -106,7 +106,8 @@ body {
 }
 
 .btn-primary:disabled {
-    background-color: #cccccc; /* Gris */
+    background-color: #cccccc;
+    /* Gris */
     color: #666666;
     border: #666666;
     cursor: not-allowed;
@@ -119,6 +120,7 @@ body {
     padding: 8px;
     margin: 10px;
 }
+
 #results {
     margin-top: 20px;
     max-width: 300px;
@@ -126,10 +128,12 @@ body {
     max-height: 150px;
     overflow-y: auto;
 }
+
 .result-item {
     padding: 8px;
     cursor: pointer;
 }
+
 .result-item:hover {
     background-color: #f0f0f0;
 }
@@ -172,29 +176,37 @@ body {
 /* Colocar el asterisco rojo al lado del label de campos obligatorios */
 label.required::after {
     content: ' *';
-    color: red; /* Asterisco rojo por defecto */
+    color: red;
+    /* Asterisco rojo por defecto */
 }
 
 /* Cambiar el color del asterisco si el campo está correcto */
 label.required.valid::after {
-    color: green; /* Asterisco verde si es válido */
+    color: green;
+    /* Asterisco verde si es válido */
 }
 
 /*--------------------------------*/
 
 .tab {
     display: inline-block;
-    width: 40px; /* Ajusta el ancho a lo que desees para tu "tabulador" */
+    width: 40px;
+    /* Ajusta el ancho a lo que desees para tu "tabulador" */
 }
 
 /*---------------------------------*/
 
 .rounded-div {
-    border-radius: 15px; /* Bordes redondeados */
-    padding: 20px; /* Espacio interno */
-    background-color: #979797; /* Color de fondo */
-    text-align: center; /* Centrar texto */
-    margin-bottom: 20px; /* Espacio inferior entre divs */
+    border-radius: 15px;
+    /* Bordes redondeados */
+    padding: 20px;
+    /* Espacio interno */
+    background-color: #979797;
+    /* Color de fondo */
+    text-align: center;
+    /* Centrar texto */
+    margin-bottom: 20px;
+    /* Espacio inferior entre divs */
     object-fit: contain;
     transition: background-color 0.3s ease;
 }
@@ -206,4 +218,61 @@ label.required.valid::after {
 .scroll-hover {
     max-width: 100%;
     max-height: 100%;
+}
+
+/*---------------------------*/
+.modal {
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.information {
+    z-index: 5;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.info-content {
+    background-color: #fefefe;
+    width: 60%;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.experiment-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
