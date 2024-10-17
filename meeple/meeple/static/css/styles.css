@@ -220,7 +220,8 @@ label.required.valid::after {
     max-height: 100%;
 }
 
-/*---------------------------*/
+/*------------------ PREFERENCES ------------------ */
+
 .modal {
     z-index: 1;
     left: 0;
@@ -275,4 +276,17 @@ label.required.valid::after {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/*------------------ RECOMMENDATIONS ------------------ */
+
+
+
+/*------------------ GENERAL ------------------ */
+.sm-maxwidth {
+    max-width: 100px;
+}
+
+.med-maxwidth {
+    max-width: 500px;
 }
