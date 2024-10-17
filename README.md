@@ -21,12 +21,13 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Comprobar la validación de la contraseña (10/10/24)
 - [X] Crear página de preferencias (13/10/24)
 - [X] Dar la opción de mostrar más información de los juegos (16/10/2024)
-- [ ] Modificar página de home del usuario
+- [X] Modificar página de home del usuario (17/10/24)
 - [X] Cambiar base de datos de sqlite (10/10/24)
 - [ ] Mostrar errores del registro
 - [X] Cargar BD de BGG (13/10/24)
 - [ ] Comprobar CSS inutilizable
 - [ ] Comprimir HTML
+- [ ] Hacer uso de los datos contenidos en BGG
 
 ## Base de Datos
 
