@@ -8,12 +8,12 @@
         <img src="{% static 'images/dicesReverse.png' %}" alt="Image" draggable="false" class="w-75">
     </div>
 
-    <form action="" method="post">
-        {% csrf_token %}
-        <div
-            class="row d-flex justify-content-center shadow-lg p-4 bg-body rounded rounded-5 position-absolute top-50 end-0 translate-middle-y me-5 custom-box border border-dark border-2">
-            <div class="col-9 align-items-center">
-                <h1 class="pb-4 fw-bold">¿Qué estilo de juego buscas?</h1>
+    <div
+        class="row d-flex justify-content-center shadow-lg p-4 bg-body rounded rounded-5 position-absolute top-50 end-0 translate-middle-y me-5 custom-box border border-dark border-2">
+        <div class="col-9 align-items-center">
+            <h1 class="pb-4 fw-bold">¿Qué estilo de juego buscas?</h1>
+            <form action="" method="post">
+                {% csrf_token %}
                 <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
                     value="game-style" name="button">Familiares</button>
 
@@ -52,9 +52,42 @@
 
                 <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
                     value="game-style" name="button">Ameritrash</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="thanks" class="modal thanks position-absolute top-50 start-50 translate-middle">
+        <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div class="position-relative info-content p-5 border-1 m-auto">
+                <span class="close" onclick="closeInformation()">&times;</span>
+                <h2>Welcome friend!</h2>
+                <br>
+                <h4>Before you begin, we’d like to thank you for your time and interest. Your feedback is essential to
+                    the
+                    research that supports this platform. We hope you find this evaluation clear and comprehensive.</h4>
             </div>
         </div>
-    </form>
+    </div>
 </div>
+
+<script>
+    // Función para abrir la ventana de agradecimiento
+    function openInformation() {
+        document.getElementById("thanks").style.display = "block";
+    }
+
+    // Función para cerrar la ventana de agradecimiento
+    function closeInformation() {
+        document.getElementById("thanks").style.display = "none";
+    }
+
+    // Cerrar la ventana flotante si se hace clic fuera de él
+    window.onclick = function (event) {
+        var thanks = document.getElementById("thanks");
+        if (event.target == thanks) {
+            closeInformation();
+        }
+    }
+</script>
 
 {% endblock body %}

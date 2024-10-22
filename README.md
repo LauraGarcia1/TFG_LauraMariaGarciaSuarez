@@ -28,6 +28,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Comprobar CSS inutilizable
 - [ ] Comprimir HTML
 - [ ] Hacer uso de los datos contenidos en BGG
+- [ ] obtener las preferencias y guardarlas en una BD
 
 ## Base de Datos
 

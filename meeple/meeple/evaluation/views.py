@@ -62,6 +62,9 @@ def signup(request):
 
 
 def preferences(request):
+    # TODO: obtener las preferencias y guardarlas en una BD
+    if request.method == "POST":
+        return redirect('user-home')
     return render(request, 'preferences.html')
 
 
