@@ -10,4 +10,5 @@ urlpatterns = [
     path('questions/1', views.questions, name='first'),
     path('questions/2', views.questions, name='second'),
     path('questions/3', views.questions, name='third'),
+    path('new/', views.newRecomm, name='newrecomm'),
 ]

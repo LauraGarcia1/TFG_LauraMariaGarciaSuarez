@@ -57,9 +57,9 @@ body {
 .btn-mostaza:hover {
     color: black;
     /* Color del texto en estado hover */
-    background-color: #f5b820;
+    background-color: #c39215;
     /* Color de fondo en estado hover mostaza */
-    border-color: #f5b820;
+    border-color: #c39215;
     /* Color del borde en estado hover mostaza */
 }
 
@@ -281,7 +281,9 @@ label.required.valid::after {
 
 /*------------------ RECOMMENDATIONS ------------------ */
 
-
+.checked {
+    background-color: #c39215;
+}
 
 /*------------------ GENERAL ------------------ */
 .sm-maxwidth {

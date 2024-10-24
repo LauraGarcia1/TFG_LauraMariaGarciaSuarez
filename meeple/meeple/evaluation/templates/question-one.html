@@ -8,66 +8,49 @@
         <img src="{% static 'images/dicesReverse.png' %}" alt="Image" draggable="false" class="w-75">
     </div>
 
-    <div
-        class="row d-flex justify-content-center shadow-lg p-4 bg-body rounded rounded-5 position-absolute top-50 end-0 translate-middle-y me-5 custom-box border border-dark border-2">
-        <div class="col-9 align-items-center">
-            <h1 class="pb-4 fw-bold">¿Qué estilo de juego buscas?</h1>
-            <form action="" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Familiares</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Cooperativo</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Solitario</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Para 2</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Experiencia</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Experto</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Fiesta</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Narrativo</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Rápido</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Infantil</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Viaje</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Eurogame</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Ameritrash</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="thanks" class="modal thanks position-absolute top-50 start-50 translate-middle">
-        <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-            <div class="position-relative info-content p-5 border-1 m-auto">
-                <span class="close" onclick="closeInformation()">&times;</span>
-                <h2>Welcome friend!</h2>
+    <form action="{% url 'second' %}" method="post"
+        class="container h-100 d-flex align-items-center justify-content-end position-absolute end-0 start-0 p-5 pr-5 w-100">
+        {% csrf_token %}
+        <div
+            class="custom-div d-flex flex-column justify-content-center align-items-center shadow-lg p-5 bg-body rounded rounded-5 border border-dark border-2 w-100 med-maxwidth">
+            <div class="text-center d-flex flex-column">
+                <h1 class="pb-4 fw-bold text-center">What length of game are you looking for?</h1>
+                <div class="d-flex flex-wrap justify-content-center">
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">Quick</button>
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">Short</button>
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">Moderate</button>
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">Long</button>
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">Very long</button>
+                </div>
+                <input type="hidden" name="selecciones" id="selecciones">
                 <br>
-                <h4>Before you begin, we’d like to thank you for your time and interest. Your feedback is essential to
-                    the
-                    research that supports this platform. We hope you find this evaluation clear and comprehensive.</h4>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 fw-bold mt-3">Send
+                        choices</button>
+                </div>
             </div>
         </div>
+    </form>
+</div>
+
+
+<div id="thanks" class="modal thanks position-absolute top-50 start-50 translate-middle">
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="position-relative info-content p-5 border-1 m-auto">
+            <span class="close" onclick="closeInformation()">&times;</span>
+            <h2>Welcome friend!</h2>
+            <br>
+            <h4>Before you begin, we’d like to thank you for your time and interest. Your feedback is essential to
+                the
+                research that supports this platform. We hope you find this evaluation clear and comprehensive.</h4>
+        </div>
     </div>
+</div>
 </div>
 
 <script>
@@ -87,6 +70,27 @@
         if (event.target == thanks) {
             closeInformation();
         }
+    }
+
+    // Action that makes when a choice button is pressed
+    function pressedButton(boton) {
+        // Change to checked-button class
+        boton.classList.toggle('checked-button');
+
+        actualizarSelecciones();
+    }
+
+    function actualizarSelecciones() {
+        const botones = document.querySelectorAll('form button');
+        const selecciones = [];
+
+        botones.forEach(boton => {
+            if (boton.classList.contains('checked')) {
+                selecciones.push(boton.textContent);
+            }
+        });
+
+        document.getElementById('selecciones').value = JSON.stringify(selecciones);
     }
 </script>
 

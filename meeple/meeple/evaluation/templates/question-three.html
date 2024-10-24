@@ -8,38 +8,35 @@
         <img src="{% static 'images/dicesReverse.png' %}" alt="Image" draggable="false" class="w-75">
     </div>
 
-    <form action="" method="post">
+    <form action="{% url 'third' %}" method="post"
+        class="container h-100 d-flex align-items-center justify-content-end position-absolute end-0 start-0 p-5 pr-5 w-100">
         {% csrf_token %}
         <div
-            class="row d-flex justify-content-center shadow-lg p-4 bg-body rounded rounded-5 position-absolute top-50 end-0 translate-middle-y me-5 custom-box border border-dark border-2">
-            <div class="col-9 align-items-center">
-                <h1 class="pb-4 fw-bold">¿?</h1>
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Detectivesca</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Naturaleza</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Medieval</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Gastronómica</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Egipto</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Piratas</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Fantasía</button>
-
-                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
-                    value="game-style" name="button">Misterio</button>
-
-                <button type="submit" class="btn btn-secondary rounded-pill px-4 fw-bold m-2"
-                    value="game-style" name="button">Cualquiera</button>
+            class="custom-div d-flex flex-column justify-content-center align-items-center shadow-lg p-5 bg-body rounded rounded-5 border border-dark border-2 w-100 med-maxwidth">
+            <div class="text-center d-flex flex-column">
+                <h1 class="pb-4 fw-bold text-center">Which type of social companion are you looking for?</h1>
+                <div class="d-flex flex-wrap justify-content-center">
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">1-player</button>
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">2-players</button>
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">Toddlers</button>
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">Preschoolers</button>
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">Children</button>
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">Family</button>
+                    <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
+                        value="game-style" name="button" onclick="pressedButton(this)">Friends</button>
+                </div>
+                <input type="hidden" name="selecciones" id="selecciones">
+                <br>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" id="button" name="button" class="btn btn-primary rounded-pill btn-terracota px-4 fw-bold mt-3" value="newrecommendation">Send
+                        choices</button>
+                </div>
             </div>
         </div>
     </form>

@@ -111,13 +111,16 @@ def questions(request):
 
     if request.method == "POST":
         if request.POST.get("button") == "newrecommendation":
-            return redirect(reverse('recommendations'))
-
-        return redirect(reverse('home'))
+            return redirect(reverse('newrecomm'))
 
     if request.path == "/questions/1":
         return render(request, 'question-one.html')
     elif request.path == "/questions/2":
         return render(request, 'question-two.html')
+    elif request.path == "/questions/3":
+        render(request, 'question-three.html')
 
-    return render(request, 'question-three.html')
+    return render(request, 'recommendations.html')
+
+def newRecomm(request):
+    return render(request, 'newrecommendations.html')
