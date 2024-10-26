@@ -282,14 +282,22 @@ label.required.valid::after {
 /*------------------ RECOMMENDATIONS ------------------ */
 
 .checked {
-    background-color: #c39215;
+    background-color: #f5b820;
 }
 
 /*------------------ GENERAL ------------------ */
+
 .sm-maxwidth {
     max-width: 100px;
 }
 
 .med-maxwidth {
     max-width: 500px;
+}
+
+/*----------------- QUESTIONS ----------------- */
+
+.checked-button {
+    border-color: #c39215;
+    background-color: #c39215;
 }

@@ -31,7 +31,7 @@
                     <button type="button" class="btn btn-primary rounded-pill btn-mostaza px-4 fw-bold m-2"
                         value="game-style" name="button" onclick="pressedButton(this)">Thematic</button>
                 </div>
-                <input type="hidden" name="selecciones" id="selecciones">
+                <input type="hidden" name="selections" id="selections">
                 <br>
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 fw-bold mt-3">Send
@@ -48,20 +48,20 @@
         // Change to checked-button class
         boton.classList.toggle('checked-button');
 
-        actualizarSelecciones();
+        actualizarselections();
     }
 
-    function actualizarSelecciones() {
+    function actualizarselections() {
         const botones = document.querySelectorAll('form button');
-        const selecciones = [];
+        const selections = [];
 
         botones.forEach(boton => {
-            if (boton.classList.contains('checked')) {
-                selecciones.push(boton.textContent);
+            if (boton.classList.contains('checked-button')) {
+                selections.push(boton.textContent);
             }
         });
 
-        document.getElementById('selecciones').value = JSON.stringify(selecciones);
+        document.getElementById('selections').value = JSON.stringify(selections);
     }
 </script>
 

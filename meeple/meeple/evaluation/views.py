@@ -107,18 +107,19 @@ def questions(request):
         Autor: Laura Mª García Suárez
     """
 
-    print(request.path)
 
     if request.method == "POST":
+        print(request.path, request.path == "/questions/3")
         if request.POST.get("button") == "newrecommendation":
             return redirect(reverse('newrecomm'))
+        
+        if request.path == "/questions/2":
+            return render(request, 'question-two.html')
+        elif request.path == "/questions/3":
+            return render(request, 'question-three.html')
 
     if request.path == "/questions/1":
         return render(request, 'question-one.html')
-    elif request.path == "/questions/2":
-        return render(request, 'question-two.html')
-    elif request.path == "/questions/3":
-        render(request, 'question-three.html')
 
     return render(request, 'recommendations.html')
 

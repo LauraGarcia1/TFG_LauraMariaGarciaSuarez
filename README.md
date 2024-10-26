@@ -30,7 +30,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Hacer uso de los datos contenidos en BGG
 - [ ] obtener las preferencias y guardarlas en una BD
 - [ ] Poner todo en inglés
-- [X] Modificar páginas de recomendaciones (24/10/24)
+- [X] Modificar páginas de recomendaciones (24/10/24 y 26/10/24)
 
 ## Base de Datos
 
