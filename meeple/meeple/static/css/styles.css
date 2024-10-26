@@ -301,3 +301,9 @@ label.required.valid::after {
     border-color: #c39215;
     background-color: #c39215;
 }
+
+/*------------ NEW RECOMMENDATIONS ------------ */
+
+input[type="checkbox"] {
+    accent-color: #d24a28;
+}

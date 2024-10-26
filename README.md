@@ -31,6 +31,8 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] obtener las preferencias y guardarlas en una BD
 - [ ] Poner todo en inglés
 - [X] Modificar páginas de recomendaciones (24/10/24 y 26/10/24)
+- [ ] Si el usuario ya ha hecho recomendaciones, no mostrar el mensaje de gratitud
+- [ ] Obtener los juegos recomendados gustados en views.py
 
 ## Base de Datos
 

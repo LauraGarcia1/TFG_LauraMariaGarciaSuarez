@@ -124,4 +124,10 @@ def questions(request):
     return render(request, 'recommendations.html')
 
 def newRecomm(request):
+    if request.method == "POST":
+        if request.POST.get("button") == "exit":
+            return redirect(reverse('recommendations'))
+        elif request.POST.get("button") == "moreEvals":
+            return redirect(reverse('first'))
+
     return render(request, 'newrecommendations.html')

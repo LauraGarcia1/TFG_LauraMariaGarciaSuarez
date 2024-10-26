@@ -2,6 +2,38 @@
 {% load static %}
 
 {% block body %}
+
+<div id="infoGame" class="modal information">
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="position-relative info-content p-5 border-1 m-auto">
+            <span class="close" onclick="closeInformation()">&times;</span>
+
+            <div class="row">
+                <div class="col-6 col-md-4">
+                    <img src="{% static 'images/monopoly.jpg' %}" class="img-fluid rounded" draggable="false">
+                </div>
+                <div class="col-12 col-md-8">
+                    <h2>Lorcana - Into the Inklands: Boosted</h2>
+                    <p>Familiar, for 2-6 players, books, tv, medium difficulty, english</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 ">
+                    <p>Lorcana - Into the Inklands: Booster is an expansion to the Lorcana collectible card game. Each pack contains 12 random cards consisting of: 6 common cards, 3 unusual cards, 2 rare or legendary cards and 1 shiny or foil card (random rarity level).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeNotification()">&times;</span>
+        <h2>Preferences page information</h2>
+        <p>¡Click on titles to see more information about the table games!</p>
+    </div>
+</div>
+
 <div class="position-relative custom-container zindex-0">
     <div class="position-absolute top-50 start-50 translate-middle negative-padding-bottom zindex-0">
         <img src="{% static 'images/dicesNoback.png' %}" alt="Image" draggable="false"
@@ -60,37 +92,6 @@
                 <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50" id="submitButton" style="position: sticky; bottom: 0px;"
                     disabled>Choose preferences</button>
             </form>
-        </div>
-    </div>
-
-    <div id="infoGame" class="modal information position-absolute top-50 start-50 translate-middle text-start">
-        <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-            <div class="position-relative info-content p-5 border-1 m-auto">
-                <span class="close" onclick="closeInformation()">&times;</span>
-    
-                <div class="row">
-                    <div class="col-6 col-md-4">
-                        <img src="{% static 'images/monopoly.jpg' %}" class="img-fluid rounded" draggable="false">
-                    </div>
-                    <div class="col-12 col-md-8">
-                        <h2>Lorcana - Into the Inklands: Boosted</h2>
-                        <p>Familiar, for 2-6 players, books, tv, medium difficulty, english</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 ">
-                        <p>Lorcana - Into the Inklands: Booster is an expansion to the Lorcana collectible card game. Each pack contains 12 random cards consisting of: 6 common cards, 3 unusual cards, 2 rare or legendary cards and 1 shiny or foil card (random rarity level).</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="myModal" class="modal position-absolute top-50 start-50 translate-middle">
-        <div class="modal-content">
-            <span class="close" onclick="closeNotification()">&times;</span>
-            <h2>Preferences page information</h2>
-            <p>¡Click on titles to see more information about the table games!</p>
         </div>
     </div>
 

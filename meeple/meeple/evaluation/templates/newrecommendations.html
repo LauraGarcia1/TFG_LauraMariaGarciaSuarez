@@ -9,49 +9,47 @@
 
     {% block body %}
 
+    <form action="" method="post">
+        {% csrf_token %}
 
-
-    <div class="position-relative custom-container">
-        <div class="position-absolute top-0 start-0">
-            <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
-                style="transform: rotate(64deg);">
+        <div id="finish" class="modal">
+            <div class="modal-content info-content">
+                <h2>Thank you Evaluator &hearts; </h2>
+                <br>
+                <h5>We are grateful for your interest and time, and appreciate your evaluation/evaluations.</h5>
+                <br>
+                <div class="d-flex justify-content-between w-75 mx-auto">
+                    <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4" value="moreEvals"
+                        name="button">One more!</button>
+                    <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4" value="exit"
+                        name="button">Exit :(</button>
+                </div>
+            </div>
         </div>
 
-        <div class="position-absolute bottom-0 end-0">
-            <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
-                style="transform: rotate(31deg);">
-        </div>
+        <div class="position-relative custom-container">
+            <div class="position-absolute top-0 start-0">
+                <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+                    style="transform: rotate(64deg);">
+            </div>
 
-        <form action="" method="post">
-            {% csrf_token %}
+            <div class="position-absolute bottom-0 end-0">
+                <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
+                    style="transform: rotate(31deg);">
+            </div>
+
             <div
                 class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 w-75">
 
-                <!--
-                <div id="myModal" class="modal position-absolute top-50 start-50 translate-middle">
-    <div class="modal-content">
-        <h2>Thank you Evaluator &hearts; </h2>
-        <p>We are grateful for your interest and time, and appreciate your evaluation/evaluations.</p>
-        <div class="d-flex justify-content-between w-75">
-            <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4" value="moreEvals"
-                name="button">One more!</button>
-            <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4" value="signup"
-                name="button">Exit :(</button>
-        </div>
-    </div>
-</div>
-                -->
-
-
-
                 <ul class="list-group list-group-flush">
                     <h2>New recommendations</h2>
+                    <hr>
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-3 d-flex align-items-center justify-content-center">
                                 <img src="{% static 'images/monopoly.jpg' %}" alt="Image" class="img-fluid">
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-7">
                                 <h4>Lorcana - Into the Inklands: Boosted</h4>
                                 <p>Lorcana - Into the Inklands: Booster es una expansión del juego de cartas
                                     coleccionables de Lorcana. Cada sobre contiene 12 cartas aleatorias compuesto por: 6
@@ -59,18 +57,23 @@
                                     o foil (nivel de rareza aleatorio). IMPORTANTE: Este juego está completamente en
                                     inglés.</p>
                             </div>
-                            <div class="col-1">
-                                <h3>6€</h3>
-                                <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
+                            <div class="col-1 d-flex align-items-center justify-content-center">
+                                <div>
+                                    <h3>6€</h3>
+                                    <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
+                                </div>
+                            </div>
+                            <div class="col-1 d-flex align-items-center justify-content-center">
+                                <input type="checkbox">
                             </div>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-3 d-flex align-items-center justify-content-center">
                                 <img src="{% static 'images/monopoly.jpg' %}" alt="Image" class="img-fluid">
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-7">
                                 <h4>Lorcana - Into the Inklands: Boosted</h4>
                                 <p>Lorcana - Into the Inklands: Booster es una expansión del juego de cartas
                                     coleccionables de Lorcana. Cada sobre contiene 12 cartas aleatorias compuesto por: 6
@@ -78,18 +81,23 @@
                                     o foil (nivel de rareza aleatorio). IMPORTANTE: Este juego está completamente en
                                     inglés.</p>
                             </div>
-                            <div class="col-1">
-                                <h3>6€</h3>
-                                <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
+                            <div class="col-1 d-flex align-items-center justify-content-center">
+                                <div>
+                                    <h3>6€</h3>
+                                    <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
+                                </div>
+                            </div>
+                            <div class="col-1 d-flex align-items-center justify-content-center">
+                                <input type="checkbox">
                             </div>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-3 d-flex align-items-center justify-content-center">
                                 <img src="{% static 'images/monopoly.jpg' %}" alt="Image" class="img-fluid">
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-7">
                                 <h4>Lorcana - Into the Inklands: Boosted</h4>
                                 <p>Lorcana - Into the Inklands: Booster es una expansión del juego de cartas
                                     coleccionables de Lorcana. Cada sobre contiene 12 cartas aleatorias compuesto por: 6
@@ -97,18 +105,23 @@
                                     o foil (nivel de rareza aleatorio). IMPORTANTE: Este juego está completamente en
                                     inglés.</p>
                             </div>
-                            <div class="col-1">
-                                <h3>6€</h3>
-                                <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
+                            <div class="col-1 d-flex align-items-center justify-content-center">
+                                <div>
+                                    <h3>6€</h3>
+                                    <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
+                                </div>
+                            </div>
+                            <div class="col-1 d-flex align-items-center justify-content-center">
+                                <input type="checkbox">
                             </div>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-3 d-flex align-items-center justify-content-center">
                                 <img src="{% static 'images/monopoly.jpg' %}" alt="Image" class="img-fluid">
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-7">
                                 <h4>Lorcana - Into the Inklands: Boosted</h4>
                                 <p>Lorcana - Into the Inklands: Booster es una expansión del juego de cartas
                                     coleccionables de Lorcana. Cada sobre contiene 12 cartas aleatorias compuesto por: 6
@@ -116,18 +129,23 @@
                                     o foil (nivel de rareza aleatorio). IMPORTANTE: Este juego está completamente en
                                     inglés.</p>
                             </div>
-                            <div class="col-1>
-                                <h3>6€</h3>
-                                <h5>4,6 <i class=" fa-solid fa-star text-warning"></i></h5>
+                            <div class="col-1 d-flex align-items-center justify-content-center">
+                                <div>
+                                    <h3>6€</h3>
+                                    <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
+                                </div>
+                            </div>
+                            <div class="col-1 d-flex align-items-center justify-content-center">
+                                <input type="checkbox">
                             </div>
                         </div>
                     </li>
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-3 d-flex align-items-center justify-content-center">
                                 <img src="{% static 'images/monopoly.jpg' %}" alt="Image" class="img-fluid">
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-7">
                                 <h4>Lorcana - Into the Inklands: Boosted</h4>
                                 <p>Lorcana - Into the Inklands: Booster es una expansión del juego de cartas
                                     coleccionables de Lorcana. Cada sobre contiene 12 cartas aleatorias compuesto por: 6
@@ -135,16 +153,46 @@
                                     o foil (nivel de rareza aleatorio). IMPORTANTE: Este juego está completamente en
                                     inglés.</p>
                             </div>
-                            <div class="col-1">
-                                <h3>6€</h3>
-                                <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
+                            <div class="col-1 d-flex align-items-center justify-content-center">
+                                <div>
+                                    <h3>6€</h3>
+                                    <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
+                                </div>
+                            </div>
+                            <div class="col-1 d-flex align-items-center justify-content-center">
+                                <input type="checkbox">
                             </div>
                         </div>
                     </li>
                 </ul>
+
+                <div class="d-flex justify-content-end">
+
+                    <button type="button" class="btn btn-primary rounded-pill btn-terracota w-50 br-0" id="submitButton"
+                        onclick="openInformation()">Choose recommendations</button>
+                </div>
             </div>
-        </form>
+    </form>
     </div>
 
+    <script>
+        // Función para abrir la ventana de agradecimiento
+        function openInformation() {
+            document.getElementById("finish").style.display = "block";
+        }
+
+        // Función para cerrar la ventana de agradecimiento
+        function closeInformation() {
+            document.getElementById("finish").style.display = "none";
+        }
+
+        // Cerrar la ventana flotante si se hace clic fuera de él
+        window.onclick = function (event) {
+            var finish = document.getElementById("finish");
+            if (event.target == finish) {
+                closeInformation();
+            }
+        }
+    </script>
 
     {% endblock body %}
