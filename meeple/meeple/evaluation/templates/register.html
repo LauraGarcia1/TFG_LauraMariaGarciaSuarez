@@ -9,11 +9,11 @@
             style="transform: rotate(31deg);">
     </div>
 
-    <div class="shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-50 start-50 translate-middle border border-dark border-2 w-75"
-        style="max-height: 85vh; max-width: 720px;">
+    <div class="shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-50 start-50 translate-middle border border-dark border-2 w-75 m-auto"
+        style="max-height: 80vh; max-width: 720px;">
         <h2 class="pb-4 text-center fw-bold">Sign up</h2>
         <form action="" method="post" class="d-flex flex-column justify-content-center align-items-center w-100 h-100"
-            style="max-height: 75vh;">
+            style="max-height: 65vh;">
             {% csrf_token %}
             <div class="scroll-hover p-2 w-100">
                 <div class="mb-4 w-100">
@@ -81,7 +81,8 @@
                         <label for="intermediate">Intermediate</label>
                     </div>
 
-                    <div>
+                    <div style="position: sticky;
+            bottom: 0;">
                         <span class="tab"></span><input type="radio" id="advanced" name="optionSecond" value="2">
                         <label for="advanced">Advanced</label>
                     </div>
@@ -90,17 +91,11 @@
 
             </div>
             <br>
-            <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50" id="submitButton"
-                disabled>Sign up</button>
-            <span class="text-muted" id="infoMessage">* Please fill all required fields to enable this button.</span>
+                <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50 m-auto" id="submitButton"
+                    disabled>Sign up</button>
+                <br><span class="text-muted responsive-span" id="infoMessage">* Please fill all required fields to enable this button.</span>
+        </form>
     </div>
-
-
-    </form>
-</div>
-
-</div>
-</div>
 </div>
 
 

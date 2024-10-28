@@ -113,7 +113,7 @@ body {
     cursor: not-allowed;
 }
 
-/*------------------------------*/
+/*-------------- REGISTER ----------------*/
 
 #autocomplete {
     width: 300px;
@@ -143,7 +143,7 @@ body {
     /* Ocultar el scroll por defecto */
     transition: overflow 0.3s ease;
     /* Suavizar la transición */
-    max-height: 55vh;
+    max-height: 10vh;
     /* Ocupa máximo 100% de la altura disponible */
     max-width: 80%;
     /* Ocupa máximo 100% del ancho disponible */
@@ -171,7 +171,7 @@ body {
     /* Color del scrollbar en hover */
 }
 
-/*--------------------------------*/
+/*-----------*/
 
 /* Colocar el asterisco rojo al lado del label de campos obligatorios */
 label.required::after {
@@ -186,7 +186,7 @@ label.required.valid::after {
     /* Asterisco verde si es válido */
 }
 
-/*--------------------------------*/
+/*-------------*/
 
 .tab {
     display: inline-block;
@@ -194,7 +194,7 @@ label.required.valid::after {
     /* Ajusta el ancho a lo que desees para tu "tabulador" */
 }
 
-/*---------------------------------*/
+/*-------------*/
 
 .rounded-div {
     border-radius: 15px;
@@ -217,7 +217,14 @@ label.required.valid::after {
 
 .scroll-hover {
     max-width: 100%;
-    max-height: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 15px;
+    max-height: calc(100% - 60px); /* Espacio para el botón */
+}
+
+.responsive-span {
+    font-size: 1.5vw;
 }
 
 /*------------------ PREFERENCES ------------------ */
@@ -293,6 +300,9 @@ label.required.valid::after {
 
 .med-maxwidth {
     max-width: 500px;
+}
+.responsive-title {
+    font-size: 3vw;
 }
 
 /*----------------- QUESTIONS ----------------- */

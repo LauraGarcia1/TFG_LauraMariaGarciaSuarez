@@ -16,7 +16,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Crear versión inicial de la página web (*)
 - [X] Probar a subir una página web usando Docker, Kubernetes y Minikube. (02/10/24)
 - [X] Modificar página de login (02/10/24)
-- [ ] Arreglar navbar general (expansión y reducción)
+- [X] Arreglar navbar general (expansión y reducción) (28/10/24)
 - [X] Modificar página de registro (06/10/24)
 - [X] Comprobar la validación de la contraseña (10/10/24)
 - [X] Crear página de preferencias (13/10/24)
@@ -29,10 +29,11 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Comprimir HTML
 - [ ] Hacer uso de los datos contenidos en BGG
 - [ ] obtener las preferencias y guardarlas en una BD
-- [ ] Poner todo en inglés
+- [X] Poner todo en inglés (26/10/2024)
 - [X] Modificar páginas de recomendaciones (24/10/24 y 26/10/24)
 - [ ] Si el usuario ya ha hecho recomendaciones, no mostrar el mensaje de gratitud
-- [ ] Obtener los juegos recomendados gustados en views.py
+- [X] Obtener los juegos recomendados gustados en views.py (28/10/24)
+- [ ] Conseguir traducción de la página
 
 ## Base de Datos
 

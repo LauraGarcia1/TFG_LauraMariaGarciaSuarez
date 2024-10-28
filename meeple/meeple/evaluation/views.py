@@ -125,6 +125,9 @@ def questions(request):
 
 def newRecomm(request):
     if request.method == "POST":
+        recommendations = request.POST.getlist('likedRecommendations')
+
+        print(recommendations)
         if request.POST.get("button") == "exit":
             return redirect(reverse('recommendations'))
         elif request.POST.get("button") == "moreEvals":
