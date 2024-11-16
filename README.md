@@ -28,10 +28,9 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Comprobar CSS inutilizable
 - [ ] Comprimir HTML
 - [ ] Hacer uso de los datos contenidos en BGG
-- [ ] obtener las preferencias y guardarlas en una BD
+- [ ] Obtener las preferencias y guardarlas en una BD
 - [X] Poner todo en inglés (26/10/2024)
 - [X] Modificar páginas de recomendaciones (24/10/24 y 26/10/24)
-- [ ] Si el usuario ya ha hecho recomendaciones, no mostrar el mensaje de gratitud
 - [X] Obtener los juegos recomendados gustados en views.py (28/10/24)
 - [ ] Conseguir traducción de la página
 
