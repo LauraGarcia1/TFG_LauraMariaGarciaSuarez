@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block body %}
 
@@ -14,28 +15,27 @@
         <div
             class="custom-div d-flex flex-column justify-content-center align-items-center shadow-lg p-5 bg-body rounded rounded-5 border border-dark border-2 w-100 med-maxwidth">
             <div class="text-center d-flex flex-column">
-                <h1 class="pb-4 fw-bold text-center">What kind of gaming mood are you looking for?</h1>
+                <h1 class="pb-4 fw-bold text-center">{% trans "SecondQuestion" %}</h1>
                 <div class="d-flex flex-wrap justify-content-center">
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Party</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "Party" %}</button>
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Easy-to-play</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "EasyToPlay" %}</button>
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Expert</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "Expert" %}</button>
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Cooperative</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "Cooperative" %}</button>
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Strategic</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "Strategic" %}</button>
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Story-based</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "StoryBased" %}</button>
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Thematic</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "Thematic" %}</button>
                 </div>
                 <input type="hidden" name="selections" id="selections">
                 <br>
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 fw-bold mt-3">Send
-                        choices</button>
+                    <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 fw-bold mt-3">{% trans "SubmitQuestion" %}</button>
                 </div>
             </div>
         </div>

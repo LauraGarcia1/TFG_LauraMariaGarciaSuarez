@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-17 18:39+0100\n"
+"POT-Creation-Date: 2024-11-17 21:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,6 +34,30 @@ msgstr "About us"
 msgid "Contact"
 msgstr "Contact"
 
+#: evaluation/templates/newrecommendations.html:18
+msgid "EvaluatorPtOne"
+msgstr "Thank you Evaluator"
+
+#: evaluation/templates/newrecommendations.html:20
+msgid "EvaluatorPtTwo"
+msgstr "We are grateful for your interest and time, and appreciate your evaluation/evaluations."
+
+#: evaluation/templates/newrecommendations.html:24
+msgid "EvaluatorButtonPtOne"
+msgstr "One more!"
+
+#: evaluation/templates/newrecommendations.html:26
+msgid "EvaluatorButtonPtTwo"
+msgstr "Exit :("
+
+#: evaluation/templates/newrecommendations.html:46
+msgid "NewRecommendationTitle"
+msgstr "New recommendations"
+
+#: evaluation/templates/newrecommendations.html:69
+msgid "ChooseRecom"
+msgstr "Choose recommendations"
+
 #: evaluation/templates/preferences.html:33
 msgid "PreferencesNotTitle"
 msgstr "Preferences page information"
@@ -53,6 +77,134 @@ msgstr "Choose the ones that could interest you. At least 4."
 #: evaluation/templates/preferences.html:69
 msgid "PreferencesSubmitButton"
 msgstr "Choose preferences"
+
+#: evaluation/templates/question-one.html:18
+msgid "FirstQuestion"
+msgstr "What length of game are you looking for?"
+
+#: evaluation/templates/question-one.html:21
+msgid "Quick"
+msgstr "Quick"
+
+#: evaluation/templates/question-one.html:23
+msgid "Short"
+msgstr "Short"
+
+#: evaluation/templates/question-one.html:25
+msgid "Moderate"
+msgstr "Moderate"
+
+#: evaluation/templates/question-one.html:27
+msgid "Long"
+msgstr "Long"
+
+#: evaluation/templates/question-one.html:29
+msgid "VeryLong"
+msgstr "Very Long"
+
+#: evaluation/templates/question-one.html:34
+#: evaluation/templates/question-three.html:38
+#: evaluation/templates/question-two.html:38
+msgid "SubmitQuestion"
+msgstr "Send choices"
+
+#: evaluation/templates/question-one.html:46
+msgid "WelcomeQuestion"
+msgstr "Welcome friend!"
+
+#: evaluation/templates/question-one.html:48
+msgid "AlertThanksPtOne"
+msgstr ""
+"Before you begin, we’d like to thank you for your time and interest. Your "
+"feedback is essential to the research that supports this platform. We hope "
+"you find this evaluation clear and comprehensive."
+
+#: evaluation/templates/question-one.html:49
+msgid "AlertThanksPtTwo"
+msgstr ""
+"All the data you provide will be used solely for evaluation purposes and "
+"will not be shared or used for any other reason. Your privacy is our "
+"priority."
+
+#: evaluation/templates/question-three.html:18
+msgid "ThirdQuestion"
+msgstr "Which type of social companion are you looking for?"
+
+#: evaluation/templates/question-three.html:21
+msgid "OnePlayer"
+msgstr "1-player"
+
+#: evaluation/templates/question-three.html:23
+msgid "TwoPlayers"
+msgstr "2-players"
+
+#: evaluation/templates/question-three.html:25
+msgid "Toddlers"
+msgstr "Toddlers"
+
+#: evaluation/templates/question-three.html:27
+msgid "Preschoolers"
+msgstr "Preschoolers"
+
+#: evaluation/templates/question-three.html:29
+msgid "Children"
+msgstr "Children"
+
+#: evaluation/templates/question-three.html:31
+msgid "Family"
+msgstr "Family"
+
+#: evaluation/templates/question-three.html:33
+msgid "Friends"
+msgstr "Friends"
+
+#: evaluation/templates/question-two.html:18
+msgid "SecondQuestion"
+msgstr "What kind of gaming mood are you looking for?"
+
+#: evaluation/templates/question-two.html:21
+msgid "Party"
+msgstr "Party"
+
+#: evaluation/templates/question-two.html:23
+msgid "EasyToPlay"
+msgstr "EasyToPlay"
+
+#: evaluation/templates/question-two.html:25
+msgid "Expert"
+msgstr "Experto"
+
+#: evaluation/templates/question-two.html:27
+msgid "Cooperative"
+msgstr "Cooperative"
+
+#: evaluation/templates/question-two.html:29
+msgid "Strategic"
+msgstr "Strategic"
+
+#: evaluation/templates/question-two.html:31
+msgid "StoryBased"
+msgstr "StoryBased"
+
+#: evaluation/templates/question-two.html:33
+msgid "Thematic"
+msgstr "Thematic"
+
+#: evaluation/templates/recommendations.html:34
+msgid "RecommendationFirstTitle"
+msgstr "Eager to discover new worlds?"
+
+#: evaluation/templates/recommendations.html:35
+msgid "RecommendationSecondTitle"
+msgstr "Enter a new adventure"
+
+#: evaluation/templates/recommendations.html:42
+msgid "RecommendationSearch"
+msgstr "Search new recommendations"
+
+#: evaluation/templates/recommendations.html:50
+msgid "RecommendationThirdTitle"
+msgstr "Previous recommendations"
 
 #: evaluation/templates/register.html:20 evaluation/views.py:34
 msgid "Username"
@@ -121,6 +273,22 @@ msgstr "Sign up"
 #: evaluation/templates/register.html:98
 msgid "RequiredFields"
 msgstr "* Please fill all required fields to enable this button."
+
+#: evaluation/templates/userhomepage.html:16
+msgid "FirstExperiment"
+msgstr "1st experiment: evaluation of recommendation algorithms system"
+
+#: evaluation/templates/userhomepage.html:19
+msgid "SecondExperiment"
+msgstr "2nd experiment"
+
+#: evaluation/templates/userhomepage.html:23
+msgid "ThirdExperiment"
+msgstr "3rd experiment"
+
+#: evaluation/templates/userhomepage.html:26
+msgid "ForthExperiment"
+msgstr "4th experiment"
 
 #: evaluation/views.py:33
 msgid "Welcome"

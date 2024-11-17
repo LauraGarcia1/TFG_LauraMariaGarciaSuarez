@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block overflow %}
 
@@ -14,15 +15,15 @@
 
         <div id="finish" class="modal">
             <div class="modal-content info-content">
-                <h2>Thank you Evaluator &hearts; </h2>
+                <h2>{% trans "EvaluatorPtOne" %} &hearts; </h2>
                 <br>
-                <h5>We are grateful for your interest and time, and appreciate your evaluation/evaluations.</h5>
+                <h5>{% trans "EvaluatorPtTwo" %}</h5>
                 <br>
                 <div class="d-flex justify-content-between w-75 mx-auto">
                     <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4" value="moreEvals"
-                        name="button">One more!</button>
+                        name="button">{% trans "EvaluatorButtonPtOne" %}</button>
                     <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4" value="exit"
-                        name="button">Exit :(</button>
+                        name="button">{% trans "EvaluatorButtonPtTwo" %}</button>
                 </div>
             </div>
         </div>
@@ -42,134 +43,30 @@
                 class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 w-75">
 
                 <ul class="list-group list-group-flush">
-                    <h2>New recommendations</h2>
+                    <h2>{% trans "NewRecommendationTitle" %}</h2>
                     <hr>
+                    {% for gameRow in zacatrus_games %}
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-3 d-flex align-items-center justify-content-center">
-                                <img src="{% static 'images/monopoly.jpg' %}" alt="Image" class="img-fluid">
+                            <div class="col-3">
+                                <img src="{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg" alt="Image" class="img-fluid">
                             </div>
-                            <div class="col-sm-7">
-                                <h4>Lorcana - Into the Inklands: Boosted</h4>
-                                <p>Lorcana - Into the Inklands: Booster es una expansión del juego de cartas
-                                    coleccionables de Lorcana. Cada sobre contiene 12 cartas aleatorias compuesto por: 6
-                                    cartas comunes, 3 cartas inusuales, 2 cartas raras o legendarias y 1 carta brillante
-                                    o foil (nivel de rareza aleatorio). IMPORTANTE: Este juego está completamente en
-                                    inglés.</p>
+                            <div class="col-sm-8">
+                                <h4>{{ gameRow.1 }}</h4>
+                                <p>{{ gameRow.3 }} </p>
                             </div>
-                            <div class="col-1 d-flex align-items-center justify-content-center">
-                                <div>
-                                    <h3>6€</h3>
-                                    <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
-                                </div>
-                            </div>
-                            <div class="col-1 d-flex align-items-center justify-content-center">
-                                <input type="checkbox" name="likedRecommendations" value="Lorcana - Into the Inklands: Boosted 1">
+                            <div class="col-1">
+                                <h5>{{ gameRow.5 }}/10<i class="fa-solid fa-star text-warning"></i></h5>
                             </div>
                         </div>
                     </li>
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-3 d-flex align-items-center justify-content-center">
-                                <img src="{% static 'images/monopoly.jpg' %}" alt="Image" class="img-fluid">
-                            </div>
-                            <div class="col-sm-7">
-                                <h4>Lorcana - Into the Inklands: Boosted</h4>
-                                <p>Lorcana - Into the Inklands: Booster es una expansión del juego de cartas
-                                    coleccionables de Lorcana. Cada sobre contiene 12 cartas aleatorias compuesto por: 6
-                                    cartas comunes, 3 cartas inusuales, 2 cartas raras o legendarias y 1 carta brillante
-                                    o foil (nivel de rareza aleatorio). IMPORTANTE: Este juego está completamente en
-                                    inglés.</p>
-                            </div>
-                            <div class="col-1 d-flex align-items-center justify-content-center">
-                                <div>
-                                    <h3>6€</h3>
-                                    <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
-                                </div>
-                            </div>
-                            <div class="col-1 d-flex align-items-center justify-content-center">
-                                <input type="checkbox" name="likedRecommendations" value="Lorcana - Into the Inklands: Boosted 2">
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-3 d-flex align-items-center justify-content-center">
-                                <img src="{% static 'images/monopoly.jpg' %}" alt="Image" class="img-fluid">
-                            </div>
-                            <div class="col-sm-7">
-                                <h4>Lorcana - Into the Inklands: Boosted</h4>
-                                <p>Lorcana - Into the Inklands: Booster es una expansión del juego de cartas
-                                    coleccionables de Lorcana. Cada sobre contiene 12 cartas aleatorias compuesto por: 6
-                                    cartas comunes, 3 cartas inusuales, 2 cartas raras o legendarias y 1 carta brillante
-                                    o foil (nivel de rareza aleatorio). IMPORTANTE: Este juego está completamente en
-                                    inglés.</p>
-                            </div>
-                            <div class="col-1 d-flex align-items-center justify-content-center">
-                                <div>
-                                    <h3>6€</h3>
-                                    <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
-                                </div>
-                            </div>
-                            <div class="col-1 d-flex align-items-center justify-content-center">
-                                <input type="checkbox" name="likedRecommendations" value="Lorcana - Into the Inklands: Boosted 3">
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-3 d-flex align-items-center justify-content-center">
-                                <img src="{% static 'images/monopoly.jpg' %}" alt="Image" class="img-fluid">
-                            </div>
-                            <div class="col-sm-7">
-                                <h4>Lorcana - Into the Inklands: Boosted</h4>
-                                <p>Lorcana - Into the Inklands: Booster es una expansión del juego de cartas
-                                    coleccionables de Lorcana. Cada sobre contiene 12 cartas aleatorias compuesto por: 6
-                                    cartas comunes, 3 cartas inusuales, 2 cartas raras o legendarias y 1 carta brillante
-                                    o foil (nivel de rareza aleatorio). IMPORTANTE: Este juego está completamente en
-                                    inglés.</p>
-                            </div>
-                            <div class="col-1 d-flex align-items-center justify-content-center">
-                                <div>
-                                    <h3>6€</h3>
-                                    <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
-                                </div>
-                            </div>
-                            <div class="col-1 d-flex align-items-center justify-content-center">
-                                <input type="checkbox" name="likedRecommendations" value="Lorcana - Into the Inklands: Boosted 4">
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-3 d-flex align-items-center justify-content-center">
-                                <img src="{% static 'images/monopoly.jpg' %}" alt="Image" class="img-fluid">
-                            </div>
-                            <div class="col-sm-7">
-                                <h4>Lorcana - Into the Inklands: Boosted</h4>
-                                <p>Lorcana - Into the Inklands: Booster es una expansión del juego de cartas
-                                    coleccionables de Lorcana. Cada sobre contiene 12 cartas aleatorias compuesto por: 6
-                                    cartas comunes, 3 cartas inusuales, 2 cartas raras o legendarias y 1 carta brillante
-                                    o foil (nivel de rareza aleatorio). IMPORTANTE: Este juego está completamente en
-                                    inglés.</p>
-                            </div>
-                            <div class="col-1 d-flex align-items-center justify-content-center">
-                                <div>
-                                    <h3>6€</h3>
-                                    <h5>4,6 <i class="fa-solid fa-star text-warning"></i></h5>
-                                </div>
-                            </div>
-                            <div class="col-1 d-flex align-items-center justify-content-center">
-                                <input type="checkbox" name="likedRecommendations" value="Lorcana - Into the Inklands: Boosted 5">
-                            </div>
-                        </div>
-                    </li>
+                    {% endfor %}
                 </ul>
 
                 <div class="d-flex justify-content-end">
 
                     <button type="button" class="btn btn-primary rounded-pill btn-terracota w-50 br-0" id="submitButton"
-                        onclick="openInformation()">Choose recommendations</button>
+                        onclick="openInformation()">{% trans "ChooseRecom" %}</button>
                 </div>
             </div>
     </form>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block body %}
 
@@ -12,17 +13,17 @@
             <div class="row text-center h-100">
                 <!-- Fila 1 -->
                 <div class="col-md-6 mb-3">
-                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75"  value="recommendations" name="button" data-mdb-ripple-init><h2 class="responsive-title" >1st experiment: evaluation of recommendation algorithms system</h2></button>
+                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75"  value="recommendations" name="button" data-mdb-ripple-init><h2 class="responsive-title" >{% trans "FirstExperiment" %}</h2></button>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75" disabled><h2 class="responsive-title">2nd experiment</h2></button>
+                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75" disabled><h2 class="responsive-title">{% trans "SecondExperiment" %}</h2></button>
                 </div>
                 <!-- Fila 2 -->
                 <div class="col-md-6">
-                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75" disabled><h2 class="responsive-title">3rd experiment</h2></button>
+                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75" disabled><h2 class="responsive-title">{% trans "ThirdExperiment" %}</h2></button>
                 </div>
                 <div class="col-md-6">
-                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75" disabled><h2 class="responsive-title">4th experiment</h2></button>
+                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75" disabled><h2 class="responsive-title">{% trans "ForthExperiment" %}</h2></button>
                 </div>
             </div>
         </div>

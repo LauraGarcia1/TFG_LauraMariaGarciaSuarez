@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block body %}
 
@@ -14,24 +15,23 @@
         <div
             class="custom-div d-flex flex-column justify-content-center align-items-center shadow-lg p-5 bg-body rounded rounded-5 border border-dark border-2 w-100 med-maxwidth">
             <div class="text-center d-flex flex-column">
-                <h1 class="pb-4 fw-bold text-center">What length of game are you looking for?</h1>
+                <h1 class="pb-4 fw-bold text-center">{% trans "FirstQuestion" %}</h1>
                 <div class="d-flex flex-wrap justify-content-center">
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Quick</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "Quick" %}</button>
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Short</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "Short" %}</button>
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Moderate</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "Moderate" %}</button>
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Long</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "Long" %}</button>
                     <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                        value="game-style" name="button" onclick="pressedButton(this)">Very long</button>
+                        value="game-style" name="button" onclick="pressedButton(this)">{% trans "VeryLong" %}</button>
                 </div>
                 <input type="hidden" name="selections" id="selections">
                 <br>
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 fw-bold mt-3">Send
-                        choices</button>
+                    <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 fw-bold mt-3">{% trans "SubmitQuestion" %}</button>
                 </div>
             </div>
         </div>
@@ -43,15 +43,10 @@
     <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
         <div class="position-relative info-content p-5 border-1 m-auto">
             <span class="close" onclick="closeInformation()">&times;</span>
-            <h2>Welcome friend!</h2>
+            <h2>{% trans "WelcomeQuestion" %}</h2>
             <br>
-            <h4>Before you begin, we’d like to thank you for your time and interest. Your feedback is essential to
-                the
-                research that supports this platform. We hope you find this evaluation clear and comprehensive.
-            </h4>
-            <h4>
-                All the data you provide will be used solely for evaluation purposes and will not be shared or used for any other reason. Your privacy is our priority.
-            </h4>
+            <h4>{% trans "AlertThanksPtOne" %}</h4>
+            <h4>{% trans "AlertThanksPtTwo" %}</h4>
         </div>
     </div>
 </div>
