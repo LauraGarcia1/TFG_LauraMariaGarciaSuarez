@@ -27,13 +27,13 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Cargar BD de BGG (13/10/24)
 - [ ] Comprobar CSS inutilizable
 - [ ] Comprimir HTML
-- [ ] Hacer uso de los datos contenidos en BGG
-- [ ] obtener las preferencias y guardarlas en una BD
+- [X] Hacer uso de los datos contenidos en BGG(17/11/2024)
+- [ ] Obtener las preferencias y guardarlas en una BD
 - [X] Poner todo en inglés (26/10/2024)
 - [X] Modificar páginas de recomendaciones (24/10/24 y 26/10/24)
-- [ ] Si el usuario ya ha hecho recomendaciones, no mostrar el mensaje de gratitud
 - [X] Obtener los juegos recomendados gustados en views.py (28/10/24)
-- [ ] Conseguir traducción de la página
+- [X] Conseguir traducción de la página (17/11/2024)
+- [ ] Comprobar el error que está ocasionando algunos juegos en la página de preferencias
 
 ## Base de Datos
 
@@ -90,6 +90,41 @@ Desventajas:
 No escalable: No es adecuado para aplicaciones que necesitan escalar. SQLite no maneja bien las cargas de múltiples usuarios simultáneos y grandes volúmenes de datos.
 No recomendado para producción: Aunque es fácil de usar en desarrollo, para producción deberías cambiar a una base de datos más robusta como PostgreSQL o MySQL.
 
+## Base de datos
+
+@startuml
+User "1" *-- "*" Preference : + id_user
+User "1" o-- "*" Recommendation : + id_user
+Preference "*" --> "1" BGG : + id_game
+Recommendation "*" --> "1" BGG : + id_game
+Recommendation "*" --> "1" Context : + id_context
+
+class User {
+
++ username: String
++ password: String
++ email: String
++ location: String
++ age: Integer
++ frequency: String
+  }
+
+enum FrequencyPlayed {
+
++ MOREINAWEEK
++ ONCEAWEEK
++ ONCEINAWHILE
++ NEVER
+  }
+
+enum GamingExpertise {
+
++ ADVANCED
++ MEDIUM
++ LOW
+  }
+  @enduml
+
 ## Problemas
 
 No funcionó gitlab desde 07/10/24 hasta (15/10/24???).
@@ -103,3 +138,5 @@ Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especia
 -> Elección de BD: https://dev.to/rupesh_mishra/connecting-cloud-hosted-postgresql-to-django-a-comprehensive-guide-5cl1#:~:text=Django%2C%20by%20default%2C%20uses%20SQLite,that's%20often%20used%20in%20production.
 
 -> Elección de BD: https://www.datacamp.com/blog/sqlite-vs-postgresql-detailed-comparison
+
+-> Traducción de las páginas: https://www.freecodecamp.org/news/localize-django-app/

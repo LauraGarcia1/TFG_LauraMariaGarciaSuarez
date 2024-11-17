@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -83,13 +84,21 @@ WSGI_APPLICATION = 'meeple.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'default': { # DB with meeple's users
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'meeple_db',
         'USER': 'alumnodb',
         'PASSWORD': 'alumnodb',
         'HOST': 'localhost',
         'PORT': '5432',
+    },
+    'external_db': { # DB of BGG
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bgg',
+        'USER': 'alumnodb',
+        'PASSWORD': 'alumnodb',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -125,7 +134,14 @@ AUTH_USER_MODEL = 'evaluation.User'
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGES = [
+    ('es', 'Spanish'),
+    ('en', 'English'),
+]
+
+LANGUAGE_CODE = 'en'
+
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 
 TIME_ZONE = 'Europe/Madrid'
 
@@ -144,6 +160,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     BASE_DIR / "static",
 )
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGIN_REDIRECT_URL = '/'
 

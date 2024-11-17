@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block body %}
 
@@ -9,17 +10,17 @@
             <span class="close" onclick="closeInformation()">&times;</span>
 
             <div class="row">
-                <div class="col-6 col-md-4">
-                    <img src="{% static 'images/monopoly.jpg' %}" class="img-fluid rounded" draggable="false">
+                <div class="col-md-4">
+                    <img id="infoImage" src="" class="img-fluid p-3" draggable="false">
                 </div>
-                <div class="col-12 col-md-8">
-                    <h2>Lorcana - Into the Inklands: Boosted</h2>
-                    <p>Familiar, for 2-6 players, books, tv, medium difficulty, english</p>
+                <div class="col-md-8">
+                    <h2 id="infoTitle"></h2>
+                    <p id="infoKeys" style="word-wrap: break-word;"></p>
                 </div>
             </div>
             <div class="row">
-                <div class="col-12 ">
-                    <p>Lorcana - Into the Inklands: Booster is an expansion to the Lorcana collectible card game. Each pack contains 12 random cards consisting of: 6 common cards, 3 unusual cards, 2 rare or legendary cards and 1 shiny or foil card (random rarity level).</p>
+                <div class="col-md-12">
+                    <p id="infoDescription"></p>
                 </div>
             </div>
         </div>
@@ -29,8 +30,8 @@
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeNotification()">&times;</span>
-        <h2>Preferences page information</h2>
-        <p>¡Click on titles to see more information about the table games!</p>
+        <h2>{% trans "PreferencesNotTitle" %}</h2>
+        <p>{% trans "PreferencesNotInfo" %}</p>
     </div>
 </div>
 
@@ -42,55 +43,30 @@
 
     <div class="shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-50 start-50 translate-middle border border-dark border-2 w-75 h-100 mb-4"
         style="max-height: 80vh;">
-        <h2 class="pb-4 fw-bold">Game preferences
+        <h2 class="pb-4 fw-bold">{% trans "PreferencesTitle" %}
             <i class="bi bi-info-circle" onclick="openNotification()"></i>
             <!-- Icono de información con función de notificación -->
         </h2>
-        <h5>Choose the ones that could interest you. At least 4.</h5>
-        <div class="scroll-hover w-100" style="max-height: 50vh;">
+        <h5>{% trans "PreferencesInfo" %}</h5>
+        <div class="scroll-hover-pref w-100" style="max-height: 50vh;">
             <form action="" method="post" class="d-flex flex-column justify-content-center align-items-center w-100">
                 {% csrf_token %}
 
                 <div class="row w-100 h-100">
+                    {% for gameRow in zacatrus_games %}
                     <div class="col-xl-4">
                         <div class="rounded-div">
-                            <img src="{% static 'images/monopoly.jpg' %}" class="img-fluid rounded sm-maxwidth" draggable="false">
-                            <h4>Lorcana - Into the Inklands: Boosted<i class="bi bi-info-circle" onclick="openInformation()"></i></h4>
-                            <input type="checkbox" class="changeColorCheckbox">
+                            <img src="{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg" class="img-fluid rounded sm-maxwidth" draggable="false">
+                            <!-- Show the names of the tablegames -->
+                            <h4> {{ gameRow.1 }} <i class="bi bi-info-circle" onclick="openInformation('{{ gameRow.1 }}', '{{ gameRow.4 }}', '{{ gameRow.6 }}', '{{ gameRow.7 }}', '{{ gameRow.3 }}', '{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg')"></i></h4>
+                            <input type="checkbox" class="changeColorCheckbox" name="likedPreferences" value={{ gameRow.0 }}>
                         </div>
                     </div>
-                    <div class="col-xl-4">
-                        <div class="rounded-div">
-                            <img src="{% static 'images/monopoly.jpg' %}" class="img-fluid rounded sm-maxwidth" draggable="false">
-                            <h4>Lorcana - Into the Inklands: Boosted</h4>
-                            <input type="checkbox" class="changeColorCheckbox">
-                        </div>
-                    </div>
-                    <div class="col-xl-4">
-                        <div class="rounded-div">
-                            <img src="{% static 'images/monopoly.jpg' %}" class="img-fluid rounded sm-maxwidth" draggable="false">
-                            <h4>Lorcana - Into the Inklands: Boosted</h4>
-                            <input type="checkbox" class="changeColorCheckbox">
-                        </div>
-                    </div>
-                    <div class="col-xl-4">
-                        <div class="rounded-div">
-                            <img src="{% static 'images/monopoly.jpg' %}" class="img-fluid rounded sm-maxwidth" draggable="false">
-                            <h4>Lorcana - Into the Inklands: Boosted</h4>
-                            <input type="checkbox" class="changeColorCheckbox">
-                        </div>
-                    </div>
-                    <div class="col-xl-4">
-                        <div class="rounded-div">
-                            <img src="{% static 'images/monopoly.jpg' %}" class="img-fluid rounded sm-maxwidth" draggable="false">
-                            <h4>Lorcana - Into the Inklands: Boosted</h4>
-                            <input type="checkbox" class="changeColorCheckbox">
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
 
-                <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50" id="submitButton" style="position: sticky; bottom: 0px;"
-                    disabled>Choose preferences</button>
+                <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50" id="submitButton" style="position: sticky; bottom: 5px;"
+                    disabled>{% trans "PreferencesSubmitButton" %}</button>
             </form>
         </div>
     </div>
@@ -129,8 +105,13 @@
     }
 
     // Función para abrir la ventana de información del juego
-    function openInformation() {
+    function openInformation(title, categories, types, contexts, description, imageUrl) {
         document.getElementById("infoGame").style.display = "block";
+        
+        document.getElementById("infoTitle").textContent = title;
+        document.getElementById("infoKeys").textContent = categories + " " + types + " " + contexts;
+        document.getElementById("infoDescription").textContent = description;
+        document.getElementById("infoImage").src = imageUrl;
     }
 
     // Función para cerrar el modal

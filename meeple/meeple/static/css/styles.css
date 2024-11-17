@@ -63,6 +63,33 @@ body {
     /* Color del borde en estado hover mostaza */
 }
 
+.btn-inverse-mostaza {
+    color: black;
+    /* Color del texto */
+    background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity));
+    /* Color de fondo mostaza */
+    border-color: black;
+    /* Color del borde mostaza */
+}
+
+.btn-inverse-mostaza:hover {
+    color: black;
+    /* Color del texto en estado hover */
+    background-color: #f5b820;
+    /* Color de fondo en estado hover mostaza */
+    border-color: #f5b820;
+    /* Color del borde en estado hover mostaza */
+}
+
+.btn-inverse-mostaza:focus {
+    color: black;
+    /* Color del texto en estado hover */
+    background-color: #dba51c;
+    /* Color de fondo en estado hover mostaza */
+    border-color: #dba51c;
+    /* Color del borde en estado hover mostaza */
+}
+
 .btn-inverse-light {
     color: #000000;
     /* Color del texto */
@@ -79,6 +106,10 @@ body {
     /* Color de fondo en estado hover */
     border-color: #000000;
     /* Color del borde en estado hover */
+}
+
+.btn-inverse-light:disabled {
+    border: 0;
 }
 
 .background-div {
@@ -143,10 +174,13 @@ body {
     /* Ocultar el scroll por defecto */
     transition: overflow 0.3s ease;
     /* Suavizar la transición */
-    max-height: 10vh;
+    max-height: 40vh;
     /* Ocupa máximo 100% de la altura disponible */
-    max-width: 80%;
+    max-width: 90%;
     /* Ocupa máximo 100% del ancho disponible */
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 15px;
 }
 
 /* Mostrar el scroll al hacer hover */
@@ -215,7 +249,7 @@ label.required.valid::after {
     background-color: #f9d95a;
 }
 
-.scroll-hover {
+.scroll-hover-pref {
     max-width: 100%;
     overflow-y: auto;
     flex-grow: 1;
@@ -302,14 +336,14 @@ label.required.valid::after {
     max-width: 500px;
 }
 .responsive-title {
-    font-size: 3vw;
+    font-size: clamp(1rem, 5vw, 2rem);;
 }
 
 /*----------------- QUESTIONS ----------------- */
 
 .checked-button {
-    border-color: #c39215;
-    background-color: #c39215;
+    border-color: #f5b820;
+    background-color: #f5b820;
 }
 
 /*------------ NEW RECOMMENDATIONS ------------ */

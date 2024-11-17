@@ -1,7 +1,8 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
+    
     path('', views.home, name='home'),
     path('signup/', views.signup, name='register'),
     path('signup/preferences/', views.preferences, name='preferences'),
@@ -11,4 +12,9 @@ urlpatterns = [
     path('questions/2', views.questions, name='second'),
     path('questions/3', views.questions, name='third'),
     path('new-recommendations/', views.newRecomm, name='newrecomm'),
+    path('i18n/', include('django.conf.urls.i18n')),
+
+
+    path('prueba/', views.prueba, name='prueba'),
+
 ]

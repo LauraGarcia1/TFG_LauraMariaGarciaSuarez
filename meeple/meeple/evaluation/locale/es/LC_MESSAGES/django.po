@@ -1,0 +1,132 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-11-17 18:39+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: evaluation/templates/base.html:57
+msgid "Home"
+msgstr "Inicio"
+
+#: evaluation/templates/base.html:62
+msgid "Photo"
+msgstr "Imagen"
+
+#: evaluation/templates/base.html:67
+msgid "About Us"
+msgstr "Sobre nosotros"
+
+#: evaluation/templates/base.html:72
+msgid "Contact"
+msgstr "Contacto"
+
+#: evaluation/templates/preferences.html:33
+msgid "PreferencesNotTitle"
+msgstr "Información relevante"
+
+#: evaluation/templates/preferences.html:34
+msgid "PreferencesNotInfo"
+msgstr "¡Pulse en el icono de al lado de los títulos para obtener más información de los juegos de mesa!"
+
+#: evaluation/templates/preferences.html:46
+msgid "PreferencesTitle"
+msgstr "Preferencias de juegos"
+
+#: evaluation/templates/preferences.html:50
+msgid "PreferencesInfo"
+msgstr "Escoja al menos 4 que te puedan interesar."
+
+#: evaluation/templates/preferences.html:69
+msgid "PreferencesSubmitButton"
+msgstr "Escoger opciones"
+
+#: evaluation/templates/register.html:20 evaluation/views.py:34
+msgid "Username"
+msgstr "Nombre de usuario"
+
+#: evaluation/templates/register.html:25 evaluation/views.py:35
+msgid "Password"
+msgstr "Contraseña"
+
+#: evaluation/templates/register.html:31
+msgid "Name"
+msgstr "Nombre completo"
+
+#: evaluation/templates/register.html:35
+msgid "Email"
+msgstr "Correo electrónico"
+
+#: evaluation/templates/register.html:40
+msgid "Location"
+msgstr "Ubicación"
+
+#: evaluation/templates/register.html:45
+msgid "Age"
+msgstr "Edad"
+
+#: evaluation/templates/register.html:50
+msgid "Frequency"
+msgstr "Con cuánta frecuencia ha jugado a juegos de mesa"
+
+#: evaluation/templates/register.html:54
+msgid "More than"
+msgstr "Más de 1 vez a la semana"
+
+#: evaluation/templates/register.html:59
+msgid "Week"
+msgstr "1 vez por semana"
+
+#: evaluation/templates/register.html:64
+msgid "Lifetime"
+msgstr "1 vez cada mucho tiempo"
+
+#: evaluation/templates/register.html:69
+msgid "Never"
+msgstr "Nunca"
+
+#: evaluation/templates/register.html:73
+msgid "Expertise"
+msgstr "Nivel de jugador"
+
+#: evaluation/templates/register.html:76
+msgid "Beginner"
+msgstr "Principiante"
+
+#: evaluation/templates/register.html:81
+msgid "Intermediate"
+msgstr "Intermedio"
+
+#: evaluation/templates/register.html:86
+msgid "Advanced"
+msgstr "Avanzado"
+
+#: evaluation/templates/register.html:97 evaluation/views.py:37
+msgid "Sign up"
+msgstr "Registrarse"
+
+#: evaluation/templates/register.html:98
+msgid "RequiredFields"
+msgstr "* Por favor, rellene todas los campos necesarios para habilitar este botón."
+
+#: evaluation/views.py:33
+msgid "Welcome"
+msgstr "¡Bienvenido"
+
+#: evaluation/views.py:36
+msgid "Login"
+msgstr "Iniciar sesión"

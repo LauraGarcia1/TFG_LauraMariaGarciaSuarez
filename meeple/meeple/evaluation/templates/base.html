@@ -1,6 +1,9 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+{% block overflow-html %}
+<html lang="en" class="overflow-hidden">
+{% endblock overflow-html %}
 
 <head>
     <meta charset="utf-8">
@@ -22,12 +25,11 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="shortcut icon" href="{% static 'icons/favicon-black.ico' %}" type="image/x-icon">
 
-    <!-- DA PROBLEMAS -->
 </head>
 
 {% block overflow %}
 
-<body class="overflow-hidden">
+<body class="overflow-hidden h-100">
     {% endblock overflow %}
 
     <nav class="navbar navbar-expand-lg front zindex-4">
@@ -37,40 +39,55 @@
                 <span>Meeple</span>
             </a>
 
-            <div class="d-flex">
-                <!-- Botón para colapsar/expandir el menú -->
+            
+                <!-- Button that collapse the navigation bar -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Menú colapsable -->
+                <!-- Menu that can collapse -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav">
+                    <ul class="nav navbar-nav navbar-right">
                         {% block navig %}
                         <li class="nav-item active ps-5">
-                            <button type="button" class="btn btn-inverse-light nav-link rounded-pill"
+                            <button type="button" class="btn btn-inverse-mostaza nav-link rounded-pill fw-bold"
                                 onclick="window.location.href='{% url 'home' %}'">
-                                <span class="mx-3">Home</span>
+                                <span class="mx-3">{% trans "Home" %}</span>
                             </button>
                         </li>
                         <li class="nav-item ps-5">
-                            <a class="nav-link disabled" href="#">Photo</a>
+                            <button type="button" class="btn btn-inverse-light nav-link rounded-pill" disabled>
+                                <span class="mx-3">{% trans "Photo" %}</span>
+                            </button>
                         </li>
                         <li class="nav-item ps-5">
-                            <a class="nav-link disabled" href="#">About Us</a>
+                            <button type="button" class="btn btn-inverse-light nav-link rounded-pill" disabled>
+                                <span class="mx-3">{% trans "About Us" %}</span>
+                            </button>
                         </li>
                         <li class="nav-item ps-5">
-                            <a class="nav-link disabled" href="#">Contact</a>
-                        </li>
-                        <li class="nav-item ps-5">
-                            <a class="nav-link disabled" href="#">Disabled</a>
+                            <button type="button" class="btn btn-inverse-light nav-link rounded-pill" disabled>
+                                <span class="mx-3">{% trans "Contact" %}</span>
+                            </button>
                         </li>
                         {% endblock navig %}
+
+                        <li class="nav-item ps-5">
+                            <form class="form-inline" action="{% url 'set_language' %}" method="post">
+                                {% csrf_token %}
+                                <input class="mr-sm-2 rounded" name="next" type="hidden" value="{{ redirect_to }}" />
+                                <select name="language">
+                                    <option value="en">English</option>
+                                    <option value="es">Español</option>
+                                </select>
+                                <input class="btn btn-success my-2 my-sm-0" type="submit" value="Change Language">
+                            </form>
+                        </li>
                     </ul>
                 </div>
-            </div>
+            
         </div>
     </nav>
 

@@ -1,0 +1,131 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-11-17 18:39+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: evaluation/templates/base.html:57
+msgid "Home"
+msgstr "Home"
+
+#: evaluation/templates/base.html:62
+msgid "Photo"
+msgstr "Photo"
+
+#: evaluation/templates/base.html:67
+msgid "About Us"
+msgstr "About us"
+
+#: evaluation/templates/base.html:72
+msgid "Contact"
+msgstr "Contact"
+
+#: evaluation/templates/preferences.html:33
+msgid "PreferencesNotTitle"
+msgstr "Preferences page information"
+
+#: evaluation/templates/preferences.html:34
+msgid "PreferencesNotInfo"
+msgstr "Click on titles to see more information about the table games!"
+
+#: evaluation/templates/preferences.html:46
+msgid "PreferencesTitle"
+msgstr "Game preferences"
+
+#: evaluation/templates/preferences.html:50
+msgid "PreferencesInfo"
+msgstr "Choose the ones that could interest you. At least 4."
+
+#: evaluation/templates/preferences.html:69
+msgid "PreferencesSubmitButton"
+msgstr "Choose preferences"
+
+#: evaluation/templates/register.html:20 evaluation/views.py:34
+msgid "Username"
+msgstr "Username"
+
+#: evaluation/templates/register.html:25 evaluation/views.py:35
+msgid "Password"
+msgstr "Password"
+
+#: evaluation/templates/register.html:31
+msgid "Name"
+msgstr "Name"
+
+#: evaluation/templates/register.html:35
+msgid "Email"
+msgstr "Email"
+
+#: evaluation/templates/register.html:40
+msgid "Location"
+msgstr "Location"
+
+#: evaluation/templates/register.html:45
+msgid "Age"
+msgstr "Age"
+
+#: evaluation/templates/register.html:50
+msgid "Frequency"
+msgstr "Frequency"
+
+#: evaluation/templates/register.html:54
+msgid "More than"
+msgstr "More than once in a week"
+
+#: evaluation/templates/register.html:59
+msgid "Week"
+msgstr "Once a week"
+
+#: evaluation/templates/register.html:64
+msgid "Lifetime"
+msgstr "One in a lifetime"
+
+#: evaluation/templates/register.html:69
+msgid "Never"
+msgstr "Never"
+
+#: evaluation/templates/register.html:73
+msgid "Expertise"
+msgstr "Gaming expertise"
+
+#: evaluation/templates/register.html:76
+msgid "Beginner"
+msgstr "Beginner"
+
+#: evaluation/templates/register.html:81
+msgid "Intermediate"
+msgstr "Intermediate"
+
+#: evaluation/templates/register.html:86
+msgid "Advanced"
+msgstr "Advanced"
+
+#: evaluation/templates/register.html:97 evaluation/views.py:37
+msgid "Sign up"
+msgstr "Sign up"
+
+#: evaluation/templates/register.html:98
+msgid "RequiredFields"
+msgstr "* Please fill all required fields to enable this button."
+
+#: evaluation/views.py:33
+msgid "Welcome"
+msgstr "Welcome"
+
+#: evaluation/views.py:36
+msgid "Login"
+msgstr "Login"
