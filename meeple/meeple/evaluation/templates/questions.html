@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block overflow %}
+
+<body style="overflow-x: hidden;">
+
+    {% endblock overflow %}
+
+    {% block body %}
+
+
+
+    <div class="position-relative custom-container">
+        <div class="position-absolute top-0 start-0">
+            <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+                style="transform: rotate(64deg);">
+        </div>
+
+        <div class="position-absolute bottom-0 end-0">
+            <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
+                style="transform: rotate(31deg);">
+        </div>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <div
+                class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 w-75">
+                <div
+                    class="row h-100 p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
+                    <!-- Fila 1 -->
+                    <div class="col-md-6 mb-3 text-start">
+                        <h3 class="fw-bold">{% trans "RecommendationFirstTitle" %}</h3>
+                        <h3>{% trans "RecommendationSecondTitle" %}</h3>
+                    </div>
+
+                    <!-- Fila 2 con botón redimensionable -->
+                    <div class="col-md-6 mb-3 text-center">
+                        <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-100"
+                            value="newrecommendation" name="button">
+                            <h5 class="m-0 fw-bold" style="font-size: clamp(12px, 2vw, 24px);">{% trans "RecommendationSearch" %}</h5>
+                        </button>
+                    </div>
+                </div>
+
+
+
+                <ul class="list-group list-group-flush pt-5">
+                    <h2>{% trans "RecommendationThirdTitle" %}</h2>
+                    {% for gameRow in zacatrus_games %}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-3">
+                                <img src="{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg" alt="Image" class="img-fluid">
+                            </div>
+                            <div class="col-sm-8">
+                                <h4>{{ gameRow.1 }}</h4>
+                                <p>{{ gameRow.3 }} </p>
+                            </div>
+                            <div class="col-1">
+                                <h5>{{ gameRow.5 }}/10<i class="fa-solid fa-star text-warning"></i></h5>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </form>
+    </div>
+
+    {% endblock body %}

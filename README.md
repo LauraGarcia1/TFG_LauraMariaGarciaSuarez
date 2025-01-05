@@ -93,6 +93,9 @@ Desventajas:
 No escalable: No es adecuado para aplicaciones que necesitan escalar. SQLite no maneja bien las cargas de múltiples usuarios simultáneos y grandes volúmenes de datos.
 No recomendado para producción: Aunque es fácil de usar en desarrollo, para producción deberías cambiar a una base de datos más robusta como PostgreSQL o MySQL.
 
+
+composer require vlucas/phpdotenv
+
 ## Problemas
 
 No funcionó gitlab desde 07/10/24 hasta (15/10/24???).
@@ -108,3 +111,5 @@ Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especia
 -> Elección de BD: https://www.datacamp.com/blog/sqlite-vs-postgresql-detailed-comparison
 
 -> Traducción de las páginas: https://www.freecodecamp.org/news/localize-django-app/
+
+-> Datos de juegos: https://www.w3schools.com/xml/ajax_database.asp

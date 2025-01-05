@@ -58,7 +58,7 @@
                         <div class="rounded-div">
                             <img src="{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg" class="img-fluid rounded sm-maxwidth" draggable="false">
                             <!-- Show the names of the tablegames -->
-                            <h4> {{ gameRow.1 }} <i class="bi bi-info-circle" onclick="openInformation('{{ gameRow.1 }}', '{{ gameRow.4 }}', '{{ gameRow.6 }}', '{{ gameRow.7 }}', '{{ gameRow.3 }}', '{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg')"></i></h4>
+                            <h4> {{ gameRow.1 }} <i class="bi bi-info-circle" onclick="openInformation('{{ gameRow.0 }}', '{{ gameRow.1 }}', '{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg')"></i></h4>
                             <input type="checkbox" class="changeColorCheckbox" name="likedPreferences" value={{ gameRow.0 }}>
                         </div>
                     </div>
@@ -104,14 +104,41 @@
         document.getElementById("myModal").style.display = "block";
     }
 
+    // Función para hacer la consulta y obtener la información de los juegos
+    function getDataGame(idGame) {
+        // Validar que el ID sea un número antes de enviarlo al servidor
+        if (!idGame || isNaN(idGame)) {
+            document.getElementById('infoDescription').innerHTML = "There is not information.";
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'get_data_game' %",
+            data: {id: idGame},
+            success: function(response) {
+                if (response.error) {
+                    document.getElementById("infoKeys").textContent = "";
+                    document.getElementById("infoDescription").textContent = "There is not information.";
+                } else {
+                    document.getElementById("infoKeys").textContent = response.categories + " " + response.types + " " + response.contexts;
+                    document.getElementById("infoDescription").textContent = response.description;
+                }
+            },
+            error: function() {
+                document.getElementById("infoDescription").textContent = "Internal error.";
+            }
+        });
+    }
+
     // Función para abrir la ventana de información del juego
-    function openInformation(title, categories, types, contexts, description, imageUrl) {
+    function openInformation(id, title, imageUrl) {
         document.getElementById("infoGame").style.display = "block";
         
         document.getElementById("infoTitle").textContent = title;
-        document.getElementById("infoKeys").textContent = categories + " " + types + " " + contexts;
-        document.getElementById("infoDescription").textContent = description;
         document.getElementById("infoImage").src = imageUrl;
+        getDataGame(id)
+        //document.getElementById("infoKeys").textContent = categories + " " + types + " " + contexts;
+        //document.getElementById("infoDescription").textContent = description;
     }
 
     // Función para cerrar el modal

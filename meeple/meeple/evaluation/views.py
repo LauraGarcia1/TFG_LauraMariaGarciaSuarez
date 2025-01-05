@@ -2,11 +2,12 @@ from urllib import request
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import login, authenticate
-
+from django.http import JsonResponse
 from django.conf import settings
 from .forms import SignUpForm
 from django.db import connections
 from django.utils.translation import gettext_lazy as _
+from .models import Preference, Participant, Game
 
 
 def home(request):
@@ -25,9 +26,9 @@ def home(request):
             return redirect(reverse('register'))
         if request.POST.get("button") == "signin":
             user = authenticate(username=username, password=password)
-
             if user is not None:
                 login(request, user)
+                request.session['userid'] = user.id
                 return redirect(reverse('user-home'))
 
     title_home = _("Welcome")
@@ -68,6 +69,8 @@ def signup(request):
 
             user = authenticate(username=username, password=password, email=email, location=location, age=age, frequencyGame=frequencyGame, expertiseGame=expertiseGame, gender=gender)
 
+            request.session['userid'] = user.id
+
             if user is not None:
                 login(request, user)
                 return redirect('preferences')
@@ -83,28 +86,47 @@ def preferences(request):
     if request.method == "POST":
         preferences = request.POST.getlist('likedPreferences')
 
+        for pref in preferences:
+            with connections['external_db'].cursor() as cursor:
+                cursor.execute("SELECT GROUP_CONCAT(DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories FROM (SELECT DISTINCT gameid, name FROM zacatrus_game_categories) zgc WHERE zgc.gameid = %s;", [pref])
+                categories = cursor.fetchone()
+            
+            Preference.objects.create(preference=Game.objects.get_or_create(id_BGG=int(pref))[0], category=str(categories) , value=0, id_participant=Participant.objects.get(id=request.session['userid']))
+        
         print(preferences)
         return redirect('user-home')
 
-    zacatrus_games = get_data()
+    zacatrus_games = get_preferences_games()
 
     return render(request, 'preferences.html', {'zacatrus_games' : zacatrus_games, 'MEDIA_URL' : settings.MEDIA_URL})
 
 
-def get_data():
+def get_preferences_games():
     with connections['external_db'].cursor() as cursor:
         '''
         SELECT zg.id, zg.name, zg.url, zgd.description, GROUP_CONCAT( DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories, TRUNCATE(AVG(zr.rating), 1) AS ratings, GROUP_CONCAT( DISTINCT zgt.name ORDER BY zgt.name ASC) AS types, GROUP_CONCAT( DISTINCT zgct.name ORDER BY zgct.name ASC) AS contexts FROM (SELECT id, name, url FROM zacatrus_games LIMIT 10) zg LEFT JOIN zacatrus_game_descriptions zgd ON zg.id = zgd.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_categories) zgc ON zg.id = zgc.gameid LEFT JOIN (SELECT DISTINCT gameid, rating FROM zacatrus_ratings) zr ON zg.id = zr.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_types) zgt ON zg.id = zgt.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_contexts) zgct ON zg.id = zgct.gameid GROUP BY zg.id, zg.name, zg.url, zgd.description;
         '''
         # TODO: meter la consulta en otro lado, y no hardcoreado
-        cursor.execute(
-            "SELECT zg.id, zg.name FROM (SELECT id, name, url FROM zacatrus_games LIMIT 10) zg;")
+        cursor.execute("SELECT id, name FROM zacatrus_games LIMIT 10;")
         zacatrus_games = cursor.fetchall()
 
         print(zacatrus_games)
 
         return zacatrus_games
 
+def get_data_game(request):
+    print("Llegue")
+    if request.method == 'POST':
+        print("Llegue mas")
+        id = request.POST.get('id')
+        with connections['external_db'].cursor() as cursor:
+            cursor.execute('SELECT zg.name, zgd.description, GROUP_CONCAT(DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories, TRUNCATE(AVG (zr.rating), 1) AS ratings, GROUP_CONCAT(DISTINCT zgt.name ORDER BY zgt.name ASC) AS types, GROUP_CONCAT(DISTINCT zgct.name ORDER BY zgct.name ASC) AS contexts FROM zacatrus_games zg LEFT JOIN zacatrus_game_descriptions zgd ON zg.id = zgd.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_categories) zgc ON zg.id = zgc.gameid LEFT JOIN (SELECT DISTINCT gameid, rating FROM zacatrus_ratings) zr ON zg.id = zr.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_types) zgt ON zg.id = zgt.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_contexts) zgct ON zg.id = zgct.gameid WHERE zg.id = %s GROUP BY zg.name, zgd.description;', [id])
+            result = cursor.fetchone()
+            print(result)
+            if result:
+                return JsonResponse({'name': result[0], 'description': result[1], 'categories': result[2], 'ratings': result[3], 'types': result[4], 'contexts': result[5]})
+            else:
+                return JsonResponse({'error': 'No se encontraron datos'})
 
 def userHome(request):
     """
@@ -135,7 +157,7 @@ def recommendPage(request):
 
         return redirect(reverse('home'))
     
-    zacatrus_games = get_data()
+    zacatrus_games = get_preferences_games()
 
     return render(request, 'recommendations.html', {'zacatrus_games' : zacatrus_games, 'MEDIA_URL' : settings.MEDIA_URL})
 
@@ -173,7 +195,7 @@ def newRecomm(request):
         elif request.POST.get("button") == "moreEvals":
             return redirect(reverse('first'))
     
-    zacatrus_games = get_data()
+    zacatrus_games = get_preferences_games()
 
     return render(request, 'newrecommendations.html', {'zacatrus_games' : zacatrus_games, 'MEDIA_URL' : settings.MEDIA_URL})
 

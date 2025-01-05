@@ -206,7 +206,7 @@ class Evaluation(models.Model):
         return f"Evaluation by {self.id_participant} for {self.game}"
 
 class Preference(models.Model):
-    preference = models.CharField(max_length=50) 
+    preference = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
     category = models.CharField(max_length=100, blank=True, null=True) # TODO: obtenerlo de zacatrus_game_categories
     value = models.FloatField(default=0.0) 
     id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)

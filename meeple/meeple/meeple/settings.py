@@ -86,22 +86,21 @@ WSGI_APPLICATION = 'meeple.wsgi.application'
 DATABASES = {
     'default': { # DB with meeple's users
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'meeple_db',
-        'USER': 'alumnodb',
-        'PASSWORD': 'alumnodb',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('SQL_NAME'),
+        'USER': os.getenv('SQL_USERNAME'),
+        'PASSWORD': os.getenv('SQL_PASSWORD'),
+        'HOST': os.getenv('SQL_SERVERNAME'),
+        'PORT': os.getenv('SQL_PORT'),
     },
     'external_db': { # DB of BGG
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bgg',
-        'USER': 'alumnodb',
-        'PASSWORD': 'alumnodb',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USERNAME'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_SERVERNAME'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -171,3 +170,5 @@ LOGIN_REDIRECT_URL = '/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SESSION_COOKIE_AGE = 3600 # in seconds
