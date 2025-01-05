@@ -5,18 +5,43 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
 
-class User(AbstractUser):
+class Participant(AbstractUser):
     ''' Default user class with extra fields '''
-    name = models.CharField(max_length=150)  # Field for user name
     email = models.EmailField(unique=True)  # Field for unique email
-    #location = models.CharField(max_length=255, blank=True, null=True)  # Field for location, optional
-    location = models.CharField(max_length=255)  # Field for location
+    location = models.CharField(max_length=200, blank=True, null=True)  # Field for location
     age = models.PositiveIntegerField()  # Field for age
-    frequencyGame = models.CharField(max_length=100, blank=True, null=True)  # Field for game frequency
-    expertiseGame = models.CharField(max_length=100, blank=True, null=True)  # Field for gaming expertise
+    frequencyGame = models.CharField(
+        max_length = 10,
+        choices = [
+            ('N', 'Never'),
+            ('L', 'Once in a lifetime'),
+            ('W', 'Once in a week'),
+            ('MW', 'More than once in a week')
+        ],
+        default='N'
+    )
+    expertiseGame = models.CharField(
+        max_length = 10,
+        choices = [
+            ('B', 'Beginner'),
+            ('I', 'Intermediate'),
+            ('A', 'Advanced')
+        ],
+        default='B'
+    )
+    gender = models.CharField( # NEW
+        max_length = 10,
+        choices = [
+            ('M', 'Male'),
+            ('F', 'Female'),
+            ('O', 'Other')
+        ],
+        default='O'
+    )
+    date_created = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'username'  # Field used to authenticate
-    REQUIRED_FIELDS = ['name', 'email', 'location', ]  # Required fields to create the user
+    REQUIRED_FIELDS = ['email', ]  # Required fields to create the user
 
     def __str__(self):
         return self.username
@@ -44,9 +69,146 @@ class User(AbstractUser):
 
         return email
     
-class Preferences(models.Model):
-    preference = models.CharField(max_length=50)
-    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+    def __str__(self):
+        return f"{self.id} {self.name}"
+
+class Interaction(models.Model):
+    id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=True) # TODO: ??
+    id_participant = models.ForeignKey('Participant', on_delete=models.SET_NULL, null=True)
+    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
+    type = models.CharField(
+        max_length=20,
+        choices=[
+            ('click', 'Click'),
+            ('visualization', 'Visualization'),
+            ('selected', 'Selected'),
+            ('time', 'Time')
+        ],
+        default='click'
+        )
+    comment = models.CharField(max_length=150, blank=True, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.name)
+        return f"{self.id} - {self.type}"
+
+class Questionnarie(models.Model):
+    name = models.CharField(max_length=150, blank=False, null=False)
+    description = models.TextField()
+    language = models.CharField(
+        max_length = 10,
+        choices = [
+            ('EN', 'English'),
+            ('ES', 'Español')
+        ],
+        default='EN'
+    )
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+class Question(models.Model):
+    id_questionnarie = models.ForeignKey('Questionnarie', on_delete=models.CASCADE, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    question = models.CharField(max_length=150, blank=False, null=False)
+    type = models.CharField(
+        max_length=20,
+        choices=[
+            ('SCRB', 'Single choice radio buttons'),
+            ('SCCB', 'Single choice combo box'),
+            ('OAS', 'Open answer short'),
+            ('OAL', 'Open answer long')
+        ],
+        default='OAS'
+        )
+    language = models.CharField(
+        max_length = 10,
+        choices = [
+            ('EN', 'English'),
+            ('ES', 'Español')
+        ],
+        default='EN'
+    )
+
+    class Meta:
+        ordering = ['date_created']
+    
+    def __str__(self):
+        return f"{self.id} - {self.question}"
+    
+
+class Answer(models.Model):
+    id_question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    answer = models.CharField(max_length=150, blank=False, null=False)
+    language = models.CharField(
+        max_length = 10,
+        choices = [
+            ('EN', 'English'),
+            ('ES', 'Español')
+        ],
+        default='EN'
+    )
+
+    class Meta:
+        ordering = ['date_created']
+
+    def __str__(self):
+        return f"{self.id} - {self.answer}"
+
+class Recommendation(models.Model):
+    id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=True)
+    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
+    games = []
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.id_algorithm} {self.games}"
+
+class Game(models.Model): # ??
+    id_BGG = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.id_BGG
+
+class Algorithm(models.Model):
+    name = models.CharField(max_length=100)
+    version = models.CharField(max_length=15)
+    description = models.TextField()
+    type = models.CharField(
+        max_length = 20,
+        choices = [
+            ('collaborative', 'Collaborative Filtering'),
+            ('content', 'Content-based Filtering'),
+            ('hybrid', 'Hybrid'),
+            ('rules', 'Rule-Based'),
+            ('contextual', 'Contextual'),
+            ('deep_learning', 'Deep learning')
+        ],
+        default='hybrid'
+    ) # TODO: No sé de qué tipos pueden ser los algoritmos
+
+    def __str__(self):
+        return f"{self.name} {self.description}"
+
+class Evaluation(models.Model):
+    id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=True)
+    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
+    id_participant = models.ForeignKey(Participant, on_delete=models.CASCADE, null=True)
+    puntuation = models.FloatField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    results = models.TextField()
+    metrics = models.JSONField(default=list)
+
+    def __str__(self):
+        return f"Evaluation by {self.id_participant} for {self.game}"
+
+class Preference(models.Model):
+    preference = models.CharField(max_length=50) 
+    category = models.CharField(max_length=100, blank=True, null=True) # TODO: obtenerlo de zacatrus_game_categories
+    value = models.FloatField(default=0.0) 
+    id_participant = models.ForeignKey(Participant, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f"{self.id_participant} - {self.category}"

@@ -1,7 +1,5 @@
 # TFG Laura Maria Garcia Suarez
 
-Copia de seguridad de mi TFG por errores de gitlab
-
 Creado por Laura María García Suárez.
 
 Revisado por Iván Cantador Gutiérrez
@@ -89,41 +87,6 @@ volumes:
 Desventajas:
 No escalable: No es adecuado para aplicaciones que necesitan escalar. SQLite no maneja bien las cargas de múltiples usuarios simultáneos y grandes volúmenes de datos.
 No recomendado para producción: Aunque es fácil de usar en desarrollo, para producción deberías cambiar a una base de datos más robusta como PostgreSQL o MySQL.
-
-## Base de datos
-
-@startuml
-User "1" *-- "*" Preference : + id_user
-User "1" o-- "*" Recommendation : + id_user
-Preference "*" --> "1" BGG : + id_game
-Recommendation "*" --> "1" BGG : + id_game
-Recommendation "*" --> "1" Context : + id_context
-
-class User {
-
-+ username: String
-+ password: String
-+ email: String
-+ location: String
-+ age: Integer
-+ frequency: String
-  }
-
-enum FrequencyPlayed {
-
-+ MOREINAWEEK
-+ ONCEAWEEK
-+ ONCEINAWHILE
-+ NEVER
-  }
-
-enum GamingExpertise {
-
-+ ADVANCED
-+ MEDIUM
-+ LOW
-  }
-  @enduml
 
 ## Problemas
 
