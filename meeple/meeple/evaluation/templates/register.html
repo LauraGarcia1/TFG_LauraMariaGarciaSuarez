@@ -28,10 +28,6 @@
                 <div id="password-error-message" class="text-danger"></div>
             </div>
             <div class="mb-4">
-                <label for="name" class="form-label fw-bold required">{% trans "Name" %}:</label>
-                <input type="text" id="name" name="name" class="form-control rounded-pill" required>
-            </div>
-            <div class="mb-4">
                 <label for="email" class="form-label fw-bold required">{% trans "Email" %}:</label>
                 <input type="email" id="email" name="email" class="form-control rounded-pill" required>
                 <div id="email-error-message" class="text-danger"></div>
@@ -47,43 +43,61 @@
                     required>
             </div>
             <div class="mb-4">
-                <label class="form-label fw-bold required" id="frequencyLabel">{% trans "Frequency" %}Frequently played table
-                    games:</label>
+                <label class="form-label fw-bold required" id="frequencyLabel">{% trans "Frequency" %}</label>
                 <div>
-                    <span class="tab"></span><input type="radio" id="morethan" name="option" value="3">
+                    <span class="tab"></span><input type="radio" id="morethan" name="frequencyGame" value="MW">
                     <label for="morethan">{% trans "More than" %}</label>
                 </div>
 
                 <div>
-                    <span class="tab"></span><input type="radio" id="week" name="option" value="2">
+                    <span class="tab"></span><input type="radio" id="week" name="frequencyGame" value="W">
                     <label for="week">{% trans "Week" %}</label>
                 </div>
 
                 <div>
-                    <span class="tab"></span><input type="radio" id="lifetime" name="option" value="1">
+                    <span class="tab"></span><input type="radio" id="lifetime" name="frequencyGame" value="L">
                     <label for="lifetime">{% trans "Lifetime" %}</label>
                 </div>
 
                 <div>
-                    <span class="tab"></span><input type="radio" id="never" name="option" value="0">
+                    <span class="tab"></span><input type="radio" id="never" name="frequencyGame" value="N">
                     <label for="never">{% trans "Never" %}</label>
                 </div>
             </div>
             <div class="mb-4">
                 <label class="form-label fw-bold required" id="expertiseLabel">{% trans "Expertise" %}:</label>
                 <div>
-                    <span class="tab"></span><input type="radio" id="beginner" name="optionSecond" value="0">
+                    <span class="tab"></span><input type="radio" id="beginner" name="expertiseGame" value="B">
                     <label for="beginner">{% trans "Beginner" %}</label>
                 </div>
 
                 <div>
-                    <span class="tab"></span><input type="radio" id="intermediate" name="optionSecond" value="1">
+                    <span class="tab"></span><input type="radio" id="intermediate" name="expertiseGame" value="I">
                     <label for="intermediate">{% trans "Intermediate" %}</label>
                 </div>
 
                 <div>
-                    <span class="tab"></span><input type="radio" id="advanced" name="optionSecond" value="2">
+                    <span class="tab"></span><input type="radio" id="advanced" name="expertiseGame" value="A">
                     <label for="advanced">{% trans "Advanced" %}</label>
+                </div>
+
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold required" id="genderLabel">{% trans "Gender" %}:</label>
+                <div>
+                    <span class="tab"></span><input type="radio" id="male" name="gender" value="M">
+                    <label for="male">{% trans "Male" %}</label>
+                </div>
+
+                <div>
+                    <span class="tab"></span><input type="radio" id="female" name="gender" value="F">
+                    <label for="female">{% trans "Female" %}</label>
+                </div>
+
+                <div>
+                    <span class="tab"></span><input type="radio" id="other" name="gender" value="O">
+                    <label for="other">{% trans "Other" %}</label>
                 </div>
 
             </div>
@@ -191,12 +205,15 @@
         });
 
         // Section to validate radio fields
-        const radios = document.getElementsByName('option');
-        const radiosSecond = document.getElementsByName('optionSecond');
+        const radios = document.getElementsByName('frequencyGame');
+        const radiosSecond = document.getElementsByName('expertiseGame');
+        const radiosThird = document.getElementsByName('gender');
         const label = document.getElementById('frequencyLabel');
         const labelSecond = document.getElementById('expertiseLabel');
+        const labelThird = document.getElementById('genderLabel');
         let isRadioChecked = false;
         let isRadioSecChecked = false;
+        let isRadioTrdChecked = false;
 
         for (const radio of radios) {
             if (radio.checked) {
@@ -214,11 +231,23 @@
             }
         }
 
+        for (const radio of radiosThird) {
+            if (radio.checked) {
+                isRadioTrdChecked = true;
+                labelThird.classList.add('valid');
+                break;
+            }
+        }
+
         if (!isRadioChecked) {
             allFilled = false;
         }
 
         if (!isRadioSecChecked) {
+            allFilled = false;
+        }
+
+        if (!isRadioTrdChecked) {
             allFilled = false;
         }
 
@@ -235,7 +264,7 @@
             allFilled = false;
         }
 
-        // Able or disable the submit button if everything id filled and validated
+        // Able or disable the submit button if everything is filled and validated
         document.getElementById('submitButton').disabled = !allFilled;
         document.getElementById('infoMessage').style.display = submitButton.disabled ? 'block' : 'none';
     }
@@ -245,11 +274,14 @@
         const inputs = document.querySelectorAll('input[required]');
         inputs.forEach(input => input.addEventListener('input', checkForm));
 
-        const radios = document.getElementsByName('option');
+        const radios = document.getElementsByName('frequencyGame');
         radios.forEach(radio => radio.addEventListener('change', checkForm));
 
-        const radiosSecond = document.getElementsByName('optionSecond');
+        const radiosSecond = document.getElementsByName('expertiseGame');
         radiosSecond.forEach(radio => radio.addEventListener('change', checkForm));
+
+        const radiosThird = document.getElementsByName('gender');
+        radiosThird.forEach(radio => radio.addEventListener('change', checkForm));
     });
 
     // Validate password

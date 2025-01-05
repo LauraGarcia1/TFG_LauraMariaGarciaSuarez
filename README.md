@@ -32,6 +32,11 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Obtener los juegos recomendados gustados en views.py (28/10/24)
 - [X] Conseguir traducción de la página (17/11/2024)
 - [ ] Comprobar el error que está ocasionando algunos juegos en la página de preferencias
+- [ ] Mostrar mensaje de error de que no existe el usuario (pag. inicial)
+- [X] Género en registro
+- [ ] Revisar traducciones de todas las páginas
+- [ ] Hacer boton logout y si accede a home y esta login, que vaya directamente a user-home
+- [ ] Poner todos los label de register -> valido
 
 ## Base de Datos
 

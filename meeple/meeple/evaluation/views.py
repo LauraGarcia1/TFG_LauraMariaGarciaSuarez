@@ -28,7 +28,7 @@ def home(request):
 
             if user is not None:
                 login(request, user)
-                return redirect('user-home')
+                return redirect(reverse('user-home'))
 
     title_home = _("Welcome")
     username_home = _("Username")
@@ -51,6 +51,12 @@ def signup(request):
 
         username = request.POST.get("username")
         password = request.POST.get("password")
+        email = request.POST.get("email")
+        location = request.POST.get("location")
+        age = request.POST.get("age")
+        frequencyGame = request.POST.get("frequencyGame")
+        expertiseGame = request.POST.get("expertiseGame")
+        gender = request.POST.get("gender")
 
         print(form.errors)
 
@@ -60,7 +66,7 @@ def signup(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
 
-            user = authenticate(username=username, password=password)
+            user = authenticate(username=username, password=password, email=email, location=location, age=age, frequencyGame=frequencyGame, expertiseGame=expertiseGame, gender=gender)
 
             if user is not None:
                 login(request, user)
@@ -88,32 +94,11 @@ def preferences(request):
 def get_data():
     with connections['external_db'].cursor() as cursor:
         '''
-        # Get id, name and url of the games we will show on preferences page
-        cursor.execute("SELECT id, name, url FROM zacatrus_games LIMIT 4;")
-        zacatrus_games = cursor.fetchall()
-
-        # Get categories
-        cursor.execute("SELECT gameid, name FROM zacatrus_game_categories;")
-        zacatrus_games = cursor.fetchall()
-
-        # Get ratings
-        cursor.execute("SELECT gameid, rating FROM zacatrus_ratings;")
-        zacatrus_games = cursor.fetchall()
-
-        # Get types
-        cursor.execute("SELECT gameid, name FROM zacatrus_game_types;")
-        zacatrus_games = cursor.fetchall()
-
-        # Get descriptions
-        cursor.execute("SELECT gameid, description FROM zacatrus_game_descriptions;")
-        zacatrus_games = cursor.fetchall()
-
-        # Get contexts
-        cursor.execute("SELECT gameid, name FROM zacatrus_game_contexts;")
-        zacatrus_games = cursor.fetchall()
+        SELECT zg.id, zg.name, zg.url, zgd.description, GROUP_CONCAT( DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories, TRUNCATE(AVG(zr.rating), 1) AS ratings, GROUP_CONCAT( DISTINCT zgt.name ORDER BY zgt.name ASC) AS types, GROUP_CONCAT( DISTINCT zgct.name ORDER BY zgct.name ASC) AS contexts FROM (SELECT id, name, url FROM zacatrus_games LIMIT 10) zg LEFT JOIN zacatrus_game_descriptions zgd ON zg.id = zgd.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_categories) zgc ON zg.id = zgc.gameid LEFT JOIN (SELECT DISTINCT gameid, rating FROM zacatrus_ratings) zr ON zg.id = zr.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_types) zgt ON zg.id = zgt.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_contexts) zgct ON zg.id = zgct.gameid GROUP BY zg.id, zg.name, zg.url, zgd.description;
         '''
+        # TODO: meter la consulta en otro lado, y no hardcoreado
         cursor.execute(
-            "SELECT zg.id, zg.name, zg.url, zgd.description, GROUP_CONCAT( DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories, TRUNCATE(AVG(zr.rating), 1) AS ratings, GROUP_CONCAT( DISTINCT zgt.name ORDER BY zgt.name ASC) AS types, GROUP_CONCAT( DISTINCT zgct.name ORDER BY zgct.name ASC) AS contexts FROM (SELECT id, name, url FROM zacatrus_games LIMIT 10) zg LEFT JOIN zacatrus_game_descriptions zgd ON zg.id = zgd.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_categories) zgc ON zg.id = zgc.gameid LEFT JOIN (SELECT DISTINCT gameid, rating FROM zacatrus_ratings) zr ON zg.id = zr.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_types) zgt ON zg.id = zgt.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_contexts) zgct ON zg.id = zgct.gameid GROUP BY zg.id, zg.name, zg.url, zgd.description;")
+            "SELECT zg.id, zg.name FROM (SELECT id, name, url FROM zacatrus_games LIMIT 10) zg;")
         zacatrus_games = cursor.fetchall()
 
         print(zacatrus_games)

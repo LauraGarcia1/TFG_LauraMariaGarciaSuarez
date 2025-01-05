@@ -269,6 +269,22 @@ msgstr "Intermedio"
 msgid "Advanced"
 msgstr "Avanzado"
 
+#: evaluation/templates/register.html:87
+msgid "Gender"
+msgstr "Género"
+
+#: evaluation/templates/register.html:90
+msgid "Male"
+msgstr "Masculino"
+
+#: evaluation/templates/register.html:95
+msgid "Female"
+msgstr "Femenino"
+
+#: evaluation/templates/register.html:100
+msgid "Other"
+msgstr "Otro"
+
 #: evaluation/templates/register.html:97 evaluation/views.py:37
 msgid "Sign up"
 msgstr "Registrarse"

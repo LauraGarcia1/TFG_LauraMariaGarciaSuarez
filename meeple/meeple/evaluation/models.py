@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 
 class Participant(AbstractUser):
@@ -41,7 +42,7 @@ class Participant(AbstractUser):
     date_created = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'username'  # Field used to authenticate
-    REQUIRED_FIELDS = ['email', ]  # Required fields to create the user
+    REQUIRED_FIELDS = ['password', 'email', 'location', 'age', 'frequencyGame', 'expertiseGame']  # Required fields to create the user
 
     def __str__(self):
         return self.username
@@ -73,9 +74,9 @@ class Participant(AbstractUser):
         return f"{self.id} {self.name}"
 
 class Interaction(models.Model):
-    id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=True) # TODO: ??
-    id_participant = models.ForeignKey('Participant', on_delete=models.SET_NULL, null=True)
-    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
+    id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False) # TODO: ??
+    id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     type = models.CharField(
         max_length=20,
         choices=[
@@ -109,7 +110,7 @@ class Questionnarie(models.Model):
         return self.title
 
 class Question(models.Model):
-    id_questionnarie = models.ForeignKey('Questionnarie', on_delete=models.CASCADE, null=True)
+    id_questionnarie = models.ForeignKey('Questionnarie', on_delete=models.CASCADE, null=False)
     date_created = models.DateTimeField(auto_now_add=True)
     question = models.CharField(max_length=150, blank=False, null=False)
     type = models.CharField(
@@ -139,7 +140,7 @@ class Question(models.Model):
     
 
 class Answer(models.Model):
-    id_question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True)
+    id_question = models.ForeignKey('Question', on_delete=models.CASCADE, null=False)
     date_created = models.DateTimeField(auto_now_add=True)
     answer = models.CharField(max_length=150, blank=False, null=False)
     language = models.CharField(
@@ -158,8 +159,8 @@ class Answer(models.Model):
         return f"{self.id} - {self.answer}"
 
 class Recommendation(models.Model):
-    id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=True)
-    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
+    id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
+    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     games = []
     date_created = models.DateTimeField(auto_now_add=True)
 
@@ -193,9 +194,9 @@ class Algorithm(models.Model):
         return f"{self.name} {self.description}"
 
 class Evaluation(models.Model):
-    id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=True)
-    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
-    id_participant = models.ForeignKey(Participant, on_delete=models.CASCADE, null=True)
+    id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
+    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
+    id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
     puntuation = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
     results = models.TextField()
@@ -208,7 +209,7 @@ class Preference(models.Model):
     preference = models.CharField(max_length=50) 
     category = models.CharField(max_length=100, blank=True, null=True) # TODO: obtenerlo de zacatrus_game_categories
     value = models.FloatField(default=0.0) 
-    id_participant = models.ForeignKey(Participant, on_delete=models.SET_NULL, null=True)
+    id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"{self.id_participant} - {self.category}"
