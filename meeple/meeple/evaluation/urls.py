@@ -11,6 +11,7 @@ urlpatterns = [
     path('questions/1', views.questions, name='first'),
     path('questions/2', views.questions, name='second'),
     path('questions/3', views.questions, name='third'),
+    path('questions/', views.questionnarie, name='questionnarie'),
     path('new-recommendations/', views.newRecomm, name='newrecomm'),
     path('i18n/', include('django.conf.urls.i18n')),
     path('get_data_game/', views.get_data_game, name='get_data_game'),

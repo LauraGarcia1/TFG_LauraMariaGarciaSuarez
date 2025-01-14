@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block overflow %}
+
+<body style="overflow-x: hidden;">
+
+    {% endblock overflow %}
+
+    {% block body %}
+
+
+
+    <div class="position-relative custom-container">
+        <div class="position-absolute top-0 start-0">
+            <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+                style="transform: rotate(64deg);">
+        </div>
+
+        <div class="position-absolute bottom-0 end-0">
+            <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
+                style="transform: rotate(31deg);">
+        </div>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <div
+            class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 w-75">
+                <ul class="list-group list-group-flush pt-5">
+                    <h2>{% trans "Questionnarie" %}</h2>
+                    {% for question, choices in list_questions.items %}
+                    <li class="list-group-item">
+                        <div class="row h-100 p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
+                            <div class="col-md-6 mb-3 text-start">
+                                <h3 class="fw-bold">{{ question.question }}</h3>
+                            </div>
+
+                            <div class="col-md-6 mb-3 text-center">
+                                {% if pregunta.tipo == "SCRB" %}
+                                {% elif pregunta.tipo == "MCRB" %}
+                                {% elif pregunta.tipo == "OAS" %}
+                                {% elif pregunta.tipo == "OAL" %}
+                                {% elif pregunta.tipo == "SCCB" %}
+                                {% elif pregunta.tipo == "MCCB" %}
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        {% for choice in choices %}
+                                        <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
+                                            value="game-style" name="button" onclick="pressedButton(this)">choice.text</button>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </form>
+    </div>
+
+    {% endblock body %}

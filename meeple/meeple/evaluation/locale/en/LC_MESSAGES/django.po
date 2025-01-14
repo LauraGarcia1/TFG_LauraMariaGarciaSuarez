@@ -206,6 +206,10 @@ msgstr "Search new recommendations"
 msgid "RecommendationThirdTitle"
 msgstr "Previous recommendations"
 
+#: evaluation/templates/questionnarie.html:30
+msgid "Questionnarie"
+msgstr "Discover your ideal game! Answer these questions and find the best recommendation for you."
+
 #: evaluation/templates/register.html:20 evaluation/views.py:34
 msgid "Username"
 msgstr "Username"

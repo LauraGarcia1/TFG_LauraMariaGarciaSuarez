@@ -7,7 +7,7 @@ from django.conf import settings
 from .forms import SignUpForm
 from django.db import connections
 from django.utils.translation import gettext_lazy as _
-from .models import Preference, Participant, Game
+from .models import Preference, Participant, Game, Questionnarie, Question
 
 
 def home(request):
@@ -153,7 +153,8 @@ def recommendPage(request):
 
     if request.method == "POST":
         if request.POST.get("button") == "newrecommendation":
-            return redirect(reverse('first'))
+            return redirect(reverse('questionnarie'))
+            #return redirect(reverse('first'))
 
         return redirect(reverse('home'))
     
@@ -164,7 +165,7 @@ def recommendPage(request):
 
 def questions(request):
     """
-        Función que muestra la página de recomendaciones
+        Función que muestra la página de preguntas
 
         Autor: Laura Mª García Suárez
     """
@@ -184,6 +185,33 @@ def questions(request):
 
     return render(request, 'recommendations.html')
 
+def questionnarie(request):
+    """
+        Función que muestra la página del cuestionario
+
+        Autor: Laura Mª García Suárez
+    """
+
+    if request.method == "POST":
+        if request.POST.get("button") == "newrecommendation":
+            return redirect(reverse('newrecomm'))
+    
+    questions = get_data_questions()
+
+    return render(request, 'questionnarie.html', {'list_questions' : questions})
+
+def get_data_questions():
+    # TODO: como hago con los cuestionarios
+    questionnarie = Questionnarie.objects.first()
+    questions = questionnarie.questions.all()
+    print(questions.first().type)
+
+    questions_and_choices = {
+        question: question.choices.all() for question in questions
+    }
+
+
+    return questions_and_choices
 
 def newRecomm(request):
     if request.method == "POST":
@@ -199,8 +227,10 @@ def newRecomm(request):
 
     return render(request, 'newrecommendations.html', {'zacatrus_games' : zacatrus_games, 'MEDIA_URL' : settings.MEDIA_URL})
 
-# TODO: quitar esto
 
+
+
+# TODO: quitar esto
 
 def prueba(request):
     return render(request, 'prueba.html')

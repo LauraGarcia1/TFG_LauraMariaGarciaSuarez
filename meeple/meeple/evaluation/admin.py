@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Participant, Interaction, Questionnarie, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference
+from .models import Choice, Participant, Interaction, Questionnarie, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference
 
 # Register your models here.
 
@@ -72,3 +72,9 @@ class PreferenceAdmin(admin.ModelAdmin):
     search_fields = ['category']
     list_filter = ['value', 'id_participant']
 
+# Choice model
+@admin.register(Choice)
+class ChoiceAdmin(admin.ModelAdmin):
+    list_display = ['id_question', 'text']
+    search_fields = ['text']
+    list_filter = ['id_question', 'text']

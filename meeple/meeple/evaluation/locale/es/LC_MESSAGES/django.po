@@ -63,6 +63,10 @@ msgstr "Nuevas recomendaciones"
 msgid "ChooseRecom"
 msgstr "Escoger recomendaciones"
 
+#: evaluation/templates/questionnarie.html:30
+msgid "Questionnarie"
+msgstr "¡Descubre tu juego ideal! Responde estas preguntas y encuentra la mejor recomendación para ti."
+
 #: evaluation/templates/preferences.html:33
 msgid "PreferencesNotTitle"
 msgstr "Información relevante"

@@ -107,17 +107,20 @@ class Questionnarie(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.title
+        return self.name
 
 class Question(models.Model):
-    id_questionnarie = models.ForeignKey('Questionnarie', on_delete=models.CASCADE, null=False)
+    id_questionnarie = models.ForeignKey('Questionnarie', on_delete=models.CASCADE, null=False, related_name='questions')
     date_created = models.DateTimeField(auto_now_add=True)
     question = models.CharField(max_length=150, blank=False, null=False)
+    # TODO: tendría sentido que hubiese otros tipos?
     type = models.CharField(
         max_length=20,
         choices=[
             ('SCRB', 'Single choice radio buttons'),
+            ('MCRB', 'Multiple choice radio buttons'),
             ('SCCB', 'Single choice combo box'),
+            ('MCCB', 'Multiple choice combo box'),
             ('OAS', 'Open answer short'),
             ('OAL', 'Open answer long')
         ],
@@ -207,9 +210,14 @@ class Evaluation(models.Model):
 
 class Preference(models.Model):
     preference = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
-    category = models.CharField(max_length=100, blank=True, null=True) # TODO: obtenerlo de zacatrus_game_categories
+    category = models.CharField(max_length=100, blank=True, null=True)
     value = models.FloatField(default=0.0) 
     id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"{self.id_participant} - {self.category}"
+    
+
+class Choice(models.Model):
+    id_question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True, related_name='choices')
+    text = models.CharField(max_length=50, blank=True, null=True)

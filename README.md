@@ -37,6 +37,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Revisar traducciones de todas las páginas
 - [ ] Hacer boton logout y si accede a home y esta login, que vaya directamente a user-home
 - [ ] Poner todos los label de register -> valido
+- [ ] comprobar forloop de questionnarie.html
 
 ## Base de Datos
 
@@ -93,7 +94,6 @@ Desventajas:
 No escalable: No es adecuado para aplicaciones que necesitan escalar. SQLite no maneja bien las cargas de múltiples usuarios simultáneos y grandes volúmenes de datos.
 No recomendado para producción: Aunque es fácil de usar en desarrollo, para producción deberías cambiar a una base de datos más robusta como PostgreSQL o MySQL.
 
-
 composer require vlucas/phpdotenv
 
 ## Problemas
@@ -103,6 +103,12 @@ No funcionó gitlab desde 07/10/24 hasta (15/10/24???).
 ## Palabras clave
 
 Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especialmente en los juegos de estrategia y de construcción. La palabra "meeple" es una combinación de "my" y "people" (mi gente), y se refiere a los pequeños personajes de madera, plástico o cartón que representan a los jugadores en el juego.
+
+Preguntas que pueden hacerme
+
+- por que django y no java pejem
+- porq postgres
+- 
 
 ## Bibliografía importante
 
