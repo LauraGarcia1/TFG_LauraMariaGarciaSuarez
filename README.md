@@ -40,6 +40,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] comprobar forloop de questionnarie.html (15/01/2025)
 - [ ] comprobar muchas questions en questionnarie
 - [ ] violacion de segmento?
+- [ ] arreglar vulnerabilidades de github
 
 ## Base de Datos
 
