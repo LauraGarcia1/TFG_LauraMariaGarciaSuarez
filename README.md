@@ -37,7 +37,9 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Revisar traducciones de todas las páginas
 - [ ] Hacer boton logout y si accede a home y esta login, que vaya directamente a user-home
 - [ ] Poner todos los label de register -> valido
-- [ ] comprobar forloop de questionnarie.html
+- [X] comprobar forloop de questionnarie.html (15/01/2025)
+- [ ] comprobar muchas questions en questionnarie
+- [ ] violacion de segmento?
 
 ## Base de Datos
 

@@ -26,37 +26,113 @@
         <form action="" method="post">
             {% csrf_token %}
             <div
-            class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 w-75">
-                <ul class="list-group list-group-flush pt-5">
-                    <h2>{% trans "Questionnarie" %}</h2>
+            class="text-end shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 w-75">
+                <ul class="list-group list-group-flush text-start">
+                    <h1>{% trans "Questionnarie" %}</h1>
                     {% for question, choices in list_questions.items %}
-                    <li class="list-group-item">
+                    <li class="list-group-item py-3">
                         <div class="row h-100 p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
-                            <div class="col-md-6 mb-3 text-start">
-                                <h3 class="fw-bold">{{ question.question }}</h3>
-                            </div>
-
                             <div class="col-md-6 mb-3 text-center">
-                                {% if pregunta.tipo == "SCRB" %}
-                                {% elif pregunta.tipo == "MCRB" %}
-                                {% elif pregunta.tipo == "OAS" %}
-                                {% elif pregunta.tipo == "OAL" %}
-                                {% elif pregunta.tipo == "SCCB" %}
-                                {% elif pregunta.tipo == "MCCB" %}
-                                    <div class="d-flex flex-wrap justify-content-center">
-                                        {% for choice in choices %}
-                                        <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                                            value="game-style" name="button" onclick="pressedButton(this)">choice.text</button>
-                                        {% endfor %}
-                                    </div>
+                                <h3 class="fw-bold responsive-title">{{ question.question }}</h3>
+                            </div>
+                            <div class="col-md-6 mb-3 text-center">
+                                {% if question.type == "MCCB" %}
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    {% for choice in choices %}
+                                    <button type="button"
+                                        class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
+                                        data-question-id="{{ question.id }}" data-choice-id="{{ choice.id }}"
+                                        onclick="pressedButton(this)">{{ choice.text }}</button>
+                                    {% endfor %}
+                                </div>
+                                {% elif question.type == "SCCB" %}
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    {% for choice in choices %}
+                                    <button type="button"
+                                        class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
+                                        data-question-id="{{ question.id }}" data-choice-id="{{ choice.id }}">{{
+                                        choice.text }}</button>
+                                    {% endfor %}
+                                </div>
+                                {% elif question.type == "SCRB" %}
+                                {% elif question.type == "MCRB" %}
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    {% for choice in choices %}
+                                            <input 
+                                                class="form-check-input" 
+                                                type="checkbox" 
+                                                name="question-{{ question.id }}" 
+                                                id="choice-{{ choice.id }}" 
+                                                value="{{ choice.id }}"
+                                                onclick="pressedCheckbox(this)">
+                                            <label class="form-check-label" for="choice-{{ choice.id }}">
+                                                {{ choice.text }}
+                                            </label>
+                                    {% endfor %}
+                                </div>
+                                {% elif question.type == "OAS" %}
+                                {% elif question.type == "OAL" %}
                                 {% endif %}
                             </div>
                         </div>
                     </li>
                     {% endfor %}
+
+
                 </ul>
+                <input type="hidden" id="selections" name="selections" value="">
+                <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50 mt-auto" name="button" id="button" value="newrecommendation">{% trans "PreferencesSubmitButton" %}</button>
             </div>
         </form>
     </div>
+
+    <script>
+        // Action that makes when a choice button is pressed
+        function pressedButton(boton) {
+            boton.classList.toggle('checked-button');
+            console.log(`Button clicked: ${boton.textContent}, Selected: ${boton.classList.contains('checked-button')}`);
+            actualizarselections();
+        }
+
+        function pressedCheckbox(checkbox) {
+            checkbox.classList.toggle('checked-checkbox');
+            console.log(`Checkbox clicked: ${checkbox.value}, Selected: ${checkbox.classList.contains('checked-checkbox')}`);
+            actualizarselections();
+        }
+
+        function actualizarselections() {
+            const buttons = document.querySelectorAll('form button');
+            const radios = document.querySelectorAll('form input[type="radio"]:checked');
+            const selections = {};
+
+            // Guardar botones seleccionados
+            buttons.forEach((button) => {
+                if (button.classList.contains('checked-button')) {
+                    const questionId = button.getAttribute('data-question-id');
+                    if (!selections[questionId]) selections[questionId] = [];
+                    selections[questionId].push(button.getAttribute('data-choice-id'));
+                    console.log(`Question ID: ${questionId}, Choice ID: ${choiceId}`);
+                }
+            });
+
+            // Guardar radios seleccionados
+            radios.forEach((radio) => {
+                const questionId = radio.name.split('-')[1];
+                if (!selections[questionId]) selections[questionId] = [];
+                selections[questionId].push(radio.value);
+            });
+
+            
+            // Actualizar campo oculto
+            document.getElementById('selections').value = JSON.stringify(selections);
+            
+            // Log the final selections object
+            console.log("Final selections object:", selections);
+            
+            // Log the updated hidden input value
+            console.log("Hidden input value updated:", document.getElementById('selections').value);
+        }
+
+    </script>
 
     {% endblock body %}

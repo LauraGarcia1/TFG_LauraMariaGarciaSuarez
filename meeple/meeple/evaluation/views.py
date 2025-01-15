@@ -8,6 +8,7 @@ from .forms import SignUpForm
 from django.db import connections
 from django.utils.translation import gettext_lazy as _
 from .models import Preference, Participant, Game, Questionnarie, Question
+import json
 
 
 def home(request):
@@ -194,7 +195,13 @@ def questionnarie(request):
 
     if request.method == "POST":
         if request.POST.get("button") == "newrecommendation":
-            return redirect(reverse('newrecomm'))
+
+            selections = json.loads(request.POST.get('selections', '{}'))
+            print(selections)
+            # Aquí puedes procesar los datos como prefieras
+            for question_id, choice_ids in selections.items():
+                print(f"Pregunta ID: {question_id}, Selecciones: {choice_ids}")
+            #return redirect(reverse('newrecomm'))
     
     questions = get_data_questions()
 
@@ -204,12 +211,10 @@ def get_data_questions():
     # TODO: como hago con los cuestionarios
     questionnarie = Questionnarie.objects.first()
     questions = questionnarie.questions.all()
-    print(questions.first().type)
 
     questions_and_choices = {
         question: question.choices.all() for question in questions
     }
-
 
     return questions_and_choices
 

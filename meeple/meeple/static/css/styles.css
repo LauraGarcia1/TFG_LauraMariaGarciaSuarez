@@ -346,6 +346,11 @@ label.required.valid::after {
     background-color: #f5b820;
 }
 
+.form-check-input:checked {
+    border-color: #f5b820;
+    background-color: #f5b820;
+}
+
 /*------------ NEW RECOMMENDATIONS ------------ */
 
 input[type="checkbox"] {
