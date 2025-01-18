@@ -18,15 +18,15 @@
                 <h2>{% trans "EvaluatorPtOne" %} &hearts; </h2>
                 <br>
                 <div class="form-control form-rounded">
-                <h5>{% trans "EvaluatorPtTwo" %}</h5>
-                <br>
-                <div class="d-flex justify-content-between w-75 mx-auto">
-                    <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4" value="moreEvals"
-                        name="button">{% trans "EvaluatorButtonPtOne" %}</button>
-                    <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4" value="exit"
-                        name="button">{% trans "EvaluatorButtonPtTwo" %}</button>
+                    <h5>{% trans "EvaluatorPtTwo" %}</h5>
+                    <br>
+                    <div class="d-flex justify-content-between w-75 mx-auto">
+                        <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4" value="moreEvals"
+                            name="button">{% trans "EvaluatorButtonPtOne" %}</button>
+                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4" value="exit"
+                            name="button">{% trans "EvaluatorButtonPtTwo" %}</button>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
 
@@ -66,14 +66,98 @@
                                     class="img-fluid">
                             </div>
                             <div class="col-sm-8">
-                                <h4>{{ gameRow.1 }}<i class="bi bi-info-circle" onclick="openNotification()"></i></h4>
+                                <h4>{{ gameRow.1 }} <i class="bi bi-info-circle" onclick="openNotification()"></i></h4>
                                 <div class="ms-5">
-                                    <p>texto</p>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p>{% trans "Q1 recomm" %}</p>
+
+                                                </td>
+                                                <td>
+                                                    <input class="form-check-input" type="checkbox" name="question"
+                                                        id="1" value="" onclick="pressedCheckbox(this)">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p>{% trans "Q2 recomm" %}</p>
+
+                                                </td>
+                                                <td>
+                                                    <input class="form-check-input" type="checkbox" name="question"
+                                                        id="2" value="" onclick="pressedCheckbox(this)">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p>{% trans "Q3 recomm" %}</p>
+
+                                                </td>
+                                                <td>
+                                                    <input class="form-check-input" type="checkbox" name="question"
+                                                        id="3" value="" onclick="pressedCheckbox(this)">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p>{% trans "Q4 recomm" %}</p>
+
+                                                </td>
+                                                <td>
+                                                    <input class="form-check-input" type="checkbox" name="question"
+                                                        id="4" value="" onclick="pressedCheckbox(this)">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p>{% trans "Q5 recomm" %}</p>
+
+                                                </td>
+                                                <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="answer q5" id="1" value="1" checked>
+                                                            <label class="form-check-label" for="1">
+                                                                {% trans "Q5 choice 1" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="answer q5" id="2" value="2">
+                                                            <label class="form-check-label" for="2">
+                                                                {% trans "Q5 choice 2" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="answer q5" id="3" value="3">
+                                                            <label class="form-check-label" for="3">
+                                                                {% trans "Q5 choice 3" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="answer q5" id="4" value="4">
+                                                            <label class="form-check-label" for="4">
+                                                                {% trans "Q5 choice 4" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="answer q5" id="5" value="5">
+                                                            <label class="form-check-label" for="5">
+                                                                {% trans "Q5 choice 5" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="answer q5" id="6" value="6">
+                                                            <label class="form-check-label" for="6">
+                                                                {% trans "Q5 choice 6" %}
+                                                            </label>
+                                                        </div>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
                                 </div>
-                                
-                            </div>
-                            <div class="col-1">
-                                <h5>{{ gameRow.5 }}/10<i class="fa-solid fa-star text-warning"></i></h5>
                             </div>
                         </div>
                     </li>
@@ -83,7 +167,7 @@
                 <div class="d-flex justify-content-end">
 
                     <button type="button" class="btn btn-primary rounded-pill btn-terracota w-50 br-0" id="submitButton"
-                        onclick="openInformation()">{% trans "ChooseRecom" %}</button>
+                        onclick="openInformation()">{% trans "SendEval" %}</button>
                 </div>
             </div>
     </form>

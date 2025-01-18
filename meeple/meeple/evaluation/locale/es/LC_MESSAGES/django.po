@@ -60,8 +60,52 @@ msgid "NewRecommendationTitle"
 msgstr "Nuevas recomendaciones"
 
 #: evaluation/templates/newrecommendations.html:69
-msgid "ChooseRecom"
-msgstr "Escoger recomendaciones"
+msgid "SendEval"
+msgstr "Enviar elecciones"
+
+#: evaluation/templates/newrecommendations.html:71
+msgid "Q1 recomm"
+msgstr "¿Cuánto te interesa el juego?"
+
+#: evaluation/templates/newrecommendations.html:72
+msgid "Q2 recomm"
+msgstr "¿Qué tan probable es de que lo compres/recomiendes?"
+
+#: evaluation/templates/newrecommendations.html:73
+msgid "Q3 recomm"
+msgstr "¿Se ajusta a tus preferencias?"
+
+#: evaluation/templates/newrecommendations.html:74
+msgid "Q4 recomm"
+msgstr "¿Te gustaría que tuviera más opciones (Por ejemplo, dificultad, opciones de personalización, modos de juego...)?"
+
+#: evaluation/templates/newrecommendations.html:75
+msgid "Q5 recomm"
+msgstr "¿Cuál fue el principal factor que influye en tu decision de compra/recomendacion? Precio, calidad, características, popularidad, recomendaciones de otros usuarios"
+
+#: evaluation/templates/newrecommendations.html:76
+msgid "Q5 choice 1"
+msgstr "Precio"
+
+#: evaluation/templates/newrecommendations.html:77
+msgid "Q5 choice 2"
+msgstr "Calidad"
+
+#: evaluation/templates/newrecommendations.html:78
+msgid "Q5 choice 3"
+msgstr "Características"
+
+#: evaluation/templates/newrecommendations.html:79
+msgid "Q5 choice 4"
+msgstr "Popularidad"
+
+#: evaluation/templates/newrecommendations.html:80
+msgid "Q5 choice 5"
+msgstr "Recomendaciones de otros usuarios"
+
+#: evaluation/templates/newrecommendations.html:81
+msgid "Q5 choice 6"
+msgstr "Otro"
 
 #: evaluation/templates/questionnarie.html:30
 msgid "Questionnarie"

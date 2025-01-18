@@ -71,7 +71,7 @@ class Participant(AbstractUser):
         return email
     
     def __str__(self):
-        return f"{self.id} {self.name}"
+        return self.username
 
 class Interaction(models.Model):
     id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False) # TODO: ??
@@ -175,7 +175,7 @@ class Game(models.Model): # ??
     id_BGG = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.id_BGG
+        return str(self.id_BGG)
 
 class Algorithm(models.Model):
     name = models.CharField(max_length=100)
@@ -198,6 +198,7 @@ class Algorithm(models.Model):
         return self.name
 
 class Evaluation(models.Model):
+    # TODO: una evaluacion no debería tener recomendaciones que le ha gustado al participante
     id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
     id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)

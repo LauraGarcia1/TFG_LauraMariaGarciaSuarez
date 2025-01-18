@@ -50,7 +50,59 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - Se ajusta a tus preferencias?
 - Te gustaría que tuviera más opciones (dificultad, opciones de personalización, modos de juego...)?
 - Cuál fue el principal factor que influye en tu decision de compra/recomendacion? Precio, calidad, características, popularidad, recomendaciones de otros usuarios...
-- 
+
+## Caso de uso
+
+**Ejemplo de una evaluación**
+
+Supongamos que:
+
+1. **El usuario** : Carlos completa un cuestionario inicial sobre sus preferencias en juegos de mesa (por ejemplo, le gustan los juegos estratégicos con duración media y adecuados para 4 personas).
+2. **El sistema de recomendación** : Basado en sus respuestas, recomienda 5 juegos.
+
+Los juegos recomendados son:
+
+* **Juego A: Catan**
+* **Juego B: Azul**
+* **Juego C: Carcassonne**
+* **Juego D: Dixit**
+* **Juego E: Pandemic**
+
+---
+
+### **El proceso de evaluación**
+
+Carlos evalúa cada uno de los juegos recomendados respondiendo a las preguntas proporcionadas. La **evaluación** para **Juego A: Catan** podría incluir lo siguiente:
+
+1. **Cuánto le interesa el producto o juego?**
+   * Respuesta: **5/5** (Muy interesado).
+2. **Qué tan probable es que lo compre/recomiende?**
+   * Respuesta: **4/5** (Probablemente lo compre y lo recomiende).
+3. **¿Se ajusta a tus preferencias?**
+   * Respuesta:  **Sí** .
+4. **¿Te gustaría que tuviera más opciones (dificultad, opciones de personalización, modos de juego...)?**
+   * Respuesta:  **Sí, modos de juego adicionales** .
+5. **¿Cuál fue el principal factor que influye en tu decisión de compra/recomendación?**
+   * Respuesta:  **Calidad y características** .
+
+---
+
+### **Qué hace la evaluación?**
+
+1. **Recopila datos sobre cada recomendación:**
+   * Para  **Catan** , sabemos que Carlos está muy interesado, lo considera relevante y le gustaría más modos de juego.
+   * Además, sabemos que la calidad y las características son lo que más valora.
+2. **Analiza el rendimiento del sistema:**
+   * Si Carlos evalúa **Juego A** con puntajes altos y lo considera relevante, significa que el sistema acertó.
+   * Por otro lado, si **Juego D: Dixit** tiene respuestas como "no se ajusta a mis preferencias" o "poco probable que lo compre", el sistema debe mejorar.
+3. **Retroalimenta al algoritmo de recomendación:**
+   * Los datos de evaluación (interés, relevancia, factores de compra) ayudan al algoritmo a entender mejor las preferencias de Carlos y de otros usuarios similares.
+   * Por ejemplo, si muchos usuarios con preferencias estratégicas como Carlos prefieren juegos como **Catan** y  **Pandemic** , el sistema puede priorizar esos juegos en futuras recomendaciones.
+4. **Permite análisis posteriores:**
+   * A nivel de plataforma, puedes identificar tendencias como:
+     * ¿Cuáles son los factores más importantes para los usuarios (precio, calidad, etc.)?
+     * ¿Qué juegos tienen las mejores evaluaciones?
+     * ¿Qué juegos necesitan mejoras (por ejemplo, en personalización)?
 
 ## Base de Datos
 

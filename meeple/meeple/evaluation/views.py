@@ -7,7 +7,7 @@ from django.conf import settings
 from .forms import SignUpForm
 from django.db import connections
 from django.utils.translation import gettext_lazy as _
-from .models import Preference, Participant, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm
+from .models import Preference, Participant, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation
 import json
 
 
@@ -228,7 +228,6 @@ def get_data_questions():
 def newRecomm(request, answers = None):
     if request.method == "POST":
         recommendations = request.POST.getlist('likedRecommendations')
-        # TODO: Guardar datos del algoritmo
 
         print(recommendations)
         for game in recommendations:
@@ -246,6 +245,9 @@ def newRecomm(request, answers = None):
 
     # TODO: Generar los juegos de recomendación desde las respuestas
     zacatrus_games = get_preferences_games()
+    # TODO: Guardar datos del algoritmo
+
+    request.session['recommendation'] = Recommendation.objects.create(id_algorithm=Algorithm.get(id=0), id_game=game[0], games=zacatrus_games)
 
     return render(request, 'newrecommendations.html', {'zacatrus_games' : zacatrus_games, 'MEDIA_URL' : settings.MEDIA_URL, 'preferences_part' : answers})
 
