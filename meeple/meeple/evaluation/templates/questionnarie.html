@@ -36,43 +36,41 @@
                                 <h3 class="fw-bold responsive-title">{{ question.question }}</h3>
                             </div>
                             <div class="col-md-6 mb-3 text-center">
-                                {% if question.type == "MCCB" %}
                                 <div class="d-flex flex-wrap justify-content-center">
+                                {% if question.type == "MCCB" %}
                                     {% for choice in choices %}
                                     <button type="button"
                                         class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                                        data-question-id="{{ question.id }}" data-choice-id="{{ choice.id }}"
+                                        name="question-{{ question.id }}" value="{{ choice.id }}"
                                         onclick="pressedButton(this)">{{ choice.text }}</button>
                                     {% endfor %}
-                                </div>
                                 {% elif question.type == "SCCB" %}
-                                <div class="d-flex flex-wrap justify-content-center">
                                     {% for choice in choices %}
                                     <button type="button"
                                         class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                                        data-question-id="{{ question.id }}" data-choice-id="{{ choice.id }}">{{
+                                        name="question-{{ question.id }}" value="{{ choice.id }}">{{
                                         choice.text }}</button>
                                     {% endfor %}
-                                </div>
                                 {% elif question.type == "SCRB" %}
                                 {% elif question.type == "MCRB" %}
-                                <div class="d-flex flex-wrap justify-content-center">
                                     {% for choice in choices %}
-                                            <input 
-                                                class="form-check-input" 
-                                                type="checkbox" 
-                                                name="question-{{ question.id }}" 
-                                                id="choice-{{ choice.id }}" 
-                                                value="{{ choice.id }}"
-                                                onclick="pressedCheckbox(this)">
-                                            <label class="form-check-label" for="choice-{{ choice.id }}">
-                                                {{ choice.text }}
-                                            </label>
+                                    <div class="d-block">
+                                        <input 
+                                            class="form-check-input" 
+                                            type="checkbox" 
+                                            name="question-{{ question.id }}" 
+                                            id="choice-{{ choice.id }}" 
+                                            value="{{ choice.id }}"
+                                            onclick="pressedCheckbox(this)">
+                                        <label class="form-check-label" for="choice-{{ choice.id }}">
+                                            {{ choice.text }}
+                                        </label>
+                                    </div>        
                                     {% endfor %}
+                                    {% elif question.type == "OAS" %}
+                                    {% elif question.type == "OAL" %}
+                                    {% endif %}
                                 </div>
-                                {% elif question.type == "OAS" %}
-                                {% elif question.type == "OAL" %}
-                                {% endif %}
                             </div>
                         </div>
                     </li>
@@ -90,47 +88,44 @@
         // Action that makes when a choice button is pressed
         function pressedButton(boton) {
             boton.classList.toggle('checked-button');
-            console.log(`Button clicked: ${boton.textContent}, Selected: ${boton.classList.contains('checked-button')}`);
-            actualizarselections();
+            // console.log(`Button clicked: ${boton.textContent}, Selected: ${boton.classList.contains('checked-button')}`);
+            updateselections();
         }
 
         function pressedCheckbox(checkbox) {
             checkbox.classList.toggle('checked-checkbox');
-            console.log(`Checkbox clicked: ${checkbox.value}, Selected: ${checkbox.classList.contains('checked-checkbox')}`);
-            actualizarselections();
+            // console.log(`Checkbox clicked: ${checkbox.value}, Selected: ${checkbox.classList.contains('checked-checkbox')}`);
+            updateselections();
         }
 
-        function actualizarselections() {
-            const buttons = document.querySelectorAll('form button');
-            const radios = document.querySelectorAll('form input[type="radio"]:checked');
+        function updateselections() {
+            const buttons = document.querySelectorAll('form button[type="button"]');
+            const checkboxes = document.querySelectorAll('form input[type="checkbox"]:checked');
             const selections = {};
 
             // Guardar botones seleccionados
             buttons.forEach((button) => {
                 if (button.classList.contains('checked-button')) {
-                    const questionId = button.getAttribute('data-question-id');
+                    const questionId = button.name.split('-')[1];
                     if (!selections[questionId]) selections[questionId] = [];
-                    selections[questionId].push(button.getAttribute('data-choice-id'));
-                    console.log(`Question ID: ${questionId}, Choice ID: ${choiceId}`);
+                    selections[questionId].push(button.value);
+                    // console.log("Question ID:", questionId, "Choice ID:", button.value);
                 }
             });
 
-            // Guardar radios seleccionados
-            radios.forEach((radio) => {
-                const questionId = radio.name.split('-')[1];
+            // Guardar checkboxes seleccionados
+            checkboxes.forEach((checkbox) => {
+                const questionId = checkbox.name.split('-')[1];
                 if (!selections[questionId]) selections[questionId] = [];
-                selections[questionId].push(radio.value);
+                selections[questionId].push(checkbox.value);
             });
 
+            // Log the updated hidden input value
+            console.log("Hidden input value updated:", document.getElementById('selections').value);
             
             // Actualizar campo oculto
             document.getElementById('selections').value = JSON.stringify(selections);
             
-            // Log the final selections object
-            console.log("Final selections object:", selections);
-            
-            // Log the updated hidden input value
-            console.log("Hidden input value updated:", document.getElementById('selections').value);
         }
 
     </script>

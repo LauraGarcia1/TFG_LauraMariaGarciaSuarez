@@ -37,10 +37,20 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Revisar traducciones de todas las páginas
 - [ ] Hacer boton logout y si accede a home y esta login, que vaya directamente a user-home
 - [ ] Poner todos los label de register -> valido
-- [X] comprobar forloop de questionnarie.html (15/01/2025)
-- [ ] comprobar muchas questions en questionnarie
-- [ ] violacion de segmento?
-- [ ] arreglar vulnerabilidades de github
+- [X] Comprobar forloop de questionnarie.html (15/01/2025)
+- [ ] Comprobar muchas questions en questionnarie
+- [ ] Violacion de segmento?
+- [ ] Arreglar vulnerabilidades de github
+- [ ] Cambiar color checkbox
+
+### Evaluación del participante
+
+- Cuanto le interesa el producto o juego?
+- Que tan probable es de que lo compre/recomiende?
+- Se ajusta a tus preferencias?
+- Te gustaría que tuviera más opciones (dificultad, opciones de personalización, modos de juego...)?
+- Cuál fue el principal factor que influye en tu decision de compra/recomendacion? Precio, calidad, características, popularidad, recomendaciones de otros usuarios...
+- 
 
 ## Base de Datos
 

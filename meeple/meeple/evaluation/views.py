@@ -7,7 +7,7 @@ from django.conf import settings
 from .forms import SignUpForm
 from django.db import connections
 from django.utils.translation import gettext_lazy as _
-from .models import Preference, Participant, Game, Questionnarie, Question
+from .models import Preference, Participant, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm
 import json
 
 
@@ -195,13 +195,20 @@ def questionnarie(request):
 
     if request.method == "POST":
         if request.POST.get("button") == "newrecommendation":
-
             selections = json.loads(request.POST.get('selections', '{}'))
-            print(selections)
-            # Aquí puedes procesar los datos como prefieras
+            
+            answers = []
             for question_id, choice_ids in selections.items():
                 print(f"Pregunta ID: {question_id}, Selecciones: {choice_ids}")
-            #return redirect(reverse('newrecomm'))
+                # Guardamos las respuestas del participante
+                question = Question.objects.get(id=question_id)
+                for choice in choice_ids:
+                    answer = Answer.objects.create(id_question=question, answer=Choice.objects.get(id=choice))
+                    # TODO: texto o id
+                    answers.append(answer.answer.text)
+
+            request.session['answers'] = answers
+            return redirect('newrecomm')
     
     questions = get_data_questions()
 
@@ -218,19 +225,29 @@ def get_data_questions():
 
     return questions_and_choices
 
-def newRecomm(request):
+def newRecomm(request, answers = None):
     if request.method == "POST":
         recommendations = request.POST.getlist('likedRecommendations')
+        # TODO: Guardar datos del algoritmo
 
         print(recommendations)
+        for game in recommendations:
+            # TODO: como obtengo la puntuacion
+            puntuation = 5
+            Evaluation.objects.create(id_algorithm=Algorithm.objects.get(id=1), id_game=Game.objects.get_or_create(id_BGG=game), id_participant=Participant.get(id=request.session['userid']), puntuation=puntuation, results="", metrics=[])
+        
         if request.POST.get("button") == "exit":
             return redirect(reverse('recommendations'))
         elif request.POST.get("button") == "moreEvals":
             return redirect(reverse('first'))
-    
+        
+    answers = request.session.get('answers', [])
+    request.session.pop('answers', None)
+
+    # TODO: Generar los juegos de recomendación desde las respuestas
     zacatrus_games = get_preferences_games()
 
-    return render(request, 'newrecommendations.html', {'zacatrus_games' : zacatrus_games, 'MEDIA_URL' : settings.MEDIA_URL})
+    return render(request, 'newrecommendations.html', {'zacatrus_games' : zacatrus_games, 'MEDIA_URL' : settings.MEDIA_URL, 'preferences_part' : answers})
 
 
 

@@ -154,6 +154,7 @@ class Answer(models.Model):
         ],
         default='EN'
     )
+    # TODO: debería pillar el participante?
 
     class Meta:
         ordering = ['date_created']
@@ -194,7 +195,7 @@ class Algorithm(models.Model):
     ) # TODO: No sé de qué tipos pueden ser los algoritmos
 
     def __str__(self):
-        return f"{self.name} {self.description}"
+        return self.name
 
 class Evaluation(models.Model):
     id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
