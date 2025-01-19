@@ -165,14 +165,18 @@ class Answer(models.Model):
 class Recommendation(models.Model):
     id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
     #id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
-    games = []
-    id_participant = models.ForeignKey('Participant', on_delete=models.SET_NULL, null=False)
+    #games = []
+    id_participant = models.ForeignKey('Participant', on_delete=models.SET_NULL, null=True)
     # TODO: Cambiar parámetros en el diagrama
-    metrics = []
+    metrics = models.JSONField(default=list)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.id_algorithm} {self.games}"
+    
+    def add_metrics(self, new_metrics):
+        self.metrics.extend(new_metrics)
+        self.save()
 
 class GameRecommended(models.Model):
     id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False, related_name="games")
@@ -248,6 +252,7 @@ class EvalAnswers(models.Model):
     interested = models.IntegerField(choices=INTEREST_CHOICES, default=3)
     buyorrecommend = models.IntegerField(choices=GENERAL_CHOICES, default=3)
     preference = models.BooleanField(default=False)
+    # TODO: TextField??
     moreoptions = models.TextField()
     influence = models.IntegerField(choices=INFLUENCE_CHOICES, default=3)
 
@@ -267,3 +272,6 @@ class Preference(models.Model):
 class Choice(models.Model):
     id_question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True, related_name='choices')
     text = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.text}"

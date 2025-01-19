@@ -41,7 +41,7 @@ class AnswerAdmin(admin.ModelAdmin):
 # Recommendation model
 @admin.register(Recommendation)
 class RecommendationAdmin(admin.ModelAdmin):
-    list_display = ['id_algorithm', 'id_game', 'date_created']
+    list_display = ['id_algorithm', 'id_participant', 'date_created']
     search_fields = ['id_algorithm__name', 'id_game__id_BGG']
     list_filter = ['date_created']
 
@@ -78,3 +78,44 @@ class ChoiceAdmin(admin.ModelAdmin):
     list_display = ['id_question', 'text']
     search_fields = ['text']
     list_filter = ['id_question', 'text']
+
+from django.contrib import admin
+from .models import EvalAnswers, GameRecommended, Evaluation, Game
+
+# EvalAnswers model
+@admin.register(EvalAnswers)
+class EvalAnswersAdmin(admin.ModelAdmin):
+    list_display = ('id_evaluation', 'id_gamerecommended', 'interested', 'buyorrecommend', 'preference', 'influence', 'moreoptions')
+    list_filter = ('interested', 'buyorrecommend', 'preference', 'influence')
+    search_fields = ('id_evaluation__id', 'id_gamerecommended__id', 'moreoptions')
+    list_per_page = 20
+    raw_id_fields = ('id_evaluation', 'id_gamerecommended')
+
+    def get_interested_display(self, obj):
+        return obj.get_interested_display()
+    get_interested_display.short_description = 'Interest Level'
+
+    def get_buyorrecommend_display(self, obj):
+        return obj.get_buyorrecommend_display()
+    get_buyorrecommend_display.short_description = 'Buy or Recommend Probability'
+
+    def get_influence_display(self, obj):
+        return obj.get_influence_display()
+    get_influence_display.short_description = 'Influence Factor'
+
+    def moreoptions_preview(self, obj):
+        return obj.moreoptions[:100]
+    
+    moreoptions_preview.short_description = 'More Options (Preview)'
+
+    list_display += ('get_interested_display', 'get_buyorrecommend_display', 'get_influence_display', 'moreoptions_preview')
+
+# GameRecommended model
+@admin.register(GameRecommended)
+class GameRecommendedAdmin(admin.ModelAdmin):
+    list_display = ('id_recommendation', 'id_game')
+    search_fields = ('id_recommendation__id', 'id_game__name') 
+    list_filter = ('id_recommendation',)
+
+    def __str__(self):
+        return f"{self.id_recommendation} - {self.id_game}"

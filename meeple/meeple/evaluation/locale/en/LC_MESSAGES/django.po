@@ -68,7 +68,7 @@ msgstr "How likely are you to buy/recommend it?"
 
 #: evaluation/templates/newrecommendations.html:73
 msgid "Q3 recomm"
-msgstr "Does it match your preferences?"
+msgstr "It does match your preferences."
 
 #: evaluation/templates/newrecommendations.html:74
 msgid "Q4 recomm"
@@ -101,6 +101,10 @@ msgstr "Recommendations from other users"
 #: evaluation/templates/newrecommendations.html:81
 msgid "Q5 choice 6"
 msgstr "Other"
+
+#: evaluation/templates/newrecommendations.html:125
+msgid "textfield"
+msgstr "Write here..."
 
 #: evaluation/templates/preferences.html:33
 msgid "PreferencesNotTitle"

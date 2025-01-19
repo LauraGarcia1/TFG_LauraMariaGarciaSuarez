@@ -76,8 +76,15 @@
 
                                                 </td>
                                                 <td>
-                                                    <input class="form-check-input" type="checkbox" name="question"
-                                                        id="1" value="" onclick="pressedCheckbox(this)">
+                                                    <div class="form-group">
+                                                        <select class="form-control" name="firstquestion-{{ gameRow.0 }}" onclick="selectedChoice(this)">
+                                                          <option value="1">1</option>
+                                                          <option value="2">2</option>
+                                                          <option value="3">3</option>
+                                                          <option value="4">4</option>
+                                                          <option value="5">5</option>
+                                                        </select>
+                                                      </div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -86,8 +93,15 @@
 
                                                 </td>
                                                 <td>
-                                                    <input class="form-check-input" type="checkbox" name="question"
-                                                        id="2" value="" onclick="pressedCheckbox(this)">
+                                                    <div class="form-group">
+                                                        <select class="form-control" name="secondquestion-{{ gameRow.0 }}" onclick="selectedChoice(this)">
+                                                          <option value="1">1</option>
+                                                          <option value="2">2</option>
+                                                          <option value="3">3</option>
+                                                          <option value="4">4</option>
+                                                          <option value="5">5</option>
+                                                        </select>
+                                                      </div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -96,8 +110,9 @@
 
                                                 </td>
                                                 <td>
-                                                    <input class="form-check-input" type="checkbox" name="question"
-                                                        id="3" value="" onclick="pressedCheckbox(this)">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="thirdquestion-{{ gameRow.0 }}" id="thirdquestion" value="{{ gameRow.0 }}" onclick="pressedCheckbox(this)">
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -106,8 +121,9 @@
 
                                                 </td>
                                                 <td>
-                                                    <input class="form-check-input" type="checkbox" name="question"
-                                                        id="4" value="" onclick="pressedCheckbox(this)">
+                                                    <div class="form-group">
+                                                        <textarea class="form-control" name="fourthquestion-{{ gameRow.0 }}" rows="4" placeholder="{% trans 'textfield' %}"></textarea>
+                                                      </div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -117,38 +133,38 @@
                                                 </td>
                                                 <td>
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="answer q5" id="1" value="1" checked>
+                                                            <input class="form-check-input" type="checkbox" name="fifthquestion-{{ gameRow.0 }}" id="fifthquestion" value="1" onclick="pressedCheckbox(this)">
                                                             <label class="form-check-label" for="1">
                                                                 {% trans "Q5 choice 1" %}
                                                             </label>
                                                         </div>
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="answer q5" id="2" value="2">
-                                                            <label class="form-check-label" for="2">
+                                                            <input class="form-check-input" type="checkbox" name="fifthquestion-{{ gameRow.0 }}" id="fifthquestion" value="2">
+                                                            <label class="form-check-label" for="2" onclick="pressedCheckbox(this)">
                                                                 {% trans "Q5 choice 2" %}
                                                             </label>
                                                         </div>
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="answer q5" id="3" value="3">
-                                                            <label class="form-check-label" for="3">
+                                                            <input class="form-check-input" type="checkbox" name="fifthquestion-{{ gameRow.0 }}" id="fifthquestion" value="3">
+                                                            <label class="form-check-label" for="3" onclick="pressedCheckbox(this)">
                                                                 {% trans "Q5 choice 3" %}
                                                             </label>
                                                         </div>
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="answer q5" id="4" value="4">
-                                                            <label class="form-check-label" for="4">
+                                                            <input class="form-check-input" type="checkbox" name="fifthquestion-{{ gameRow.0 }}" id="fifthquestion" value="4">
+                                                            <label class="form-check-label" for="4" onclick="pressedCheckbox(this)">
                                                                 {% trans "Q5 choice 4" %}
                                                             </label>
                                                         </div>
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="answer q5" id="5" value="5">
-                                                            <label class="form-check-label" for="5">
+                                                            <input class="form-check-input" type="checkbox" name="fifthquestion-{{ gameRow.0 }}" id="fifthquestion" value="5">
+                                                            <label class="form-check-label" for="5" onclick="pressedCheckbox(this)">
                                                                 {% trans "Q5 choice 5" %}
                                                             </label>
                                                         </div>
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="answer q5" id="6" value="6">
-                                                            <label class="form-check-label" for="6">
+                                                            <input class="form-check-input" type="checkbox" name="fifthquestion-{{ gameRow.0 }}" id="fifthquestion" value="6">
+                                                            <label class="form-check-label" for="6" onclick="pressedCheckbox(this)">
                                                                 {% trans "Q5 choice 6" %}
                                                             </label>
                                                         </div>
@@ -190,6 +206,47 @@
             if (event.target == finish) {
                 closeInformation();
             }
+        }
+
+        // Action that makes when a choice is selected
+        function selectedChoice(choice) {
+            choice.classList.toggle('selected-choice');
+            updateselections();
+        }
+
+        function pressedCheckbox(checkbox) {
+            checkbox.classList.toggle('checked-checkbox');
+            // console.log(`Checkbox clicked: ${checkbox.value}, Selected: ${checkbox.classList.contains('checked-checkbox')}`);
+            updateselections();
+        }
+
+        function updateselections() {
+            const selects = document.querySelectorAll('form select');
+            const checkboxes = document.querySelectorAll('form input[type="checkbox"]:checked');
+            const selections = {};
+
+            // Guardar botones seleccionados
+            selects.forEach((selection) => {
+                if (selection.classList.contains('selected-choice')) {
+                    const questionId = selection.name.split('-')[1];
+                    if (!selections[questionId]) selections[questionId] = [];
+                    selections[questionId].push(selection.value);
+                }
+            });
+
+            // Guardar checkboxes seleccionados
+            checkboxes.forEach((checkbox) => {
+                const questionId = checkbox.name.split('-')[1];
+                if (!selections[questionId]) selections[questionId] = [];
+                selections[questionId].push(checkbox.value);
+            });
+
+            // Log the updated hidden input value
+            console.log("Hidden input value updated:", document.getElementById('selections').value);
+            
+            // Actualizar campo oculto
+            document.getElementById('selections').value = JSON.stringify(selections);
+            
         }
     </script>
 

@@ -73,7 +73,7 @@ msgstr "¿Qué tan probable es de que lo compres/recomiendes?"
 
 #: evaluation/templates/newrecommendations.html:73
 msgid "Q3 recomm"
-msgstr "¿Se ajusta a tus preferencias?"
+msgstr "Se ajusta a tus preferencias."
 
 #: evaluation/templates/newrecommendations.html:74
 msgid "Q4 recomm"
@@ -106,6 +106,10 @@ msgstr "Recomendaciones de otros usuarios"
 #: evaluation/templates/newrecommendations.html:81
 msgid "Q5 choice 6"
 msgstr "Otro"
+
+#: evaluation/templates/newrecommendations.html:125
+msgid "textfield"
+msgstr "Escribe aquí..."
 
 #: evaluation/templates/questionnarie.html:30
 msgid "Questionnarie"

@@ -247,7 +247,9 @@ def newRecomm(request, answers = None):
     zacatrus_games = get_preferences_games()
     # TODO: Guardar datos del algoritmo
 
-    request.session['recommendation'] = Recommendation.objects.create(id_algorithm=Algorithm.objects.first(), id_game=game[0], games=zacatrus_games)
+    request.session['recommendation'] = Recommendation.objects.create(id_algorithm=Algorithm.objects.first(), id_participant=Participant.objects.get(id=request.session['userid'])).add_metrics(answers)
+
+    
 
     return render(request, 'newrecommendations.html', {'zacatrus_games' : zacatrus_games, 'MEDIA_URL' : settings.MEDIA_URL, 'preferences_part' : answers})
 
