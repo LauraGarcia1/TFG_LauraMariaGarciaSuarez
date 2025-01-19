@@ -33,7 +33,8 @@ if 'DEBUG' in os.environ :
 else :
     DEBUG = 'RENDER' not in os.environ
 
-ALLOWED_HOSTS = []
+# TODO: quitar 192.168.1.147
+ALLOWED_HOSTS = ["192.168.1.147"]
 
 
 # Application definition

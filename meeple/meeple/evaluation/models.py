@@ -164,12 +164,22 @@ class Answer(models.Model):
 
 class Recommendation(models.Model):
     id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
-    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
+    #id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     games = []
+    id_participant = models.ForeignKey('Participant', on_delete=models.SET_NULL, null=False)
+    # TODO: Cambiar parámetros en el diagrama
+    metrics = []
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.id_algorithm} {self.games}"
+
+class GameRecommended(models.Model):
+    id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False, related_name="games")
+    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
+
+    def __str__(self):
+        return f"{self.id_recommendation} {self.id_game}"
 
 class Game(models.Model): # ??
     id_BGG = models.IntegerField(default=0)
@@ -204,8 +214,42 @@ class Evaluation(models.Model):
     id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
     puntuation = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
-    results = models.TextField()
-    metrics = models.JSONField(default=list)
+    #results = models.TextField()
+    #metrics = models.JSONField(default=list)
+
+    def __str__(self):
+        return f"Evaluation by {self.id_participant} for {self.id_game}"
+    
+class EvalAnswers(models.Model):
+    INTEREST_CHOICES = [
+        (1, 'Not interested'),
+        (2, 'Slightly interested'),
+        (3, 'Neutral'),
+        (4, 'Interested'),
+        (5, 'Very interested'),
+    ]
+    INFLUENCE_CHOICES = [
+        (1, 'Price'),
+        (2, 'Quality'),
+        (3, 'Features'),
+        (4, 'Popularity'),
+        (5, 'Recommendations from other users'),
+        (6, 'Other'),
+    ]
+    GENERAL_CHOICES = [
+        (1, 'Very unlikely'),
+        (2, 'Unlikely'),
+        (3, 'Neutral'),
+        (4, 'Likely'),
+        (5, 'Very likely'),
+    ]
+    id_evaluation = models.ForeignKey('Evaluation', on_delete=models.CASCADE, null=False, related_name='answers')
+    id_gamerecommended = models.ForeignKey('GameRecommended', on_delete=models.CASCADE, null=False)
+    interested = models.IntegerField(choices=INTEREST_CHOICES, default=3)
+    buyorrecommend = models.IntegerField(choices=GENERAL_CHOICES, default=3)
+    preference = models.BooleanField(default=False)
+    moreoptions = models.TextField()
+    influence = models.IntegerField(choices=INFLUENCE_CHOICES, default=3)
 
     def __str__(self):
         return f"Evaluation by {self.id_participant} for {self.game}"
