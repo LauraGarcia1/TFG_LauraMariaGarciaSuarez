@@ -7,7 +7,7 @@ from django.conf import settings
 from .forms import SignUpForm
 from django.db import connections
 from django.utils.translation import gettext_lazy as _
-from .models import Preference, Participant, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation
+from .models import Preference, Participant, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, EvalAnswers
 import json
 
 
@@ -111,19 +111,15 @@ def get_preferences_games():
         cursor.execute("SELECT id, name FROM zacatrus_games LIMIT 10;")
         zacatrus_games = cursor.fetchall()
 
-        print(zacatrus_games)
-
         return zacatrus_games
 
 def get_data_game(request):
-    print("Llegue")
     if request.method == 'POST':
-        print("Llegue mas")
         id = request.POST.get('id')
         with connections['external_db'].cursor() as cursor:
             cursor.execute('SELECT zg.name, zgd.description, GROUP_CONCAT(DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories, TRUNCATE(AVG (zr.rating), 1) AS ratings, GROUP_CONCAT(DISTINCT zgt.name ORDER BY zgt.name ASC) AS types, GROUP_CONCAT(DISTINCT zgct.name ORDER BY zgct.name ASC) AS contexts FROM zacatrus_games zg LEFT JOIN zacatrus_game_descriptions zgd ON zg.id = zgd.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_categories) zgc ON zg.id = zgc.gameid LEFT JOIN (SELECT DISTINCT gameid, rating FROM zacatrus_ratings) zr ON zg.id = zr.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_types) zgt ON zg.id = zgt.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_contexts) zgct ON zg.id = zgct.gameid WHERE zg.id = %s GROUP BY zg.name, zgd.description;', [id])
             result = cursor.fetchone()
-            print(result)
+
             if result:
                 return JsonResponse({'name': result[0], 'description': result[1], 'categories': result[2], 'ratings': result[3], 'types': result[4], 'contexts': result[5]})
             else:
@@ -172,7 +168,6 @@ def questions(request):
     """
 
     if request.method == "POST":
-        print(request.path, request.path == "/questions/3")
         if request.POST.get("button") == "newrecommendation":
             return redirect(reverse('newrecomm'))
 
@@ -199,7 +194,6 @@ def questionnarie(request):
             
             answers = []
             for question_id, choice_ids in selections.items():
-                print(f"Pregunta ID: {question_id}, Selecciones: {choice_ids}")
                 # Guardamos las respuestas del participante
                 question = Question.objects.get(id=question_id)
                 for choice in choice_ids:
@@ -227,13 +221,14 @@ def get_data_questions():
 
 def newRecomm(request, answers = None):
     if request.method == "POST":
-        recommendations = request.POST.getlist('likedRecommendations')
+        responses = json.loads(request.POST.get('responses', '{}'))
 
-        print(recommendations)
-        for game in recommendations:
-            # TODO: como obtengo la puntuacion
-            puntuation = 5
-            Evaluation.objects.create(id_algorithm=Algorithm.objects.get(id=1), id_game=Game.objects.get_or_create(id_BGG=game), id_participant=Participant.get(id=request.session['userid']), puntuation=puntuation, results="", metrics=[])
+        # TODO: como obtengo la puntuacion
+        puntuation = 5
+        evaluation = Evaluation.objects.create(id_algorithm=Algorithm.objects.get(id=1), id_participant=Participant.get(id=request.session['userid']), puntuation=puntuation, results="", metrics=[])
+
+        for id_game, list_values in responses:
+            EvalAnswers.objects.create(id_evaluation=evaluation, id_gamerecommended=GameRecommended.objects.get(id_recommendation=request.session['recommendation'], id_game=game), interested=list_values[0], buyrrecommend=list_values[1], preference=list_values[2], moreoptions=list_values[3], influence=list_values[4])
         
         if request.POST.get("button") == "exit":
             return redirect(reverse('recommendations'))
@@ -243,13 +238,13 @@ def newRecomm(request, answers = None):
     answers = request.session.get('answers', [])
     request.session.pop('answers', None)
 
-    # TODO: Generar los juegos de recomendación desde las respuestas
-    zacatrus_games = get_preferences_games()
-    # TODO: Guardar datos del algoritmo
-
     request.session['recommendation'] = Recommendation.objects.create(id_algorithm=Algorithm.objects.first(), id_participant=Participant.objects.get(id=request.session['userid'])).add_metrics(answers)
 
-    
+    # TODO: Generar los juegos de recomendación desde las respuestas
+    zacatrus_games = get_preferences_games()
+    for game in zacatrus_games:
+        GameRecommended.objects.create(id_recommendation=request.session['recommendation'], id_game=Game.objects.get(id_BGG=game[0]))
+    # TODO: Guardar datos del algoritmo
 
     return render(request, 'newrecommendations.html', {'zacatrus_games' : zacatrus_games, 'MEDIA_URL' : settings.MEDIA_URL, 'preferences_part' : answers})
 

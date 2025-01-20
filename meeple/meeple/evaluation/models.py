@@ -214,7 +214,7 @@ class Algorithm(models.Model):
 class Evaluation(models.Model):
     # TODO: una evaluacion no debería tener recomendaciones que le ha gustado al participante
     id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
-    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
+    #id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
     puntuation = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
@@ -257,7 +257,7 @@ class EvalAnswers(models.Model):
     influence = models.IntegerField(choices=INFLUENCE_CHOICES, default=3)
 
     def __str__(self):
-        return f"Evaluation by {self.id_participant} for {self.game}"
+        return f"Evaluation for {self.game}"
 
 class Preference(models.Model):
     preference = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)

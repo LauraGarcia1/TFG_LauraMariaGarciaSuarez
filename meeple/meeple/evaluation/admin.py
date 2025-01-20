@@ -61,7 +61,7 @@ class AlgorithmAdmin(admin.ModelAdmin):
 # Evaluation model
 @admin.register(Evaluation)
 class EvaluationAdmin(admin.ModelAdmin):
-    list_display = ['id_algorithm', 'id_game', 'id_participant', 'puntuation', 'date_created']
+    list_display = ['id_algorithm', 'id_participant', 'puntuation', 'date_created']
     search_fields = ['id_algorithm__name', 'id_game__id_BGG', 'id_participant__username']
     list_filter = ['puntuation', 'date_created']
 
