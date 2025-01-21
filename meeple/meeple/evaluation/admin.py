@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Choice, Participant, Interaction, Questionnarie, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference
+from .models import Choice, Participant, Interaction, Questionnarie, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, GameRecommended
 
 # Register your models here.
 
@@ -9,13 +9,6 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_display = ['username', 'email', 'location', 'age', 'frequencyGame', 'expertiseGame', 'gender', 'date_created']
     search_fields = ['username', 'email']
     list_filter = ['gender', 'frequencyGame', 'expertiseGame', 'date_created']
-
-# Interaction model
-@admin.register(Interaction)
-class InteractionAdmin(admin.ModelAdmin):
-    list_display = ['id_participant', 'id_game', 'type', 'comment', 'date_created']
-    search_fields = ['id_participant__username', 'id_game__id_BGG', 'type', 'comment']
-    list_filter = ['type', 'date_created']
 
 # Questionnarie model
 @admin.register(Questionnarie)
@@ -79,14 +72,11 @@ class ChoiceAdmin(admin.ModelAdmin):
     search_fields = ['text']
     list_filter = ['id_question', 'text']
 
-from django.contrib import admin
-from .models import EvalAnswers, GameRecommended, Evaluation, Game
-
-# EvalAnswers model
-@admin.register(EvalAnswers)
-class EvalAnswersAdmin(admin.ModelAdmin):
-    list_display = ('id_evaluation', 'id_gamerecommended', 'interested', 'buyorrecommend', 'preference', 'influence', 'moreoptions')
-    list_filter = ('interested', 'buyorrecommend', 'preference', 'influence')
+# Interaction model
+@admin.register(Interaction)
+class InteractionAdmin(admin.ModelAdmin):
+    list_display = ('id_evaluation', 'id_gamerecommended', 'interested', 'buyorrecommend', 'preference', 'influences', 'moreoptions')
+    list_filter = ('interested', 'buyorrecommend', 'preference', 'influences')
     search_fields = ('id_evaluation__id', 'id_gamerecommended__id', 'moreoptions')
     list_per_page = 20
     raw_id_fields = ('id_evaluation', 'id_gamerecommended')
@@ -99,16 +89,23 @@ class EvalAnswersAdmin(admin.ModelAdmin):
         return obj.get_buyorrecommend_display()
     get_buyorrecommend_display.short_description = 'Buy or Recommend Probability'
 
-    def get_influence_display(self, obj):
-        return obj.get_influence_display()
-    get_influence_display.short_description = 'Influence Factor'
+    def influences_display(self, obj):
+        INFLUENCE_CHOICES = {
+            '1': 'Price',
+            '2': 'Quality',
+            '3': 'Features',
+            '4': 'Popularity',
+            '5': 'Recommendations from other users',
+            '6': 'Other'
+        }
+        return [INFLUENCE_CHOICES.get(i, 'Unknown') for i in obj.influences]
 
     def moreoptions_preview(self, obj):
         return obj.moreoptions[:100]
     
     moreoptions_preview.short_description = 'More Options (Preview)'
 
-    list_display += ('get_interested_display', 'get_buyorrecommend_display', 'get_influence_display', 'moreoptions_preview')
+    list_display += ('get_interested_display', 'get_buyorrecommend_display', 'influences_display', 'moreoptions_preview')
 
 # GameRecommended model
 @admin.register(GameRecommended)
