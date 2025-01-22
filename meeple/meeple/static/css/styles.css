@@ -326,6 +326,16 @@ label.required.valid::after {
     background-color: #f5b820;
 }
 
+.custom-width {
+    width: 75%;
+}
+
+@media (max-width: 576px) {
+    .custom-width {
+      width: 90%;
+    }
+}
+
 /*------------------ GENERAL ------------------ */
 
 .sm-maxwidth {

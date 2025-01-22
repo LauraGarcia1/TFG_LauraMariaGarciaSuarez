@@ -75,7 +75,7 @@ class Participant(AbstractUser):
 
 """ TODO: me es necesario alguna cosa de aquí?
 class Interaction(models.Model):
-    id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False) # TODO: ??
+    id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False)
     id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     type = models.CharField(
@@ -163,7 +163,9 @@ class Question(models.Model):
             ('SCCB', 'Single choice combo box'),
             ('MCCB', 'Multiple choice combo box'),
             ('OAS', 'Open answer short'),
-            ('OAL', 'Open answer long')
+            ('OAL', 'Open answer long'),
+            ('R', 'Range'),
+            ('N', 'Number')
         ],
         default='OAS'
         )
@@ -185,23 +187,23 @@ class Question(models.Model):
 
 class Answer(models.Model):
     id_question = models.ForeignKey('Question', on_delete=models.CASCADE, null=False)
+    id_participant = models.ForeignKey('Participant', on_delete=models.SET_NULL, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
-    answer = models.CharField(max_length=150, blank=False, null=False)
+    choice = models.ForeignKey('Choice', on_delete=models.SET_NULL, null=True)
     language = models.CharField(
         max_length = 10,
         choices = [
-            ('EN', 'English'),
-            ('ES', 'Español')
+            ('en', 'English'),
+            ('es', 'Español')
         ],
-        default='EN'
+        default='en'
     )
-    # TODO: debería pillar el participante?
 
     class Meta:
         ordering = ['date_created']
 
     def __str__(self):
-        return f"{self.id} - {self.answer}"
+        return f"{self.id} - {self.choice}"
 
 class Recommendation(models.Model):
     id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
@@ -253,7 +255,7 @@ class Algorithm(models.Model):
         return self.name
 
 class Evaluation(models.Model):
-    # TODO: una evaluacion no debería tener recomendaciones que le ha gustado al participante
+    # INFO: una evaluacion no debería tener recomendaciones que le ha gustado al participante
     id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
     #id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=True)

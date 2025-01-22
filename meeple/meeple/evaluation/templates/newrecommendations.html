@@ -20,12 +20,13 @@
                 <div class="form-control form-rounded">
                     <h5>{% trans "EvaluatorPtTwo" %}</h5>
                     <br>
-                    <div class="d-flex justify-content-between w-75 mx-auto">
-                        <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4" value="moreEvals"
-                            name="button">{% trans "EvaluatorButtonPtOne" %}</button>
-                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4" value="exit"
+                    <div class="d-flex flex-column flex-md-row justify-content-between custom-width mx-auto">
+                        <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 mb-3"
+                            value="moreEvals" name="button">{% trans "EvaluatorButtonPtOne" %}</button>
+                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 mb-3" value="exit"
                             name="button">{% trans "EvaluatorButtonPtTwo" %}</button>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -42,7 +43,7 @@
             </div>
 
             <div
-                class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 w-75">
+                class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
 
                 <ul class="list-group list-group-flush">
                     <h2>{% trans "NewRecommendationTitle" %}</h2>
@@ -60,136 +61,136 @@
 
                     {% for gameRow in zacatrus_games %}
                     <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-3">
+                        <div class="row w-100">
+                            <div class="col-12 col-sm-3">
                                 <img src="{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg" alt="Image"
                                     class="img-fluid">
                             </div>
-                            <div class="col-sm-8">
-                                <h4>{{ gameRow.1 }} <i class="bi bi-info-circle" onclick="openNotification()"></i></h4>
-                                <div class="ms-5">
-                                    <table>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <p>{% trans "Q1 recomm" %}</p>
+                            <div class="col-12 col-sm-1"><br></div>
+                            <div class="col-12 col-sm-8 ">
+                                <div style="max-width: 100%; overflow-x: auto;">
+                                    <div class="d-flex flex-wrap">
+                                        <h4>{{ gameRow.1 }} <i class="bi bi-info-circle"
+                                                onclick="openNotification()"></i></h4>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <p>{% trans "Q1 recomm" %}</p>
 
-                                                </td>
-                                                <td>
-                                                    <div class="form-group">
-                                                        <select class="form-control"
-                                                            id="firstquestion-{{ gameRow.0 }}">
-                                                            <option value="1">1</option>
-                                                            <option value="2">2</option>
-                                                            <option value="3">3</option>
-                                                            <option value="4">4</option>
-                                                            <option value="5">5</option>
-                                                        </select>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <p>{% trans "Q2 recomm" %}</p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <select class="form-control"
+                                                                id="firstquestion-{{ gameRow.0 }}">
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                                <option value="4">4</option>
+                                                                <option value="5">5</option>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>{% trans "Q2 recomm" %}</p>
 
-                                                </td>
-                                                <td>
-                                                    <div class="form-group">
-                                                        <select class="form-control"
-                                                            id="secondquestion-{{ gameRow.0 }}">
-                                                            <option value="1">1</option>
-                                                            <option value="2">2</option>
-                                                            <option value="3">3</option>
-                                                            <option value="4">4</option>
-                                                            <option value="5">5</option>
-                                                        </select>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <p>{% trans "Q3 recomm" %}</p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <select class="form-control"
+                                                                id="secondquestion-{{ gameRow.0 }}">
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                                <option value="4">4</option>
+                                                                <option value="5">5</option>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>{% trans "Q3 recomm" %}</p>
 
-                                                </td>
-                                                <td>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="thirdquestion-{{ gameRow.0 }}" name="boolean">
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <p>{% trans "Q4 recomm" %}</p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="thirdquestion-{{ gameRow.0 }}" name="boolean">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>{% trans "Q4 recomm" %}</p>
 
-                                                </td>
-                                                <td>
-                                                    <div class="form-group">
-                                                        <textarea class="form-control"
-                                                            id="fourthquestion-{{ gameRow.0 }}" rows="4"
-                                                            placeholder="{% trans 'textfield' %}"></textarea>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <p>{% trans "Q5 recomm" %}</p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <textarea class="form-control"
+                                                                id="fourthquestion-{{ gameRow.0 }}" rows="4"
+                                                                placeholder="{% trans 'textfield' %}"></textarea>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>{% trans "Q5 recomm" %}</p>
 
-                                                </td>
-                                                <td>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="fifthquestion-{{ gameRow.0 }}"
-                                                            value="1">
-                                                        <label class="form-check-label" for="fifthquestion-{{ gameRow.0 }}">
-                                                            {% trans "Q5 choice 1" %}
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="fifthquestion-{{ gameRow.0 }}"
-                                                            value="2">
-                                                        <label class="form-check-label" for="fifthquestion-{{ gameRow.0 }}">
-                                                            {% trans "Q5 choice 2" %}
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="fifthquestion-{{ gameRow.0 }}"
-                                                            value="3">
-                                                        <label class="form-check-label" for="3">
-                                                            {% trans "Q5 choice 3" %}
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="fifthquestion-{{ gameRow.0 }}"
-                                                            value="4">
-                                                        <label class="form-check-label" for="4">
-                                                            {% trans "Q5 choice 4" %}
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="fifthquestion-{{ gameRow.0 }}"
-                                                            value="5">
-                                                        <label class="form-check-label" for="5">
-                                                            {% trans "Q5 choice 5" %}
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="fifthquestion-{{ gameRow.0 }}"
-                                                            value="6">
-                                                        <label class="form-check-label" for="6">
-                                                            {% trans "Q5 choice 6" %}
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="1">
+                                                            <label class="form-check-label"
+                                                                for="fifthquestion-{{ gameRow.0 }}">
+                                                                {% trans "Q5 choice 1" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="2">
+                                                            <label class="form-check-label"
+                                                                for="fifthquestion-{{ gameRow.0 }}">
+                                                                {% trans "Q5 choice 2" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="3">
+                                                            <label class="form-check-label" for="3">
+                                                                {% trans "Q5 choice 3" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="4">
+                                                            <label class="form-check-label" for="4">
+                                                                {% trans "Q5 choice 4" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="5">
+                                                            <label class="form-check-label" for="5">
+                                                                {% trans "Q5 choice 5" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="6">
+                                                            <label class="form-check-label" for="6">
+                                                                {% trans "Q5 choice 6" %}
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                </tr>
 
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -258,7 +259,7 @@
                             }
                         } else {
                             // Para otros tipos de input (select, textarea, etc.)
-                            selections[id][id_input.split('-')[0]] = input.type === 'checkbox' ? input.checked : input.value; 
+                            selections[id][id_input.split('-')[0]] = input.type === 'checkbox' ? input.checked : input.value;
                         }
                     }
                 });

@@ -26,49 +26,66 @@
         <form action="" method="post">
             {% csrf_token %}
             <div
-            class="text-end shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 w-75">
+                class="text-end shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
                 <ul class="list-group list-group-flush text-start">
                     <h1>{% trans "Questionnarie" %}</h1>
                     {% for question, choices in list_questions.items %}
                     <li class="list-group-item py-3">
-                        <div class="row h-100 p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
+                        <div class="row h-100 p-4 rounded rounded-5 border border-dark border-1 w-100 background-creme">
                             <div class="col-md-6 mb-3 text-center">
                                 <h3 class="fw-bold responsive-title">{{ question.question }}</h3>
                             </div>
                             <div class="col-md-6 mb-3 text-center">
                                 <div class="d-flex flex-wrap justify-content-center">
-                                {% if question.type == "MCCB" %}
+                                    {% if question.type == "MCCB" %}
                                     {% for choice in choices %}
                                     <button type="button"
                                         class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
                                         name="question-{{ question.id }}" value="{{ choice.id }}"
                                         onclick="pressedButton(this)">{{ choice.text }}</button>
                                     {% endfor %}
-                                {% elif question.type == "SCCB" %}
+                                    {% elif question.type == "SCCB" %}
                                     {% for choice in choices %}
                                     <button type="button"
                                         class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                                        name="question-{{ question.id }}" value="{{ choice.id }}">{{
+                                        name="question-{{ question.id }}" value="{{ choice.id }}"
+                                        onclick="pressedButtonSingle(this)">{{
                                         choice.text }}</button>
                                     {% endfor %}
-                                {% elif question.type == "SCRB" %}
-                                {% elif question.type == "MCRB" %}
+                                    {% elif question.type == "SCRB" %}
                                     {% for choice in choices %}
-                                    <div class="d-block">
-                                        <input 
-                                            class="form-check-input" 
-                                            type="checkbox" 
-                                            name="question-{{ question.id }}" 
-                                            id="choice-{{ choice.id }}" 
-                                            value="{{ choice.id }}"
-                                            onclick="pressedCheckbox(this)">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                            name="questionsingle-{{ question.id }}" id="choice-{{ choice.id }}"
+                                            value="{{ choice.id }}" onclick="pressedRadio(this)">
                                         <label class="form-check-label" for="choice-{{ choice.id }}">
                                             {{ choice.text }}
                                         </label>
-                                    </div>        
+                                    </div>
+                                    {% endfor %}
+                                    {% elif question.type == "MCRB" %}
+                                    {% for choice in choices %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                            name="question-{{ question.id }}" id="choice-{{ choice.id }}"
+                                            value="{{ choice.id }}" onclick="pressedCheckbox(this)">
+                                        <label class="form-check-label" for="choice-{{ choice.id }}">
+                                            {{ choice.text }}
+                                        </label>
+                                    </div>
                                     {% endfor %}
                                     {% elif question.type == "OAS" %}
+                                    <input type="text" id="choice-{{ choice.id }}" name="question-{{ question.id }}"
+                                        onclick="pressedText(this)">
                                     {% elif question.type == "OAL" %}
+                                    <input type="text" id="choice-{{ choice.id }}" name="question-{{ question.id }}"
+                                        onclick="pressedText(this)">
+                                    {% elif question.type == "R" %}
+                                    <input type="range" id="choice-{{ choice.id }}" name="question-{{ question.id }}"
+                                        min="0" max="{{ choice.text }}" onclick="pressedRange(this)">
+                                    {% elif question.type == "N" %}
+                                    <input type="number" id="choice-{{ choice.id }}" name="question-{{ question.id }}"
+                                        min="0" max="{{ choice.text }}" onclick="pressedNumber(this)">
                                     {% endif %}
                                 </div>
                             </div>
@@ -79,31 +96,98 @@
 
                 </ul>
                 <input type="hidden" id="selections" name="selections" value="">
-                <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50 mt-auto" name="button" id="button" value="newrecommendation">{% trans "PreferencesSubmitButton" %}</button>
+                <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50 mt-auto" name="button"
+                    id="button" value="newrecommendation">{% trans "PreferencesSubmitButton" %}</button>
             </div>
         </form>
     </div>
 
     <script>
+        // Translate questions and answers
+
+        async function translateText(text, targetLanguage) {
+            const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=YOUR_API_KEY`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    q: text,
+                    target: targetLanguage
+                })
+            });
+            const data = await response.json();
+            return data.data.translations[0].translatedText;
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userLanguage = "{{ LANGUAGE_CODE }}";
+            const questions = document.querySelectorAll('[id^="question-"]');
+
+            for (const question of questions) {
+                const originalText = question.textContent;
+                const translatedText = await translateText(originalText, userLanguage);
+                question.textContent = translatedText;
+            }
+        });
+
+
         // Action that makes when a choice button is pressed
-        function pressedButton(boton) {
-            boton.classList.toggle('checked-button');
-            // console.log(`Button clicked: ${boton.textContent}, Selected: ${boton.classList.contains('checked-button')}`);
+        function pressedButton(button) {
+            button.classList.toggle('checked-button');
+            // console.log(`Button clicked: ${button.textContent}, Selected: ${button.classList.contains('checked-button')}`);
             updateselections();
         }
 
+        function pressedButtonSingle(button) {
+            const buttonName = button.getAttribute('name');
+            const type = buttonName.split('-')[0];
+            const buttons = document.querySelectorAll(`button[name*="${type}"]`);
+
+            buttons.forEach(btn => btn.classList.remove('checked-button'));
+
+            button.classList.add('checked-button');
+            updateselections();
+        }
+
+        // Action that makes when a choice checkbox is pressed
         function pressedCheckbox(checkbox) {
             checkbox.classList.toggle('checked-checkbox');
             // console.log(`Checkbox clicked: ${checkbox.value}, Selected: ${checkbox.classList.contains('checked-checkbox')}`);
             updateselections();
         }
 
+        // Action that makes when a choice radio is pressed
+        function pressedRadio(radio) {
+            radio.classList.toggle('checked-radio');
+            updateselections();
+        }
+
+        // Action that makes when a choice number is pressed
+        function pressedNumber(number) {
+            number.classList.toggle('checked-number');
+            updateselections();
+        }
+
+        // Action that makes when a choice range is pressed
+        function pressedRange(range) {
+            range.classList.toggle('checked-range');
+            updateselections();
+        }
+
+        // Action that makes when a choice text is pressed
+        function pressedText(text) {
+            text.classList.toggle('checked-text');
+            updateselections();
+        }
+
         function updateselections() {
             const buttons = document.querySelectorAll('form button[type="button"]');
             const checkboxes = document.querySelectorAll('form input[type="checkbox"]:checked');
+            const numbers = document.querySelectorAll('form input[type="number"]');
+            const ranges = document.querySelectorAll('form input[type="range"]');
+            const texts = document.querySelectorAll('form input[type="text"]');
             const selections = {};
 
-            // Guardar botones seleccionados
+            // Guardar buttones seleccionados
             buttons.forEach((button) => {
                 if (button.classList.contains('checked-button')) {
                     const questionId = button.name.split('-')[1];
@@ -120,12 +204,33 @@
                 selections[questionId].push(checkbox.value);
             });
 
+            // Guardar numbers seleccionados
+            numbers.forEach((number) => {
+                const questionId = number.name.split('-')[1];
+                if (!selections[questionId]) selections[questionId] = [];
+                selections[questionId].push(number.value);
+            });
+
+            // Guardar ranges seleccionados
+            ranges.forEach((range) => {
+                const questionId = range.name.split('-')[1];
+                if (!selections[questionId]) selections[questionId] = [];
+                selections[questionId].push(range.value);
+            });
+
+            // Guardar texts seleccionados
+            texts.forEach((text) => {
+                const questionId = text.name.split('-')[1];
+                if (!selections[questionId]) selections[questionId] = [];
+                selections[questionId].push(text.value);
+            });
+
             // Log the updated hidden input value
             // console.log("Hidden input value updated:", document.getElementById('selections').value);
-            
+
             // Actualizar campo oculto
             document.getElementById('selections').value = JSON.stringify(selections);
-            
+
         }
 
     </script>

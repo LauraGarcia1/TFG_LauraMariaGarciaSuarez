@@ -26,7 +26,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Comprobar CSS inutilizable
 - [ ] Comprimir HTML
 - [X] Hacer uso de los datos contenidos en BGG(17/11/2024)
-- [ ] Obtener las preferencias y guardarlas en una BD
+- [X] Obtener las preferencias y guardarlas en una BD (05/01/2025)
 - [X] Poner todo en inglés (26/10/2024)
 - [X] Modificar páginas de recomendaciones (24/10/24 y 26/10/24)
 - [X] Obtener los juegos recomendados gustados en views.py (28/10/24)
@@ -40,8 +40,10 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Comprobar forloop de questionnarie.html (15/01/2025)
 - [ ] Comprobar muchas questions en questionnarie
 - [ ] Violacion de segmento?
-- [ ] Arreglar vulnerabilidades de github
-- [ ] Cambiar color checkbox
+- [X] Arreglar vulnerabilidades de github (18/01/2025)
+- [X] Cambiar color checkbox (21/01/2025)
+- [ ] Cambio de idioma de las questions
+- [ ] Probar cambios questionnarie y language
 
 ### Evaluación del participante
 
@@ -169,10 +171,11 @@ No funcionó gitlab desde 07/10/24 hasta (15/10/24???).
 
 Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especialmente en los juegos de estrategia y de construcción. La palabra "meeple" es una combinación de "my" y "people" (mi gente), y se refiere a los pequeños personajes de madera, plástico o cartón que representan a los jugadores en el juego.
 
-Preguntas que pueden hacerme
+## Preguntas que pueden hacerme
 
 - por que django y no java pejem
 - porq postgres
+- que vulns tuve que arreglar
 - 
 
 ## Bibliografía importante

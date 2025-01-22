@@ -27,7 +27,7 @@ class QuestionAdmin(admin.ModelAdmin):
 # Answer model
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ['id_question', 'answer', 'language', 'date_created']
+    list_display = ['id_question', 'choice', 'language', 'date_created']
     search_fields = ['answer']
     list_filter = ['language', 'date_created']
 
