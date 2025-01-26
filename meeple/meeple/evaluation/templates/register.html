@@ -43,6 +43,36 @@
                     required>
             </div>
             <div class="mb-4">
+                <label class="form-label fw-bold required" id="rolLabel">{% trans "Rol" %}:</label>
+                <div>
+                    <span class="tab"></span><input type="radio" id="evaluator" name="rol" value="ER">
+                    <label for="evaluator">{% trans "Evaluator" %}</label>
+                </div>
+
+                <div>
+                    <span class="tab"></span><input type="radio" id="evaluated" name="rol" value="ED">
+                    <label for="evaluated">{% trans "Evaluated" %}</label>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold required" id="genderLabel">{% trans "Gender" %}:</label>
+                <div>
+                    <span class="tab"></span><input type="radio" id="male" name="gender" value="M">
+                    <label for="male">{% trans "Male" %}</label>
+                </div>
+
+                <div>
+                    <span class="tab"></span><input type="radio" id="female" name="gender" value="F">
+                    <label for="female">{% trans "Female" %}</label>
+                </div>
+
+                <div>
+                    <span class="tab"></span><input type="radio" id="other" name="gender" value="O">
+                    <label for="other">{% trans "Other" %}</label>
+                </div>
+
+            </div>
+            <div class="mb-4">
                 <label class="form-label fw-bold required" id="frequencyLabel">{% trans "Frequency" %}</label>
                 <div>
                     <span class="tab"></span><input type="radio" id="morethan" name="frequencyGame" value="MW">
@@ -79,25 +109,6 @@
                 <div>
                     <span class="tab"></span><input type="radio" id="advanced" name="expertiseGame" value="A">
                     <label for="advanced">{% trans "Advanced" %}</label>
-                </div>
-
-            </div>
-
-            <div class="mb-4">
-                <label class="form-label fw-bold required" id="genderLabel">{% trans "Gender" %}:</label>
-                <div>
-                    <span class="tab"></span><input type="radio" id="male" name="gender" value="M">
-                    <label for="male">{% trans "Male" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="radio" id="female" name="gender" value="F">
-                    <label for="female">{% trans "Female" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="radio" id="other" name="gender" value="O">
-                    <label for="other">{% trans "Other" %}</label>
                 </div>
 
             </div>
@@ -208,12 +219,15 @@
         const radios = document.getElementsByName('frequencyGame');
         const radiosSecond = document.getElementsByName('expertiseGame');
         const radiosThird = document.getElementsByName('gender');
+        const radiosFourth = document.getElementsByName('rol');
         const label = document.getElementById('frequencyLabel');
         const labelSecond = document.getElementById('expertiseLabel');
         const labelThird = document.getElementById('genderLabel');
+        const labelFourth = document.getElementById('rolLabel');
         let isRadioChecked = false;
         let isRadioSecChecked = false;
         let isRadioTrdChecked = false;
+        let isRadioFrtChecked = false;
 
         for (const radio of radios) {
             if (radio.checked) {
@@ -239,6 +253,14 @@
             }
         }
 
+        for (const radio of radiosFourth) {
+            if (radio.checked) {
+                isRadioFrtChecked = true;
+                labelFourth.classList.add('valid');
+                break;
+            }
+        }
+
         if (!isRadioChecked) {
             allFilled = false;
         }
@@ -248,6 +270,10 @@
         }
 
         if (!isRadioTrdChecked) {
+            allFilled = false;
+        }
+
+        if (!isRadioFrtChecked) {
             allFilled = false;
         }
 

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block overflow %}
+    {% if questionnaries.exists %}
+    <body style="overflow-x: hidden;">
+    {% else %}
+    <body style="overflow-x: hidden; overflow-y: hidden;">
+    {% endif %}
+{% endblock overflow %}
+
+        {% block body %}
+
+        <div class="position-relative custom-container">
+            <div class="position-absolute bottom-0 end-0">
+                <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+                    style="transform: rotate(31deg);">
+            </div>
+
+            <form action="" method="post">
+                {% csrf_token %}
+                <div
+                    class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+
+                    <div class="m-auto text-end">
+                        <a href="{% url 'create-questionnarie' %}" class="btn btn-primary rounded-pill btn-mostaza w-50 mt-auto">
+                            {% trans "StudiesButtom" %}
+                        </a>
+                        
+                    </div>
+
+                    {% if studies.exists %}
+                    <ul class="list-group list-group-flush pt-5">
+                        <h2>{% trans "MyStudies" %}</h2>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Study Name" %}</th>
+                                    <th>{% trans "Actions" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for study in studies %}
+                                <tr>
+                                    <td>{{ study.name }}</td>
+                                    <td>
+                                        <a href="{% url 'edit-study' study.id %}" class="btn btn-link">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                    </ul>
+                    {% else %}
+                    <p class="text-muted mt-5">{% trans "liststudies" %}</p>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+
+        {% endblock body %}

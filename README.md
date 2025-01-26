@@ -42,7 +42,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Violacion de segmento?
 - [X] Arreglar vulnerabilidades de github (18/01/2025)
 - [X] Cambiar color checkbox (21/01/2025)
-- [ ] Cambio de idioma de las questions
+- [X] Cambio de idioma de las questions (23/01/2025)
 - [ ] Probar cambios questionnarie y language
 
 ### Evaluación del participante
@@ -92,19 +92,37 @@ Carlos evalúa cada uno de los juegos recomendados respondiendo a las preguntas 
 ### **Qué hace la evaluación?**
 
 1. **Recopila datos sobre cada recomendación:**
+
    * Para  **Catan** , sabemos que Carlos está muy interesado, lo considera relevante y le gustaría más modos de juego.
    * Además, sabemos que la calidad y las características son lo que más valora.
 2. **Analiza el rendimiento del sistema:**
+
    * Si Carlos evalúa **Juego A** con puntajes altos y lo considera relevante, significa que el sistema acertó.
    * Por otro lado, si **Juego D: Dixit** tiene respuestas como "no se ajusta a mis preferencias" o "poco probable que lo compre", el sistema debe mejorar.
 3. **Retroalimenta al algoritmo de recomendación:**
+
    * Los datos de evaluación (interés, relevancia, factores de compra) ayudan al algoritmo a entender mejor las preferencias de Carlos y de otros usuarios similares.
    * Por ejemplo, si muchos usuarios con preferencias estratégicas como Carlos prefieren juegos como **Catan** y  **Pandemic** , el sistema puede priorizar esos juegos en futuras recomendaciones.
 4. **Permite análisis posteriores:**
+
    * A nivel de plataforma, puedes identificar tendencias como:
      * ¿Cuáles son los factores más importantes para los usuarios (precio, calidad, etc.)?
      * ¿Qué juegos tienen las mejores evaluaciones?
      * ¿Qué juegos necesitan mejoras (por ejemplo, en personalización)?
+
+## Análisis de requisitos
+
+1. La plataforma debe poder presentar varios estudios al participante.
+2. La plataforma debe poder usar algoritmos de recomendación.
+3. Los participantes deben de ser capaces de registrarse e iniciar sesión en la plataforma.
+4. Los usuarios deben poder escoger entre 2 roles, el rol de Evaluador y el rol de Evaluado.
+5. Los Evaluadores deben poder añadir nuevos estudios.
+6. Los Evaluadores deben poder añadir preguntas para las recomendaciones.
+7. Los Evaluados deben poder responder las preguntas de forma individual para cada juego recomendado por el Algoritmo.
+8. Los Evaluadores deben poder hacer uso de distintos algoritmos de Recomendación.
+9. La plataforma debe poder traducir todo el contenido en Español o Inglés.
+10. La plataforma debe guardar las respuestas del Evaluado en la base de datos.
+11. 
 
 ## Base de Datos
 
@@ -187,3 +205,5 @@ Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especia
 -> Traducción de las páginas: https://www.freecodecamp.org/news/localize-django-app/
 
 -> Datos de juegos: https://www.w3schools.com/xml/ajax_database.asp
+
+-> Django: https://www.djangoproject.com/start/

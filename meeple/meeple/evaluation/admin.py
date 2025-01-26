@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import Choice, Participant, Interaction, Questionnarie, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, GameRecommended
+from .models import Choice, User, Interaction, Questionnarie, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, GameRecommended
 
 # Register your models here.
 
-# Participant model
-@admin.register(Participant)
-class ParticipantAdmin(admin.ModelAdmin):
+# User model
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
     list_display = ['username', 'email', 'location', 'age', 'frequencyGame', 'expertiseGame', 'gender', 'date_created']
     search_fields = ['username', 'email']
     list_filter = ['gender', 'frequencyGame', 'expertiseGame', 'date_created']
@@ -34,7 +34,7 @@ class AnswerAdmin(admin.ModelAdmin):
 # Recommendation model
 @admin.register(Recommendation)
 class RecommendationAdmin(admin.ModelAdmin):
-    list_display = ['id_algorithm', 'id_participant', 'date_created']
+    list_display = ['id_algorithm', 'id_user', 'date_created']
     search_fields = ['id_algorithm__name', 'id_game__id_BGG']
     list_filter = ['date_created']
 
@@ -54,16 +54,16 @@ class AlgorithmAdmin(admin.ModelAdmin):
 # Evaluation model
 @admin.register(Evaluation)
 class EvaluationAdmin(admin.ModelAdmin):
-    list_display = ['id_algorithm', 'id_participant', 'puntuation', 'date_created']
-    search_fields = ['id_algorithm__name', 'id_game__id_BGG', 'id_participant__username']
+    list_display = ['id_algorithm', 'id_user', 'puntuation', 'date_created']
+    search_fields = ['id_algorithm__name', 'id_game__id_BGG', 'id_user__username']
     list_filter = ['puntuation', 'date_created']
 
 # Preference model
 @admin.register(Preference)
 class PreferenceAdmin(admin.ModelAdmin):
-    list_display = ['preference', 'category', 'value', 'id_participant']
+    list_display = ['preference', 'category', 'value', 'id_user']
     search_fields = ['category']
-    list_filter = ['value', 'id_participant']
+    list_filter = ['value', 'id_user']
 
 # Choice model
 @admin.register(Choice)

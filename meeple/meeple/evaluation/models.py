@@ -6,11 +6,19 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 
 
-class Participant(AbstractUser):
+class User(AbstractUser):
     ''' Default user class with extra fields '''
     email = models.EmailField(unique=True)  # Field for unique email
     location = models.CharField(max_length=200, blank=True, null=True)  # Field for location
     age = models.PositiveIntegerField()  # Field for age
+    rol = models.CharField(
+        max_length = 5,
+        choices = [
+            ('ER', 'Evaluator'),
+            ('ED', 'Evaluated')
+        ],
+        default='ER'
+    )
     frequencyGame = models.CharField(
         max_length = 10,
         choices = [
@@ -76,7 +84,7 @@ class Participant(AbstractUser):
 """ TODO: me es necesario alguna cosa de aquí?
 class Interaction(models.Model):
     id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False)
-    id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    id_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     type = models.CharField(
         max_length=20,
@@ -136,6 +144,7 @@ class Interaction(models.Model):
 
 class Questionnarie(models.Model):
     name = models.CharField(max_length=150, blank=False, null=False)
+    id_user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     language = models.CharField(
         max_length = 10,
@@ -187,7 +196,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     id_question = models.ForeignKey('Question', on_delete=models.CASCADE, null=False)
-    id_participant = models.ForeignKey('Participant', on_delete=models.SET_NULL, null=True)
+    id_user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     choice = models.ForeignKey('Choice', on_delete=models.SET_NULL, null=True)
     language = models.CharField(
@@ -209,7 +218,7 @@ class Recommendation(models.Model):
     id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
     #id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     #games = []
-    id_participant = models.ForeignKey('Participant', on_delete=models.SET_NULL, null=True)
+    id_user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     # TODO: Cambiar parámetros en el diagrama
     metrics = models.JSONField(default=list)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -259,23 +268,23 @@ class Evaluation(models.Model):
     id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
     #id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=True)
-    id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
+    id_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
     puntuation = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
     #results = models.TextField()
     #metrics = models.JSONField(default=list)
 
     def __str__(self):
-        return f"Evaluation by {self.id_participant} from recommendation {self.id_recommendation}"
+        return f"Evaluation by {self.id_user} from recommendation {self.id_recommendation}"
 
 class Preference(models.Model):
     preference = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
     category = models.CharField(max_length=100, blank=True, null=True)
     value = models.FloatField(default=0.0) 
-    id_participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    id_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f"{self.id_participant} - {self.category}"
+        return f"{self.id_user} - {self.category}"
     
 
 class Choice(models.Model):

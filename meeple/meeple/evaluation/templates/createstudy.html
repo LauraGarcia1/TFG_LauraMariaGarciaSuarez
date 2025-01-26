@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block overflow %}
+
+<body style="overflow-x: hidden;">
+
+    {% endblock overflow %}
+
+    {% block body %}
+
+
+
+    <div class="position-relative custom-container">
+        <div class="position-absolute top-0 start-0">
+            <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+                style="transform: rotate(64deg);">
+        </div>
+
+        <div class="position-absolute bottom-0 end-0">
+            <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
+                style="transform: rotate(31deg);">
+        </div>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <div
+                class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+                <div
+                    class="row h-100 p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
+                    <h1>{% trans "CreateStudyTitle" %}</h1>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "StudiesButtom" %}</button>
+                    </form>
+                    <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota mt-3">{% trans "ReturnToStudyList" %}</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% endblock body %}

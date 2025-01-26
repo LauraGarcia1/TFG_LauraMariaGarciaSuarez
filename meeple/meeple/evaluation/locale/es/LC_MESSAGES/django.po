@@ -285,6 +285,18 @@ msgstr "Ubicación"
 msgid "Age"
 msgstr "Edad"
 
+#: evaluation/templates/register.html:45
+msgid "Rol"
+msgstr "Rol"
+
+#: evaluation/templates/register.html:45
+msgid "Evaluator"
+msgstr "Evaluador"
+
+#: evaluation/templates/register.html:45
+msgid "Evaluated"
+msgstr "Evaluado"
+
 #: evaluation/templates/register.html:50
 msgid "Frequency"
 msgstr "Con cuánta frecuencia ha jugado a juegos de mesa"
@@ -362,6 +374,10 @@ msgstr "3er experimento"
 msgid "ForthExperiment"
 msgstr "4to experimento"
 
+#: evaluation/templates/userhomepage.html:26
+msgid "NoExperiments"
+msgstr "No hay experimentos en este momento. ¡Por favor, vuelve más tarde!"
+
 #: evaluation/views.py:33
 msgid "Welcome"
 msgstr "¡Bienvenido"
@@ -369,3 +385,35 @@ msgstr "¡Bienvenido"
 #: evaluation/views.py:36
 msgid "Login"
 msgstr "Iniciar sesión"
+
+#: evaluation/templates/mystudies.html:28
+msgid "StudiesButtom"
+msgstr "Crear estudio"
+
+#: evaluation/templates/mystudies.html:35
+msgid "MyStudies"
+msgstr "Mis Estudios"
+
+#: evaluation/templates/mystudies.html:55
+msgid "liststudies"
+msgstr "No tienes estudios creados aún. Puedes hacerlos con el botón de arriba."
+
+#: evaluation/templates/createstudy.html:32
+msgid "CreateStudyTitle"
+msgstr "Crear un Nuevo Estudio"
+
+#: evaluation/templates/createstudy.html:38
+msgid "ReturnToStudyList"
+msgstr "Volver a la lista"
+
+#: evaluation/templates/editstudy.html:32
+msgid "EditStudy"
+msgstr "Editar Estudio"
+
+#: evaluation/templates/editstudy.html:36
+msgid "SaveChanges"
+msgstr "Guardar cambios"
+
+#: evaluation/templates/editstudy.html:37
+msgid "Cancel"
+msgstr "Cancelar"

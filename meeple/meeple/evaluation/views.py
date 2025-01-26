@@ -1,13 +1,16 @@
 from urllib import request
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth import login, authenticate
 from django.http import JsonResponse
 from django.conf import settings
-from .forms import SignUpForm
 from django.db import connections
+from django.views.generic.list import ListView
+from django.views.generic.edit import CreateView
+from django.views.generic import UpdateView
 from django.utils.translation import gettext_lazy as _
-from .models import Preference, Participant, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction
+from .forms import SignUpForm, QuestionnarieForm
+from .models import Preference, User, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction
 import json
 
 def home(request):
@@ -20,16 +23,18 @@ def home(request):
     password = request.POST.get("password")
 
     if request.method == "POST":
-        if request.POST.get("button") == "signup":
-            request.session['username'] = username
-            request.session['password'] = password
-            return redirect(reverse('register'))
         if request.POST.get("button") == "signin":
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
                 request.session['userid'] = user.id
-                return redirect(reverse('user-home'))
+                if user.rol == "ER":
+                    return redirect(reverse('my-studies'))
+                return redirect(reverse('my-recommendations'))
+        request.session['username'] = username
+        request.session['password'] = password
+        
+        return redirect(reverse('register'))
 
     title_home = _("Welcome")
     username_home = _("Username")
@@ -46,7 +51,6 @@ def signup(request):
 
         Autor: Laura Mª García Suárez
     """
-
     if request.method == "POST":
         form = SignUpForm(request.POST)
 
@@ -55,9 +59,10 @@ def signup(request):
         email = request.POST.get("email")
         location = request.POST.get("location")
         age = request.POST.get("age")
+        gender = request.POST.get("gender")
+        rol = request.POST.get("rol")
         frequencyGame = request.POST.get("frequencyGame")
         expertiseGame = request.POST.get("expertiseGame")
-        gender = request.POST.get("gender")
 
         print(form.errors)
 
@@ -68,9 +73,10 @@ def signup(request):
             password = form.cleaned_data.get('password')
 
             user = authenticate(username=username, password=password, email=email, location=location,
-                                age=age, frequencyGame=frequencyGame, expertiseGame=expertiseGame, gender=gender)
+                                age=age, rol=rol, frequencyGame=frequencyGame, expertiseGame=expertiseGame, gender=gender)
 
             request.session['userid'] = user.id
+            request.session['rol'] = user.rol
 
             if user is not None:
                 login(request, user)
@@ -94,10 +100,11 @@ def preferences(request):
                 categories = cursor.fetchone()
 
             Preference.objects.create(preference=Game.objects.get_or_create(id_BGG=int(pref))[0], category=str(
-                categories), value=0, id_participant=Participant.objects.get(id=request.session.get('userid')))
+                categories), value=0, id_user=User.objects.get(id=request.session.get('userid')))
 
-        print(preferences)
-        return redirect('user-home')
+        if request.session.get('rol') == "ER":
+            return redirect(reverse('my-studies'))
+        return redirect(reverse('my-recommendations'))
 
     zacatrus_games = get_preferences_games()
 
@@ -129,7 +136,7 @@ def get_data_game(request):
                 return JsonResponse({'error': 'No se encontraron datos'})
 
 
-def userHome(request):
+def questionnaries(request):
     """
         Función que muestra la página principal del usuario
 
@@ -138,11 +145,49 @@ def userHome(request):
 
     if request.method == "POST":
         if request.POST.get("button") == "recommendations":
-            return redirect(reverse('recommendations'))
+            return redirect(reverse('questionnarie'))
 
         return redirect(reverse('home'))
+    
+    questionnaries = Questionnarie.objects.get_queryset()
 
-    return render(request, 'userhomepage.html')
+    return render(request, 'liststudies.html', {'questionnaries' : questionnaries})
+
+class StudiesView(ListView):
+    """
+        Función que muestra la página principal del usuario con rol Evaluador.
+
+        Autor: Laura Mª García Suárez
+    """
+    model = Questionnarie
+    template_name = 'mystudies.html'
+    context_object_name = 'studies'
+
+    def get_queryset(self):
+        # Filtrar los cuestionarios por el usuario autenticado
+        if self.request.user.is_authenticated:
+            return Questionnarie.objects.filter(id_user=self.request.user)
+        return Questionnarie.objects.none()
+
+class QuestionnarieCreateView(CreateView):
+    """
+    Vista que permite crear un nuevo cuestionario.
+    """
+    model = Questionnarie
+    template_name = 'createstudy.html'
+    fields = ['name', 'description', 'language']
+
+    success_url = reverse_lazy('my-studies')
+
+    def form_valid(self, form):
+        form.instance.id_user = self.request.user
+        return super().form_valid(form)
+    
+class EditStudyView(UpdateView):
+    model = Questionnarie
+    form_class = QuestionnarieForm
+    template_name = 'editstudy.html'
+    success_url = '/studies/'
 
 
 def recommendPage(request):
@@ -154,14 +199,14 @@ def recommendPage(request):
 
     if request.method == "POST":
         if request.POST.get("button") == "newrecommendation":
-            return redirect(reverse('questionnarie'))
+            return redirect(reverse('list-questionnaries'))
             # return redirect(reverse('first'))
 
         return redirect(reverse('home'))
 
     zacatrus_games = get_preferences_games()
 
-    return render(request, 'recommendations.html', {'zacatrus_games': zacatrus_games, 'MEDIA_URL': settings.MEDIA_URL})
+    return render(request, 'myrecommendations.html', {'zacatrus_games': zacatrus_games, 'MEDIA_URL': settings.MEDIA_URL})
 
 
 def questions(request):
@@ -183,7 +228,7 @@ def questions(request):
     if request.path == "/questions/1":
         return render(request, 'question-one.html')
 
-    return render(request, 'recommendations.html')
+    return render(request, 'liststudies.html')
 
 
 def questionnarie(request):
@@ -202,8 +247,7 @@ def questionnarie(request):
                 # Guardamos las respuestas del participante
                 question = Question.objects.get(id=question_id)
                 for choice in choice_ids:
-                    answer = Answer.objects.create(id_question=question, answer=Choice.objects.get(
-                        id=choice), id_participant=Participant.objects.get(id=request.session.get('userid')), language=settings.LANGUAGE_CODE)
+                    answer = Answer.objects.create(id_question=question, answer=Choice.objects.get(id=choice), id_user=User.objects.get(id=request.session.get('userid')), language=settings.LANGUAGE_CODE)
                     answers.append(answer.answer.choice)
 
             request.session['answers'] = answers
@@ -215,6 +259,12 @@ def questionnarie(request):
 
 
 def get_data_questions():
+    """
+        Función que obtiene las opciones de las preguntas
+
+        Autor: Laura Mª García Suárez
+    """
+
     # TODO: como hago con los cuestionarios
     questionnarie = Questionnarie.objects.first()
     questions = questionnarie.questions.all()
@@ -227,6 +277,12 @@ def get_data_questions():
 
 
 def newRecomm(request, answers=None):
+    """
+        Función que muestra la página de las recomendaciones
+
+        Autor: Laura Mª García Suárez
+    """
+    
     answers = request.session.get('answers', [])
     request.session.pop('answers', None)
 
@@ -238,7 +294,7 @@ def newRecomm(request, answers=None):
         # TODO: como obtengo la puntuacion
         puntuation = 5
         evaluation = Evaluation.objects.create(id_algorithm=Algorithm.objects.get(id=1), id_recommendation=Recommendation.objects.get(
-            id=request.session.get('recommendation')), id_participant=Participant.objects.get(id=request.session.get('userid')), puntuation=puntuation)
+            id=request.session.get('recommendation')), id_user=User.objects.get(id=request.session.get('userid')), puntuation=puntuation)
 
         print(selections)
         for id_game, list_values in selections.items():
@@ -249,14 +305,14 @@ def newRecomm(request, answers=None):
 
         if request.POST.get("button") == "exit":
             request.session.pop('recommendation', None)
-            return redirect(reverse('recommendations'))
+            return redirect(reverse('list-questionnaries'))
         elif request.POST.get("button") == "moreEvals":
             request.session.pop('recommendation', None)
             # TODO: Guardar zacatrus_games?
             return render(request, 'newrecommendations.html', {'zacatrus_games': zacatrus_games, 'MEDIA_URL': settings.MEDIA_URL, 'preferences_part': answers})
 
     recommendation = Recommendation.objects.create(id_algorithm=Algorithm.objects.first(
-    ), id_participant=Participant.objects.get(id=request.session['userid']))
+    ), id_user=User.objects.get(id=request.session['userid']))
     recommendation.add_metrics(answers)
 
     request.session['recommendation'] = recommendation.id
