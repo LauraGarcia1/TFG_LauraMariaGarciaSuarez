@@ -1,7 +1,8 @@
 # Creator: Laura María García Suarez
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, Questionnarie
+from .models import User, Questionnarie, Section, Question
+from django.forms import inlineformset_factory
 
 
 class SignUpForm(forms.ModelForm):
@@ -21,4 +22,29 @@ class SignUpForm(forms.ModelForm):
 class QuestionnarieForm(forms.ModelForm):
     class Meta:
         model = Questionnarie
-        fields = ['name', 'description', 'language']  # Campos que deseas permitir editar
+        fields = ['name', 'description', 'language']
+        widgets = {
+            'name': forms.TextInput(attrs={'autocomplete': 'off'}),
+        }
+
+# Formulario para Section
+class SectionForm(forms.ModelForm):
+    class Meta:
+        model = Section
+        fields = ['title']
+
+# Formulario para Question
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['text', 'type', 'language']
+
+# Formset para añadir Sections dentro de Questionnarie
+SectionFormSet = inlineformset_factory(
+    Questionnarie, Section, form=SectionForm, extra=1, can_delete=True
+)
+
+# Formset para añadir Questions dentro de Section
+QuestionFormSet = inlineformset_factory(
+    Section, Question, form=QuestionForm, extra=1, can_delete=True
+)

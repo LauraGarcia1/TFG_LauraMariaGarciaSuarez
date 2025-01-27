@@ -81,27 +81,6 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-""" TODO: me es necesario alguna cosa de aquí?
-class Interaction(models.Model):
-    id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False)
-    id_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
-    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
-    type = models.CharField(
-        max_length=20,
-        choices=[
-            ('click', 'Click'),
-            ('visualization', 'Visualization'),
-            ('selected', 'Selected'),
-            ('time', 'Time')
-        ],
-        default='click'
-        )
-    comment = models.CharField(max_length=150, blank=True, null=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.id} - {self.type}"
-"""
 class Interaction(models.Model):
     INTEREST_CHOICES = [
         (1, 'Not interested'),
@@ -117,8 +96,8 @@ class Interaction(models.Model):
         (4, 'Likely'),
         (5, 'Very likely'),
     ]
-    id_evaluation = models.ForeignKey('Evaluation', on_delete=models.CASCADE, null=False, related_name='answers')
-    id_gamerecommended = models.ForeignKey('GameRecommended', on_delete=models.CASCADE, null=False)
+    evaluation = models.ForeignKey('Evaluation', on_delete=models.CASCADE, null=False, related_name='answers')
+    gamerecommended = models.ForeignKey('GameRecommended', on_delete=models.CASCADE, null=False)
     interested = models.IntegerField(choices=INTEREST_CHOICES, default=3)
     buyorrecommend = models.IntegerField(choices=GENERAL_CHOICES, default=3)
     preference = models.BooleanField(default=False)
@@ -127,7 +106,7 @@ class Interaction(models.Model):
     influences = models.JSONField(default=list)
 
     def __str__(self):
-        return f"Evaluation for {self.id_gamerecommended}"
+        return f"Evaluation for {self.gamerecommended}"
     
     def add_influences(self, add_influences):
         INFLUENCE_CHOICES = {
@@ -144,7 +123,7 @@ class Interaction(models.Model):
 
 class Questionnarie(models.Model):
     name = models.CharField(max_length=150, blank=False, null=False)
-    id_user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     language = models.CharField(
         max_length = 10,
@@ -159,10 +138,17 @@ class Questionnarie(models.Model):
     def __str__(self):
         return self.name
 
+class Section(models.Model):
+    questionnarie = models.ForeignKey(Questionnarie, related_name='sections', on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
 class Question(models.Model):
-    id_questionnarie = models.ForeignKey('Questionnarie', on_delete=models.CASCADE, null=False, related_name='questions')
+    section = models.ForeignKey('Section', on_delete=models.CASCADE, null=False, related_name='questions')
     date_created = models.DateTimeField(auto_now_add=True)
-    question = models.CharField(max_length=150, blank=False, null=False)
+    text = models.CharField(max_length=150, blank=False, null=False)
     # TODO: tendría sentido que hubiese otros tipos?
     type = models.CharField(
         max_length=20,
@@ -191,12 +177,12 @@ class Question(models.Model):
         ordering = ['date_created']
     
     def __str__(self):
-        return f"{self.id} - {self.question}"
+        return f"{self.id} - {self.text}"
     
 
 class Answer(models.Model):
-    id_question = models.ForeignKey('Question', on_delete=models.CASCADE, null=False)
-    id_user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+    question = models.ForeignKey('Question', on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     choice = models.ForeignKey('Choice', on_delete=models.SET_NULL, null=True)
     language = models.CharField(
@@ -215,27 +201,25 @@ class Answer(models.Model):
         return f"{self.id} - {self.choice}"
 
 class Recommendation(models.Model):
-    id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
-    #id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
-    #games = []
-    id_user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+    algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     # TODO: Cambiar parámetros en el diagrama
     metrics = models.JSONField(default=list)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.id_algorithm} {self.games}"
+        return f"{self.algorithm}"
     
     def add_metrics(self, new_metrics):
         self.metrics.extend(new_metrics)
         self.save()
 
 class GameRecommended(models.Model):
-    id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False, related_name="games")
-    id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
+    recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False, related_name="games")
+    game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
 
     def __str__(self):
-        return f"{self.id_recommendation} {self.id_game}"
+        return f"{self.recommendation} {self.game}"
 
 class Game(models.Model): # ??
     id_BGG = models.IntegerField(default=0)
@@ -265,30 +249,30 @@ class Algorithm(models.Model):
 
 class Evaluation(models.Model):
     # INFO: una evaluacion no debería tener recomendaciones que le ha gustado al participante
-    id_algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
-    #id_game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
-    id_recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=True)
-    id_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
+    algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
+    #game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
+    recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
     puntuation = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
     #results = models.TextField()
     #metrics = models.JSONField(default=list)
 
     def __str__(self):
-        return f"Evaluation by {self.id_user} from recommendation {self.id_recommendation}"
+        return f"Evaluation by {self.user} from recommendation {self.recommendation}"
 
 class Preference(models.Model):
-    preference = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
+    text = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
     category = models.CharField(max_length=100, blank=True, null=True)
     value = models.FloatField(default=0.0) 
-    id_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f"{self.id_user} - {self.category}"
+        return f"{self.user} - {self.category}"
     
 
 class Choice(models.Model):
-    id_question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True, related_name='choices')
+    question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True, related_name='choices')
     text = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):

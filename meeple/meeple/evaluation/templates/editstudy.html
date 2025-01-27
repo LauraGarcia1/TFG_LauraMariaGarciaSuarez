@@ -33,6 +33,14 @@
                     <form method="post">
                         {% csrf_token %}
                         {{ form.as_p }}
+
+                        <!-- Formset de Sections -->
+                        {{ section_formset.management_form }}
+                        {% for form in section_formset %}
+                            <div>
+                                {{ form.as_p }}
+                            </div>
+                        {% endfor %}
                         <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "SaveChanges" %}</button>
                         <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota mt-3">{% trans "Cancel" %}</a>
                     </form>

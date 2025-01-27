@@ -35,6 +35,10 @@ msgstr "Sobre nosotros"
 msgid "Contact"
 msgstr "Contacto"
 
+#: evaluation/templates/base.html:78
+msgid "Logout"
+msgstr "Cerrar sesión"
+
 #: evaluation/templates/newrecommendations.html:18
 msgid "EvaluatorPtOne"
 msgstr "Gracias Evaluador"

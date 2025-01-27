@@ -72,6 +72,20 @@
                                 <span class="mx-3">{% trans "Contact" %}</span>
                             </button>
                         </li>
+                        {% if request.user.is_authenticated %}
+                        <li class="nav-item ps-5">
+                            <button type="button" class="btn btn-inverse-light nav-link rounded-pill" disabled>
+                                <i class="bi bi-person-circle"></i>
+                                <span class="mx-3">{{ user.username }}</span>
+                            </button>
+                        </li>
+                        <li class="nav-item active ps-5">
+                            <button type="button" class="btn btn-inverse-mostaza nav-link rounded-pill fw-bold"
+                                onclick="window.location.href='{% url 'logout' %}'">
+                                <span class="mx-3">{% trans "Logout" %}</span>
+                            </button>
+                        </li>
+                        {% endif %}
                         {% endblock navig %}
 
                         <li class="nav-item ps-5">

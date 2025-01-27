@@ -2,14 +2,15 @@ from urllib import request
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.conf import settings
-from django.db import connections
+from django.db import connections, transaction
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, CreateView
 from django.utils.translation import gettext_lazy as _
-from .forms import SignUpForm, QuestionnarieForm
+from .forms import SignUpForm, QuestionnarieForm, SectionFormSet, QuestionFormSet
 from .models import Preference, User, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction
 import json
 
@@ -88,7 +89,12 @@ def signup(request):
 
     return render(request, 'register.html', {'username': request.session['username'], 'password': request.session['password'], 'form': form})
 
+def logout(request):
+    request.session.flush()
+    return redirect('home')
+    
 
+@login_required
 def preferences(request):
     if request.method == "POST":
         preferences = request.POST.getlist('likedPreferences')
@@ -99,8 +105,8 @@ def preferences(request):
                     "SELECT GROUP_CONCAT(DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories FROM (SELECT DISTINCT gameid, name FROM zacatrus_game_categories) zgc WHERE zgc.gameid = %s;", [pref])
                 categories = cursor.fetchone()
 
-            Preference.objects.create(preference=Game.objects.get_or_create(id_BGG=int(pref))[0], category=str(
-                categories), value=0, id_user=User.objects.get(id=request.session.get('userid')))
+            Preference.objects.create(text=Game.objects.get_or_create(id_BGG=int(pref))[0], category=str(
+                categories), value=0, user=User.objects.get(id=request.session.get('userid')))
 
         if request.session.get('rol') == "ER":
             return redirect(reverse('my-studies'))
@@ -135,7 +141,7 @@ def get_data_game(request):
             else:
                 return JsonResponse({'error': 'No se encontraron datos'})
 
-
+@login_required
 def questionnaries(request):
     """
         Función que muestra la página principal del usuario
@@ -153,7 +159,7 @@ def questionnaries(request):
 
     return render(request, 'liststudies.html', {'questionnaries' : questionnaries})
 
-class StudiesView(ListView):
+class StudiesView(LoginRequiredMixin, ListView):
     """
         Función que muestra la página principal del usuario con rol Evaluador.
 
@@ -166,30 +172,77 @@ class StudiesView(ListView):
     def get_queryset(self):
         # Filtrar los cuestionarios por el usuario autenticado
         if self.request.user.is_authenticated:
-            return Questionnarie.objects.filter(id_user=self.request.user)
+            return Questionnarie.objects.filter(user=self.request.user)
         return Questionnarie.objects.none()
 
-class QuestionnarieCreateView(CreateView):
-    """
-    Vista que permite crear un nuevo cuestionario.
-    """
-    model = Questionnarie
-    template_name = 'createstudy.html'
-    fields = ['name', 'description', 'language']
+@login_required
+def create_study(request):
+    if request.method == 'POST':
+        # Crear el formulario principal de Questionnarie
+        questionnarie_form = QuestionnarieForm(request.POST)
+        
+        # Crear los formsets de Section y Question
+        section_formset = SectionFormSet(request.POST, instance=questionnarie_form.instance)
 
-    success_url = reverse_lazy('my-studies')
+        if questionnarie_form.is_valid() and section_formset.is_valid():
+            # Guardar el formulario principal
+            questionnarie = questionnarie_form.save()
 
-    def form_valid(self, form):
-        form.instance.id_user = self.request.user
-        return super().form_valid(form)
+            # Guardar las Sections
+            sections = section_formset.save(commit=False)
+            for section in sections:
+                section.questionnarie = questionnarie
+                section.save()
+
+                # Guardar las Questions de cada Section
+                question_formset = QuestionFormSet(request.POST, instance=section)
+                if question_formset.is_valid():
+                    question_formset.save()
+
+            return redirect('my-studies')  # Cambia según tu URL
+
+    else:
+        questionnarie_form = QuestionnarieForm()
+        section_formset = SectionFormSet(instance=Questionnarie())
+
+    return render(request, 'createstudy.html', {
+        'questionnarie_form': questionnarie_form,
+        'section_formset': section_formset,
+    })
     
-class EditStudyView(UpdateView):
+class EditStudyView(LoginRequiredMixin, UpdateView):
     model = Questionnarie
     form_class = QuestionnarieForm
     template_name = 'editstudy.html'
-    success_url = '/studies/'
+    success_url = reverse_lazy('my-studies')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['section_formset'] = SectionFormSet(self.request.POST, instance=self.object)
+        else:
+            context['section_formset'] = SectionFormSet(instance=self.object)
+        return context
 
+    def form_valid(self, form):
+        context = self.get_context_data()
+        section_formset = context['section_formset']
+
+        # Usar una transacción para guardar todo o nada
+        with transaction.atomic():
+            self.object = form.save()
+            if section_formset.is_valid():
+                sections = section_formset.save(commit=False)
+                for section in sections:
+                    section.questionnarie = self.object
+                    section.save()
+                section_formset.save_m2m()
+            else:
+                return self.form_invalid(form)
+
+        return super().form_valid(form)
+
+@login_required
 def recommendPage(request):
     """
         Función que muestra la página de recomendaciones
@@ -208,7 +261,7 @@ def recommendPage(request):
 
     return render(request, 'myrecommendations.html', {'zacatrus_games': zacatrus_games, 'MEDIA_URL': settings.MEDIA_URL})
 
-
+@login_required
 def questions(request):
     """
         Función que muestra la página de preguntas
@@ -230,7 +283,7 @@ def questions(request):
 
     return render(request, 'liststudies.html')
 
-
+@login_required
 def questionnarie(request):
     """
         Función que muestra la página del cuestionario
@@ -247,7 +300,7 @@ def questionnarie(request):
                 # Guardamos las respuestas del participante
                 question = Question.objects.get(id=question_id)
                 for choice in choice_ids:
-                    answer = Answer.objects.create(id_question=question, answer=Choice.objects.get(id=choice), id_user=User.objects.get(id=request.session.get('userid')), language=settings.LANGUAGE_CODE)
+                    answer = Answer.objects.create(id_question=question, answer=Choice.objects.get(id=choice), user=User.objects.get(id=request.session.get('userid')), language=settings.LANGUAGE_CODE)
                     answers.append(answer.answer.choice)
 
             request.session['answers'] = answers
@@ -275,7 +328,7 @@ def get_data_questions():
 
     return questions_and_choices
 
-
+@login_required
 def newRecomm(request, answers=None):
     """
         Función que muestra la página de las recomendaciones
@@ -293,14 +346,14 @@ def newRecomm(request, answers=None):
 
         # TODO: como obtengo la puntuacion
         puntuation = 5
-        evaluation = Evaluation.objects.create(id_algorithm=Algorithm.objects.get(id=1), id_recommendation=Recommendation.objects.get(
-            id=request.session.get('recommendation')), id_user=User.objects.get(id=request.session.get('userid')), puntuation=puntuation)
+        evaluation = Evaluation.objects.create(algorithm=Algorithm.objects.get(id=1), recommendation=Recommendation.objects.get(
+            id=request.session.get('recommendation')), user=User.objects.get(id=request.session.get('userid')), puntuation=puntuation)
 
         print(selections)
         for id_game, list_values in selections.items():
             print(list_values)
-            interaction = Interaction.objects.create(id_evaluation=evaluation, id_gamerecommended=GameRecommended.objects.get(id_recommendation=request.session['recommendation'], id_game=Game.objects.get(
-                id_BGG=int(id_game))), interested=list_values["firstquestion"], buyorrecommend=list_values["secondquestion"], preference=list_values["thirdquestion"], moreoptions=list_values["fourthquestion"])
+            interaction = Interaction.objects.create(evaluation=evaluation, gamerecommended=GameRecommended.objects.get(recommendation=request.session['recommendation'], game=Game.objects.get(
+                id_BGG=int(id_game))), interested=list_values["firstquestion"], buyorrecommend=list_values["secondquestion"], text=list_values["thirdquestion"], moreoptions=list_values["fourthquestion"])
             interaction.add_influences(list_values["fifthquestion"])
 
         if request.POST.get("button") == "exit":
@@ -311,16 +364,16 @@ def newRecomm(request, answers=None):
             # TODO: Guardar zacatrus_games?
             return render(request, 'newrecommendations.html', {'zacatrus_games': zacatrus_games, 'MEDIA_URL': settings.MEDIA_URL, 'preferences_part': answers})
 
-    recommendation = Recommendation.objects.create(id_algorithm=Algorithm.objects.first(
-    ), id_user=User.objects.get(id=request.session['userid']))
+    recommendation = Recommendation.objects.create(algorithm=Algorithm.objects.first(
+    ), user=User.objects.get(id=request.session['userid']))
     recommendation.add_metrics(answers)
 
     request.session['recommendation'] = recommendation.id
 
     # TODO: Generar los juegos de recomendación desde las respuestas
     for game in zacatrus_games:
-        GameRecommended.objects.create(id_recommendation=Recommendation.objects.get(id=request.session.get(
-            'recommendation')), id_game=Game.objects.get_or_create(id_BGG=int(game[0]))[0])
+        GameRecommended.objects.create(recommendation=Recommendation.objects.get(id=request.session.get(
+            'recommendation')), game=Game.objects.get_or_create(id_BGG=int(game[0]))[0])
     # TODO: Guardar datos del algoritmo
 
     return render(request, 'newrecommendations.html', {'zacatrus_games': zacatrus_games, 'MEDIA_URL': settings.MEDIA_URL, 'preferences_part': answers})

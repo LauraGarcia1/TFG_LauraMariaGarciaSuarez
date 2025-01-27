@@ -35,7 +35,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Mostrar mensaje de error de que no existe el usuario (pag. inicial)
 - [X] Género en registro
 - [ ] Revisar traducciones de todas las páginas
-- [ ] Hacer boton logout y si accede a home y esta login, que vaya directamente a user-home
+- [X] Hacer boton logout y si accede a home y esta login, que vaya directamente a user-home (27/01/2025)
 - [ ] Poner todos los label de register -> valido
 - [X] Comprobar forloop de questionnarie.html (15/01/2025)
 - [ ] Comprobar muchas questions en questionnarie
@@ -44,6 +44,8 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Cambiar color checkbox (21/01/2025)
 - [X] Cambio de idioma de las questions (23/01/2025)
 - [ ] Probar cambios questionnarie y language
+- [ ] Cambiar etiquetas de roles de usuario
+- [ ]
 
 ### Evaluación del participante
 
@@ -183,7 +185,14 @@ composer require vlucas/phpdotenv
 
 ## Problemas
 
-No funcionó gitlab desde 07/10/24 hasta (15/10/24???).
+- No funcionó gitlab desde 07/10/24 hasta (15/10/24???).
+- Disponibilidad de cada uno
+
+## Mejoras
+
+- Control de rol evaluador de la aplicación
+- El usuario puede modificar sus datos
+- El perfil se puede definir para cada experimento
 
 ## Palabras clave
 

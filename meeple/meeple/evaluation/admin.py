@@ -6,7 +6,7 @@ from .models import Choice, User, Interaction, Questionnarie, Question, Answer, 
 # User model
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'email', 'location', 'age', 'frequencyGame', 'expertiseGame', 'gender', 'date_created']
+    list_display = ['username', 'email', 'rol', 'location', 'age', 'frequencyGame', 'expertiseGame', 'gender', 'date_created']
     search_fields = ['username', 'email']
     list_filter = ['gender', 'frequencyGame', 'expertiseGame', 'date_created']
 
@@ -20,22 +20,22 @@ class QuestionnarieAdmin(admin.ModelAdmin):
 # Question model
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ['id_questionnarie', 'question', 'type', 'language', 'date_created']
-    search_fields = ['question', 'type']
+    list_display = ['section', 'text', 'type', 'language', 'date_created']
+    search_fields = ['text', 'type']
     list_filter = ['type', 'language', 'date_created']
 
 # Answer model
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ['id_question', 'choice', 'language', 'date_created']
+    list_display = ['question', 'choice', 'language', 'date_created']
     search_fields = ['answer']
     list_filter = ['language', 'date_created']
 
 # Recommendation model
 @admin.register(Recommendation)
 class RecommendationAdmin(admin.ModelAdmin):
-    list_display = ['id_algorithm', 'id_user', 'date_created']
-    search_fields = ['id_algorithm__name', 'id_game__id_BGG']
+    list_display = ['algorithm', 'user', 'date_created']
+    search_fields = ['algorithm__name', 'game__id_BGG']
     list_filter = ['date_created']
 
 # Game model
@@ -54,32 +54,32 @@ class AlgorithmAdmin(admin.ModelAdmin):
 # Evaluation model
 @admin.register(Evaluation)
 class EvaluationAdmin(admin.ModelAdmin):
-    list_display = ['id_algorithm', 'id_user', 'puntuation', 'date_created']
-    search_fields = ['id_algorithm__name', 'id_game__id_BGG', 'id_user__username']
+    list_display = ['algorithm', 'user', 'puntuation', 'date_created']
+    search_fields = ['algorithm__name', 'game__id_BGG', 'user__username']
     list_filter = ['puntuation', 'date_created']
 
 # Preference model
 @admin.register(Preference)
 class PreferenceAdmin(admin.ModelAdmin):
-    list_display = ['preference', 'category', 'value', 'id_user']
+    list_display = ['text', 'category', 'value', 'user']
     search_fields = ['category']
-    list_filter = ['value', 'id_user']
+    list_filter = ['value', 'user']
 
 # Choice model
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ['id_question', 'text']
+    list_display = ['question', 'text']
     search_fields = ['text']
-    list_filter = ['id_question', 'text']
+    list_filter = ['question', 'text']
 
 # Interaction model
 @admin.register(Interaction)
 class InteractionAdmin(admin.ModelAdmin):
-    list_display = ('id_evaluation', 'id_gamerecommended', 'interested', 'buyorrecommend', 'preference', 'influences', 'moreoptions')
+    list_display = ('evaluation', 'gamerecommended', 'interested', 'buyorrecommend', 'preference', 'influences', 'moreoptions')
     list_filter = ('interested', 'buyorrecommend', 'preference', 'influences')
-    search_fields = ('id_evaluation__id', 'id_gamerecommended__id', 'moreoptions')
+    search_fields = ('evaluation__id', 'gamerecommended__id', 'moreoptions')
     list_per_page = 20
-    raw_id_fields = ('id_evaluation', 'id_gamerecommended')
+    raw_fields = ('evaluation', 'gamerecommended')
 
     def get_interested_display(self, obj):
         return obj.get_interested_display()
@@ -110,9 +110,9 @@ class InteractionAdmin(admin.ModelAdmin):
 # GameRecommended model
 @admin.register(GameRecommended)
 class GameRecommendedAdmin(admin.ModelAdmin):
-    list_display = ('id_recommendation', 'id_game')
-    search_fields = ('id_recommendation__id', 'id_game__name') 
-    list_filter = ('id_recommendation',)
+    list_display = ('recommendation', 'game')
+    search_fields = ('recommendation__id', 'game__name') 
+    list_filter = ('recommendation',)
 
     def __str__(self):
-        return f"{self.id_recommendation} - {self.id_game}"
+        return f"{self.recommendation} - {self.game}"

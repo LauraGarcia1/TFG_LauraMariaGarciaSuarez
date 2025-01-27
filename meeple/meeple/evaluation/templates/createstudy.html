@@ -3,42 +3,127 @@
 {% load i18n %}
 
 {% block overflow %}
-
 <body style="overflow-x: hidden;">
+{% endblock overflow %}
 
-    {% endblock overflow %}
-
-    {% block body %}
-
-
-
-    <div class="position-relative custom-container">
-        <div class="position-absolute top-0 start-0">
-            <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
-                style="transform: rotate(64deg);">
-        </div>
-
-        <div class="position-absolute bottom-0 end-0">
-            <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
-                style="transform: rotate(31deg);">
-        </div>
-
-        <form action="" method="post">
-            {% csrf_token %}
-            <div
-                class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-                <div
-                    class="row h-100 p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
-                    <h1>{% trans "CreateStudyTitle" %}</h1>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "StudiesButtom" %}</button>
-                    </form>
-                    <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota mt-3">{% trans "ReturnToStudyList" %}</a>
-                </div>
-            </div>
-        </form>
+{% block body %}
+<div class="position-relative custom-container">
+    <div class="position-absolute top-0 start-0">
+        <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+             style="transform: rotate(64deg);">
     </div>
 
-    {% endblock body %}
+    <div class="position-absolute bottom-0 end-0">
+        <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
+             style="transform: rotate(31deg);">
+    </div>
+
+    <form method="post" id="questionnarieForm">
+        {% csrf_token %}
+        <div class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+            <div class="row h-100 p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
+                <h1>{% trans "CreateStudyTitle" %}</h1>
+                {{ questionnarie_form.as_p }}
+
+                <!-- Formset de Section -->
+                <div>
+                    <h3>Sections</h3>
+                    {{ section_formset.management_form }}
+
+                    {% for form in section_formset %}
+                        <div>
+                            <h4>Section {{ forloop.counter }}</h4>
+                            {{ form.as_p }}
+
+                            <!-- Formset para las preguntas dentro de cada Section -->
+                            <h5>Questions</h5>
+                            <div id="questions-section-{{ forloop.counter }}">
+                                <!-- Formset de preguntas dinámicas por cada sección -->
+                                {{ form.question_formset.management_form }}
+                                <div id="question-forms-{{ forloop.counter }}">
+                                    {% for question_form in form.question_formset %}
+                                        <div class="question-form">
+                                            {{ question_form.as_p }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <!-- Botón para añadir más preguntas -->
+                                <button type="button" class="btn btn-secondary add-question" data-section="{{ forloop.counter }}">Add Question</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+                <!-- Botón para añadir más secciones -->
+                <button type="button" class="btn btn-secondary add-section">Add Section</button>
+                <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "StudiesButtom" %}</button>
+                <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota mt-3">{% trans "ReturnToStudyList" %}</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Función para añadir nuevas preguntas a una sección
+        document.querySelectorAll('.add-question').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const sectionIndex = button.dataset.section;
+                const questionFormsContainer = document.getElementById(`question-forms-${sectionIndex}`);
+                const totalQuestionsField = document.querySelector(`#id_section_formset-${sectionIndex}-question_formset-TOTAL_FORMS`);
+                
+                if (totalQuestionsField) {
+                    const totalQuestions = totalQuestionsField.value;
+                    const newFormIndex = totalQuestions;
+
+                    // Obtener el primer formulario de pregunta (puedes clonarlo o usar un template)
+                    const firstQuestionForm = questionFormsContainer.querySelector('.question-form');
+
+                    // Clonamos el formulario de pregunta y lo añadimos al contenedor
+                    const newQuestionForm = firstQuestionForm.cloneNode(true);
+
+                    // Actualizar los nombres y ids para que sean únicos
+                    Array.from(newQuestionForm.querySelectorAll('[name], [id]')).forEach(function (el) {
+                        el.name = el.name.replace(`-0-`, `-${newFormIndex}-`);
+                        el.id = el.id.replace(`-0-`, `-${newFormIndex}-`);
+                    });
+
+                    questionFormsContainer.appendChild(newQuestionForm);
+
+                    // Actualizar el valor de TOTAL_FORMS
+                    totalQuestionsField.value = parseInt(totalQuestions) + 1;
+                }
+            });
+        });
+
+        // Función para añadir nuevas secciones
+        document.querySelector('.add-section').addEventListener('click', function () {
+            const sectionFormsContainer = document.getElementById('section-forms-container');
+            const totalSectionsField = document.querySelector('#id_section_formset-TOTAL_FORMS');
+            
+            if (totalSectionsField) {
+                const totalSections = totalSectionsField.value;
+                const newSectionIndex = totalSections;
+
+                // Obtener el primer formulario de sección y clonarlo
+                const firstSectionForm = document.querySelector('.section-form');
+                const newSectionForm = firstSectionForm.cloneNode(true);
+
+                // Actualizar los nombres y IDs para que sean únicos
+                Array.from(newSectionForm.querySelectorAll('[name], [id]')).forEach(function (el) {
+                    el.name = el.name.replace(`-0-`, `-${newSectionIndex}-`);
+                    el.id = el.id.replace(`-0-`, `-${newSectionIndex}-`);
+                });
+
+                sectionFormsContainer.appendChild(newSectionForm);
+
+                // Actualizar el valor de TOTAL_FORMS
+                totalSectionsField.value = parseInt(totalSections) + 1;
+            }
+        });
+    });
+
+</script>
+
+{% endblock body %}
