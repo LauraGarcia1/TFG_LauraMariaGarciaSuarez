@@ -4,14 +4,15 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.http import JsonResponse
 from django.conf import settings
 from django.db import connections, transaction
 from django.views.generic.list import ListView
 from django.views.generic import UpdateView, CreateView
 from django.utils.translation import gettext_lazy as _
-from .forms import SignUpForm, QuestionnarieForm, SectionFormSet, QuestionFormSet
-from .models import Preference, User, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction
+from .forms import SignUpForm, QuestionnarieForm, SectionFormSet, QuestionFormSet, ChoiceFormSet
+from .models import Preference, User, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction, Section
 import json
 
 def home(request):
@@ -167,7 +168,7 @@ class StudiesView(LoginRequiredMixin, ListView):
     """
     model = Questionnarie
     template_name = 'mystudies.html'
-    context_object_name = 'studies'
+    context_object_name = 'questionnaries'
 
     def get_queryset(self):
         # Filtrar los cuestionarios por el usuario autenticado
@@ -175,40 +176,150 @@ class StudiesView(LoginRequiredMixin, ListView):
             return Questionnarie.objects.filter(user=self.request.user)
         return Questionnarie.objects.none()
 
+class QuestionnarieInline():
+    form_class = QuestionnarieForm
+    model = Questionnarie
+    template_name = 'createstudy.html'
+
+    def form_valid(self, form):
+        named_formsets = self.get_named_formsets()
+        if not all((x.is_valid() for x in named_formsets.values())):
+            return self.render_to_response(self.get_context_data(forms=form))
+        
+        self.object = form.save()
+
+        # Save objects
+        for name, formset in named_formsets.items():
+            formset_save_func = getattr(self, 'formset_{0}_valid'.format(name), None)
+            if formset_save_func is not None:
+                formset_save_func(formset)
+            else:
+                formset.save()
+        return redirect('my-studies')
+    
+    def formset_sections_valid(self, formset):
+        """
+        def formset_questions_valid(self, formset):
+        """
+
+        """
+        questions = formset.save(commit=False)
+        for question in questions:
+            question.sect = self.object
+            question.save()
+
+        """
+        sections = formset.save(commit=False)
+        for section in sections:
+            section.questionnarie = self.object
+            section.save()
+
+class QuestionnarieCreate(LoginRequiredMixin, QuestionnarieInline, CreateView):
+
+    def get_context_data(self, **kwargs):
+        ctx = super(QuestionnarieCreate, self).get_context_data(**kwargs)
+        ctx['named_formsets'] = self.get_named_formsets()
+
+    def get_named_formsets(self):
+        if self.request.method == "GET":
+            return {
+                'sections': SectionFormSet(prefix='sections'),
+            }
+        else:
+            return {
+                'sections': SectionFormSet(self.request.POST or None, self.request.FILES or None, prefix='sections'),
+            }
+        
+class QuestionnarieUpdate(LoginRequiredMixin, QuestionnarieInline, UpdateView):
+
+    def get_context_data(self, **kwargs):
+        ctx = super(QuestionnarieUpdate, self).get_context_data(**kwargs)
+        ctx['named_formsets'] = self.get_named_formsets()
+
+    def get_named_formsets(self):
+        return {
+            'sections': SectionFormSet(self.request.POST or None, self.request.FILES or None, instance=self.object, prefix='sections'),
+        }
+    
+def delete_section(request, pk):
+    try:
+        section = Section.objects.get(id=pk)
+    except Section.DoesNotExist:
+        messages.success(
+            request, 'Object Does not exist'
+        )
+        return redirect('edit-study', pk=section.questionnarie.id)
+
 @login_required
 def create_study(request):
     if request.method == 'POST':
-        # Crear el formulario principal de Questionnarie
-        questionnarie_form = QuestionnarieForm(request.POST)
-        
-        # Crear los formsets de Section y Question
-        section_formset = SectionFormSet(request.POST, instance=questionnarie_form.instance)
+        # Procesar el formulario del cuestionario
+        questionnaire_form = QuestionnarieForm(request.POST)
+        if questionnaire_form.is_valid():
+            # Guardamos el cuestionario
+            questionnaire = questionnaire_form.save()
+            
+            # Procesamos las secciones y preguntas
+            # Usamos un contador para las secciones (0,1,2,...) hasta que no encontremos título
+            section_index = 0
+            while True:
+                section_title_key = f"sections[{section_index}][title]"
+                section_title = request.POST.get(section_title_key, "").strip()
+                if not section_title:
+                    # Si no se encuentra un título, asumimos que ya no hay más secciones
+                    break
 
-        if questionnarie_form.is_valid() and section_formset.is_valid():
-            # Guardar el formulario principal
-            questionnarie = questionnarie_form.save()
+                # Crear la sección para este cuestionario
+                section = Section.objects.create(
+                    questionnarie=questionnaire,
+                    title=section_title
+                )
+                
+                # Procesar las preguntas de esta sección
+                question_index = 0
+                while True:
+                    question_text_key = f"sections[{section_index}][questions][{question_index}][text]"
+                    question_text = request.POST.get(question_text_key, "").strip()
+                    if not question_text:
+                        # No se encontró más pregunta para esta sección
+                        break
+                    # Crear la pregunta para la sección
+                    Question.objects.create(
+                        section=section,
+                        text=question_text
+                        # Puedes incluir otros campos si es necesario, p.ej. type, language, etc.
+                    )
+                    question_index += 1
+                # Incrementamos el índice de sección y seguimos con la siguiente
+                section_index += 1
 
-            # Guardar las Sections
-            sections = section_formset.save(commit=False)
-            for section in sections:
-                section.questionnarie = questionnarie
-                section.save()
-
-                # Guardar las Questions de cada Section
-                question_formset = QuestionFormSet(request.POST, instance=section)
-                if question_formset.is_valid():
-                    question_formset.save()
-
-            return redirect('my-studies')  # Cambia según tu URL
-
-    else:
-        questionnarie_form = QuestionnarieForm()
-        section_formset = SectionFormSet(instance=Questionnarie())
+            # Redireccionar o mostrar mensaje de éxito
+            return redirect('my-studies')  # Reemplaza 'success_url' por tu ruta de éxito
+        else:
+            # Si el formulario del cuestionario no es válido, volver a mostrar la página
+            return render(request, 'createstudy.html', {
+                'questionnarie_form': questionnaire_form,
+            })
+    
+    # Si es GET, simplemente mostramos el formulario vacío
+    questionnaire_form = QuestionnarieForm()
+    section_formset = SectionFormSet()
+    question_formset = QuestionFormSet()
+    choice_formset = ChoiceFormSet()
 
     return render(request, 'createstudy.html', {
-        'questionnarie_form': questionnarie_form,
+        'questionnarie_form': questionnaire_form,
         'section_formset': section_formset,
+        'question_formset': question_formset,
+        'choice_formset': choice_formset,
     })
+
+
+def create_section_ajax(request):
+    if request.method == "POST":
+        title = request.POST.get("title", "")
+        section = Section.objects.create(title=title)
+        return JsonResponse({"id": section.id})
     
 class EditStudyView(LoginRequiredMixin, UpdateView):
     model = Questionnarie

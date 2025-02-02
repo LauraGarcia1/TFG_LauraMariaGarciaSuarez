@@ -90,6 +90,24 @@ body {
     /* Color del borde en estado hover mostaza */
 }
 
+.btn-purple {
+    color: rgb(255, 255, 255);
+    /* Color del texto */
+    background-color: #0e56c2;
+    /* Color de fondo mostaza */
+    border-color: #0e56c2;
+    /* Color del borde mostaza */
+}
+
+.btn-purple:hover {
+    color: rgb(255, 255, 255);
+    /* Color del texto en estado hover */
+    background-color: #08439c;
+    /* Color de fondo en estado hover mostaza */
+    border-color: #08439c;
+    /* Color del borde en estado hover mostaza */
+}
+
 .btn-inverse-light {
     color: #000000;
     /* Color del texto */

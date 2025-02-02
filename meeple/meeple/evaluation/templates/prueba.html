@@ -5,107 +5,120 @@
 {% block overflow %}
 
 <body style="overflow-x: hidden;">
-
     {% endblock overflow %}
 
     {% block body %}
+  <style>
+    /* Estilos básicos para la demostración */
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    form { margin-bottom: 20px; }
+    .section-form, .question-form { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+    .section-form { background-color: #f9f9f9; }
+    .question-form { background-color: #e9e9e9; }
+    .disabled-btn { opacity: 0.5; pointer-events: none; }
+  </style>
 
-
-
-    <div class="position-relative custom-container">
-        <div class="position-absolute top-0 start-0">
-            <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
-                style="transform: rotate(64deg);">
-        </div>
-
-        <div class="position-absolute bottom-0 end-0">
-            <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
-                style="transform: rotate(31deg);">
-        </div>
-
-        <form method="post" id="questionnarieForm">
-            {% csrf_token %}
-            <div
-                class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-                <div class="row h-100 p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
-                    <h1>{% trans "CreateStudyTitle" %}</h1>
-                    {{ questionnarie_form.as_p }}
-
-                    <!-- Formset de Section -->
-                    <div>
-                        <h3>Sections</h3>
-                        {{ section_formset.management_form }}
-
-                        {% for form in section_formset %}
-                            <div>
-                                <h4>Section {{ forloop.counter }}</h4>
-                                {{ form.as_p }}
-
-                                <!-- Añadir un formset para Questions dentro de cada Section -->
-                                <h5>Questions</h5>
-                                <div id="questions-section-{{ forloop.counter }}">
-                                    {% with form.instance.questions.all as questions %}
-                                        {% for question in questions %}
-                                            <div>
-                                                <p>{{ question.text }}</p>
-                                            </div>
-                                        {% endfor %}
-                                    {% endwith %}
-                                    <!-- Formset para las preguntas -->
-                                    {{ form.question_formset.management_form }}
-                                    <div id="question-forms-{{ forloop.counter }}">
-                                        {% for question_form in form.question_formset %}
-                                            <div class="question-form">
-                                                {{ question_form.as_p }}
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    <!-- Botón para añadir más preguntas -->
-                                    <button type="button" class="btn btn-secondary add-question" data-section="{{ forloop.counter }}">Add Question</button>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-
-                    <button type="button" class="btn btn-secondary add-section">Add Section</button>
-                    <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "StudiesButtom"
-                        %}</button>
-                    <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota mt-3">{% trans
-                        "ReturnToStudyList" %}</a>
-                </div>
-            </div>
-        </form>
+  <h2>Crear Cuestionario</h2>
+  <!-- Formulario del cuestionario -->
+  <form id="questionnaire-form">
+    <label for="q-name">Nombre:</label>
+    <input type="text" id="q-name" name="name"><br><br>
+    
+    <label for="q-description">Descripción:</label>
+    <textarea id="q-description" name="description"></textarea><br><br>
+    
+    <label for="q-language">Idioma:</label>
+    <input type="text" id="q-language" name="language"><br><br>
+  </form>
+  
+  <!-- Botón para crear secciones (inicialmente deshabilitado) -->
+  <button id="create-section-btn" disabled>Crear Sección</button>
+  
+  <!-- Contenedor para las secciones -->
+  <div id="sections-container">
+    <!-- Aquí se añadirán las secciones dinámicamente -->
+  </div>
+  
+  <!-- Plantilla oculta para la sección (usamos __index__ como marcador) -->
+  <script type="text/template" id="section-template">
+    <div class="section-form" data-index="__index__">
+      <h3>Sección</h3>
+      <label for="section-title-__index__">Título de la Sección:</label>
+      <input type="text" id="section-title-__index__" name="sections[__index__][title]"><br><br>
+      
+      <!-- Botón para añadir preguntas (inicialmente deshabilitado) -->
+      <button class="add-question-btn" disabled>Añadir Pregunta</button>
+      
+      <!-- Contenedor para las preguntas de esta sección -->
+      <div class="questions-container">
+        <!-- Se agregarán los formularios de preguntas aquí -->
+      </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Evento para añadir nuevas preguntas
-            document.querySelectorAll('.add-question').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    const sectionIndex = button.dataset.section;
-                    const questionFormsContainer = document.getElementById(`question-forms-${sectionIndex}`);
-                    const totalQuestions = document.querySelector(`#id_section_formset-${sectionIndex}-question_formset-TOTAL_FORMS`);
-                    const newFormIndex = totalQuestions.value;
-    
-                    // Obtener el primer formulario de pregunta (puedes clonarlo o usar un template)
-                    const firstQuestionForm = questionFormsContainer.querySelector('.question-form');
-    
-                    // Clonamos el formulario de pregunta y lo añadimos al contenedor
-                    const newQuestionForm = firstQuestionForm.cloneNode(true);
-    
-                    // Actualizar los nombres y ids para que sean únicos
-                    Array.from(newQuestionForm.querySelectorAll('[name], [id]')).forEach(function (el) {
-                        el.name = el.name.replace(`-0-`, `-${newFormIndex}-`);
-                        el.id = el.id.replace(`-0-`, `-${newFormIndex}-`);
-                    });
-    
-                    questionFormsContainer.appendChild(newQuestionForm);
-    
-                    // Actualizar el valor de TOTAL_FORMS
-                    totalQuestions.value = parseInt(totalQuestions.value) + 1;
-                });
-            });
-        });
-    </script>
+  </script>
+  
+  <!-- Plantilla oculta para el formulario de pregunta (marcadores: __sindex__ para la sección y __qindex__ para la pregunta) -->
+  <script type="text/template" id="question-template">
+    <div class="question-form">
+      <label for="question-text-__sindex____qindex__">Pregunta:</label>
+      <input type="text" id="question-text-__sindex____qindex__" name="sections[__sindex__][questions][__qindex__][text]"><br>
+    </div>
+  </script>
+  
+  <script>
+    $(document).ready(function() {
+      // Función para comprobar que los campos del cuestionario tienen datos
+      function checkQuestionnaireFields() {
+        var name = $("#q-name").val().trim();
+        var desc = $("#q-description").val().trim();
+        var lang = $("#q-language").val().trim();
+        if (name !== "" && desc !== "" && lang !== "") {
+          $("#create-section-btn").prop("disabled", false);
+        } else {
+          $("#create-section-btn").prop("disabled", true);
+        }
+      }
+      // Escuchar cambios en los inputs y textarea del cuestionario
+      $("#questionnaire-form input, #questionnaire-form textarea").on("input", checkQuestionnaireFields);
+      
+      // Variable para llevar el índice de secciones
+      var sectionIndex = 0;
+      
+      // Al pulsar "Crear Sección" se añade una nueva sección
+      $("#create-section-btn").click(function(e) {
+        e.preventDefault();
+        var sectionTemplate = $("#section-template").html();
+        var newSectionHtml = sectionTemplate.replace(/__index__/g, sectionIndex);
+        $("#sections-container").append(newSectionHtml);
+        sectionIndex++;
+      });
+      
+      // Delegar evento: cuando se escriba en el título de la sección, habilitar el botón "Añadir Pregunta" si hay texto.
+      $(document).on("input", ".section-form input[name^='sections'][name$='[title]']", function() {
+        var $sectionForm = $(this).closest(".section-form");
+        var titleVal = $(this).val().trim();
+        if (titleVal !== "") {
+          $sectionForm.find(".add-question-btn").prop("disabled", false);
+        } else {
+          $sectionForm.find(".add-question-btn").prop("disabled", true);
+        }
+      });
+      
+      // Delegar evento: al pulsar "Añadir Pregunta" en una sección, añadir un formulario de pregunta
+      $(document).on("click", ".add-question-btn", function(e) {
+        e.preventDefault();
+        var $sectionForm = $(this).closest(".section-form");
+        // Obtener el índice de la sección desde el atributo data-index
+        var sindex = $sectionForm.attr("data-index");
+        // Contar las preguntas existentes en esa sección para determinar el índice de la nueva pregunta
+        var qCount = $sectionForm.find(".questions-container .question-form").length;
+        // Obtener la plantilla del formulario de pregunta
+        var questionTemplate = $("#question-template").html();
+        var newQuestionHtml = questionTemplate.replace(/__sindex__/g, sindex)
+                                              .replace(/__qindex__/g, qCount);
+        // Añadir el nuevo formulario al contenedor de preguntas de esa sección
+        $sectionForm.find(".questions-container").append(newQuestionHtml);
+      });
+    });
+  </script>
 
     {% endblock body %}

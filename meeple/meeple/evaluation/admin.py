@@ -1,7 +1,16 @@
 from django.contrib import admin
-from .models import Choice, User, Interaction, Questionnarie, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, GameRecommended
+from .models import Choice, User, Interaction, Questionnarie, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, GameRecommended, Section
 
-# Register your models here.
+# Question Inline
+class QuestionInline(admin.TabularInline):  
+    model = Question
+    extra = 1
+
+# Section Inline
+class SectionInline(admin.StackedInline):  
+    model = Section
+    extra = 1  
+    inlines = [QuestionInline]
 
 # User model
 @admin.register(User)
@@ -13,6 +22,7 @@ class UserAdmin(admin.ModelAdmin):
 # Questionnarie model
 @admin.register(Questionnarie)
 class QuestionnarieAdmin(admin.ModelAdmin):
+    inlines = [SectionInline]
     list_display = ['name', 'language', 'date_created']
     search_fields = ['name']
     list_filter = ['language', 'date_created']
@@ -116,3 +126,15 @@ class GameRecommendedAdmin(admin.ModelAdmin):
 
     def __str__(self):
         return f"{self.recommendation} - {self.game}"
+
+# GameRecommended model
+@admin.register(Section)
+class SectionAdmin(admin.ModelAdmin):
+    inlines = [QuestionInline]
+    list_display = ('title', 'questionnarie')
+    search_fields = ('title', 'questionnarie')
+    list_filter = ('questionnarie',)
+
+    def __str__(self):
+        return f"{self.questionnarie} - {self.title}"
+

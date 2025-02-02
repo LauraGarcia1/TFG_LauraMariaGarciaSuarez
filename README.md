@@ -45,7 +45,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Cambio de idioma de las questions (23/01/2025)
 - [ ] Probar cambios questionnarie y language
 - [ ] Cambiar etiquetas de roles de usuario
-- [ ]
+- [ ] un evaluador no puede tener preferencias
 
 ### Evaluación del participante
 
@@ -216,3 +216,5 @@ Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especia
 -> Datos de juegos: https://www.w3schools.com/xml/ajax_database.asp
 
 -> Django: https://www.djangoproject.com/start/
+
+-> Inline Factory -> https://micropyramid.com/blog/how-to-use-nested-formsets-in-django

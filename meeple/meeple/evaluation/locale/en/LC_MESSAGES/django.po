@@ -406,6 +406,54 @@ msgstr "Create a New Study"
 msgid "ReturnToStudyList"
 msgstr "Return to the list"
 
+#: evaluation/templates/createstudy.html:
+msgid "CreateSection"
+msgstr "Create section"
+
+#: evaluation/templates/createstudy.html:
+msgid "CreateQuestion"
+msgstr "Create question"
+
+#: evaluation/templates/createstudy.html:
+msgid "CreateChoice"
+msgstr "Create choice"
+
+#: evaluation/templates/createstudy.html:
+msgid "Section"
+msgstr "Section"
+
+#: evaluation/templates/createstudy.html:
+msgid "Question"
+msgstr "Question"
+
+#: evaluation/templates/createstudy.html:
+msgid "Choice"
+msgstr "Choice"
+
+#: evaluation/templates/createstudy.html:
+msgid "Sections"
+msgstr "Sections"
+
+#: evaluation/templates/createstudy.html:
+msgid "Questions"
+msgstr "Questions"
+
+#: evaluation/templates/createstudy.html:
+msgid "Choices"
+msgstr "Opciones"
+
+#: evaluation/templates/createstudy.html:
+msgid "DelSections"
+msgstr "Delete sections"
+
+#: evaluation/templates/createstudy.html:
+msgid "DelQuestions"
+msgstr "Delete questions"
+
+#: evaluation/templates/createstudy.html:
+msgid "DelChoices"
+msgstr "Delete choices"
+
 #: evaluation/templates/editstudy.html:32
 msgid "EditStudy"
 msgstr "Edit Study"
