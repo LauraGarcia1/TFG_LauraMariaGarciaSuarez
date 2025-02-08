@@ -1,16 +1,23 @@
 from django.contrib import admin
+import nested_admin
 from .models import Choice, User, Interaction, Questionnarie, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, GameRecommended, Section
 
-# Question Inline
-class QuestionInline(admin.TabularInline):  
+    # Inline para Choices dentro de Questions
+class ChoiceInline(nested_admin.NestedTabularInline):
+    model = Choice
+    extra = 1  # Número de opciones adicionales por defecto
+
+# Inline para Questions dentro de Sections
+class QuestionInline(nested_admin.NestedTabularInline):
     model = Question
+    inlines = [ChoiceInline]
     extra = 1
 
-# Section Inline
-class SectionInline(admin.StackedInline):  
+# Inline para Sections dentro de Questionnarie
+class SectionInline(nested_admin.NestedStackedInline):
     model = Section
-    extra = 1  
     inlines = [QuestionInline]
+    extra = 1
 
 # User model
 @admin.register(User)
@@ -21,7 +28,7 @@ class UserAdmin(admin.ModelAdmin):
 
 # Questionnarie model
 @admin.register(Questionnarie)
-class QuestionnarieAdmin(admin.ModelAdmin):
+class QuestionnarieAdmin(nested_admin.NestedModelAdmin):
     inlines = [SectionInline]
     list_display = ['name', 'language', 'date_created']
     search_fields = ['name']

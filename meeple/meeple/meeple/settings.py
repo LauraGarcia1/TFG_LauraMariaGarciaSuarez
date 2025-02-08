@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'evaluation.apps.EvaluationConfig'
+    'evaluation.apps.EvaluationConfig',
+    'nested_admin'
 ]
 
 MIDDLEWARE = [

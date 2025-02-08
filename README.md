@@ -46,6 +46,13 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Probar cambios questionnarie y language
 - [ ] Cambiar etiquetas de roles de usuario
 - [ ] un evaluador no puede tener preferencias
+- [ ] Hacer validación de la página de creación de questionarios
+  - [ ] Que haya datos en el cuestionario, secciones, preguntas y choices (este último si fuese necesario)
+  - [ ] Que tenga secciones
+  - [ ] Que las secciones tengan preguntas
+  - [ ] Que las preguntas tengan choices si es necesario
+  - [ ] El algoritmo usado para el cuestionario
+- [ ] Eliminacion de objetos en la creación de cuestionario
 
 ### Evaluación del participante
 
@@ -193,6 +200,7 @@ composer require vlucas/phpdotenv
 - Control de rol evaluador de la aplicación
 - El usuario puede modificar sus datos
 - El perfil se puede definir para cada experimento
+- Que se haga una comprobación de que los cuestionarios añadidos estén en el idioma seleccionado
 
 ## Palabras clave
 
@@ -200,10 +208,10 @@ Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especia
 
 ## Preguntas que pueden hacerme
 
-- por que django y no java pejem
-- porq postgres
-- que vulns tuve que arreglar
-- 
+- ¿Por que django y no java pejem?
+- ¿Por que postgres en vez de otra BD?
+- ¿Que vulns tuve que arreglar? (eliminar?)
+- ¿Por que no he usado nested_forms? Resp: mucha complejidad para lo que puede hacer
 
 ## Bibliografía importante
 
@@ -218,3 +226,5 @@ Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especia
 -> Django: https://www.djangoproject.com/start/
 
 -> Inline Factory -> https://micropyramid.com/blog/how-to-use-nested-formsets-in-django
+
+-> https://github.com/mbertheau/jquery.django-formset-example/tree/master

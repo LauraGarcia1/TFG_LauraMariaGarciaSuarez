@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User, Questionnarie, Section, Question, Choice
 from django.forms import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
+from nested_formset import nestedformset_factory
 
 
 class SignUpForm(forms.ModelForm):
@@ -40,6 +41,7 @@ class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
         fields = ['text', 'type', 'language']
+        exclude = ['date_created']
 
 # Formulario para Question
 class ChoiceForm(forms.ModelForm):
@@ -47,20 +49,7 @@ class ChoiceForm(forms.ModelForm):
         model = Choice
         fields = ['text']
 
-class SectionQuestionFormset(BaseInlineFormSet):
-    def add_fields(self, form, index):
-        super(SectionQuestionFormset, self).add_fields(form, index)
-
-        # Save the formset in the nested property
-        form.nested = QuestionFormSet(
-            instance=form.instance,
-            data=form.data if form.is_bound else None,
-            files=form.files if form.is_bound else None,
-            prefix='question-%s-%s' % (
-                form.prefix,
-                QuestionFormSet.get_default_prefix()),
-            extra=1)
-
+"""
 # Formset para añadir Sections dentro de Questionnarie
 SectionFormSet = inlineformset_factory(
     Questionnarie, Section, form=SectionForm, extra=1, can_delete=True
@@ -75,4 +64,9 @@ QuestionFormSet = inlineformset_factory(
 ChoiceFormSet = inlineformset_factory(
     Question, Choice, form=ChoiceForm, extra=1, can_delete=True
 )
+"""
 
+# Librería para crear forms anidados
+ChoiceFormSet = nestedformset_factory(Question, Choice, form=ChoiceForm, nested_formset={}, extra=1)
+QuestionFormSet = nestedformset_factory(Section, Question, form=QuestionForm, nested_formset=ChoiceFormSet, extra=1)
+SectionFormSet = nestedformset_factory(Questionnarie, Section, form=SectionForm, nested_formset=QuestionFormSet, extra=1)

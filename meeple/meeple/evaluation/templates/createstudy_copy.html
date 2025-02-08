@@ -52,7 +52,7 @@
                                         <!-- Se agregarán los formularios de preguntas aquí -->
                                         <script type="text/template" id="question-template">
                                         <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
-                                            <div class="question-form" data-index="__qindex__" data-section-index="__section_index__">
+                                            <div class="question-form" data-index="__index__">
                                                 <h4>{% trans "Question" %}</h4>
                                                 {% for form_q in question_formset %}
                                                 <div>
@@ -67,7 +67,11 @@
                                                     <!-- Se agregarán los formularios de preguntas aquí -->
                                                         <script type="text/template" id="choice-template">
                                                             <div class="choice-form">
-                                                                
+                                                                {% for form_c in choice_formset %}
+                                                                <div>
+                                                                    {{ form_c.as_p }}
+                                                                </div>
+                                                                {% endfor %}
                                                             </div>
                                                         </script>
                                                     </div>
@@ -139,6 +143,9 @@
                 }
             });
 
+            // Variable para llevar el índice de secciones
+            var questionIndex = 0;
+
             // Delegar evento: al pulsar "Añadir Pregunta" en una sección, añadir un formulario de pregunta
             $(document).on("click", ".add-question-btn", function (e) {
                 e.preventDefault();
@@ -149,13 +156,13 @@
                 var qCount = $sectionForm.find(".questions-container .question-form").length;
                 // Obtener la plantilla del formulario de pregunta
                 var questionTemplate = $("#question-template").html();
-                console.log("Qué es cada cosa???", sindex, qCount);
-                var newQuestionHtml = questionTemplate.replace(/__section_index__/g, sindex).replace(/__qindex__/g, qCount);
+                var newQuestionHtml = questionTemplate.replace(/__sindex__/g, sindex)
+                    .replace(/__qindex__/g, qCount).replace(/__index__/g, questionIndex);
                 // Añadir el nuevo formulario al contenedor de preguntas de esa sección
                 $sectionForm.find(".questions-container").append(newQuestionHtml);
             });
 
-            // Delegar evento: cuando se escriba en el título de la sección, habilitar el botón "Añadir Choice" si hay texto.
+            // Delegar evento: cuando se escriba en el título de la sección, habilitar el botón "Añadir Pregunta" si hay texto.
             $(document).on("input", ".question-form input[id^='id_questions-']", function () {
                 var $sectionForm = $(this).closest(".question-form");
                 var titleVal = $(this).val().trim();
@@ -166,7 +173,7 @@
                 }
             });
 
-            // Delegar evento: al pulsar "Añadir Choice" en una sección, añadir un formulario de pregunta
+            // Delegar evento: al pulsar "Añadir Pregunta" en una sección, añadir un formulario de pregunta
             $(document).on("click", ".add-choice-btn", function (e) {
                 e.preventDefault();
                 var $questionForm = $(this).closest(".question-form");

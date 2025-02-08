@@ -21,10 +21,15 @@ def home(request):
 
         Autor: Laura Mª García Suárez
     """
-    username = request.POST.get("username")
-    password = request.POST.get("password")
+    title_home = _("Welcome")
+    username_home = _("Username")
+    password_home = _("Password")
+    login_home = _("Login")
+    signup_home = _("Sign up")
 
     if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
         if request.POST.get("button") == "signin":
             user = authenticate(username=username, password=password)
             if user is not None:
@@ -33,16 +38,15 @@ def home(request):
                 if user.rol == "ER":
                     return redirect(reverse('my-studies'))
                 return redirect(reverse('my-recommendations'))
+            
+            if User.objects.filter(username=username).exists():
+                return render(request, 'home.html', {'title': title_home, 'username': username_home, 'password': password_home, 'login': login_home, 'signup': signup_home, 'redirect_to': request.path})
+
         request.session['username'] = username
         request.session['password'] = password
         
         return redirect(reverse('register'))
 
-    title_home = _("Welcome")
-    username_home = _("Username")
-    password_home = _("Password")
-    login_home = _("Login")
-    signup_home = _("Sign up")
 
     return render(request, 'home.html', {'title': title_home, 'username': username_home, 'password': password_home, 'login': login_home, 'signup': signup_home, 'redirect_to': request.path})
 
@@ -253,6 +257,8 @@ def delete_section(request, pk):
 @login_required
 def create_study(request):
     if request.method == 'POST':
+        print(request.POST)
+        """
         # Procesar el formulario del cuestionario
         questionnaire_form = QuestionnarieForm(request.POST)
         if questionnaire_form.is_valid():
@@ -300,12 +306,13 @@ def create_study(request):
             return render(request, 'createstudy.html', {
                 'questionnarie_form': questionnaire_form,
             })
+        """
     
     # Si es GET, simplemente mostramos el formulario vacío
     questionnaire_form = QuestionnarieForm()
-    section_formset = SectionFormSet()
-    question_formset = QuestionFormSet()
-    choice_formset = ChoiceFormSet()
+    section_formset = SectionFormSet(prefix='sections')
+    question_formset = QuestionFormSet(prefix='questions')
+    choice_formset = ChoiceFormSet(prefix='choices')
 
     return render(request, 'createstudy.html', {
         'questionnarie_form': questionnaire_form,
