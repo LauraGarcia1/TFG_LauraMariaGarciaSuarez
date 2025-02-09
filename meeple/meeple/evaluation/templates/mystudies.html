@@ -30,7 +30,7 @@
                         
                     </div>
 
-                    {% if studies.exists %}
+                    {% if questionnaries.exists %}
                     <ul class="list-group list-group-flush pt-5">
                         <h2>{% trans "MyStudies" %}</h2>
                         <table class="table">
@@ -41,11 +41,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for study in studies %}
+                                {% for qtnn in questionnaries %}
                                 <tr>
-                                    <td>{{ study.name }}</td>
+                                    <td>{{ qtnn.name }}</td>
                                     <td>
-                                        <a href="{% url 'edit-study' study.id %}" class="btn btn-link">
+                                        <a href="{% url 'edit-study' qtnn.id %}" class="btn btn-link">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </td>

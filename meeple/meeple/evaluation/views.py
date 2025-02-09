@@ -11,7 +11,7 @@ from django.db import connections, transaction
 from django.views.generic.list import ListView
 from django.views.generic import UpdateView, CreateView
 from django.utils.translation import gettext_lazy as _
-from .forms import SignUpForm, QuestionnarieForm, SectionFormSet, QuestionFormSet, ChoiceFormSet
+from .forms import SignUpForm, QuestionnarieForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
 from .models import Preference, User, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction, Section
 import json
 
@@ -26,6 +26,11 @@ def home(request):
     password_home = _("Password")
     login_home = _("Login")
     signup_home = _("Sign up")
+
+    if request.user.is_authenticated:
+        if User.objects.get(id=request.session.get('userid')).rol == "ER":
+            return redirect(reverse('my-studies'))
+        redirect(reverse('my-recommendations'))
 
     if request.method == "POST":
         username = request.POST.get("username")
@@ -175,10 +180,7 @@ class StudiesView(LoginRequiredMixin, ListView):
     context_object_name = 'questionnaries'
 
     def get_queryset(self):
-        # Filtrar los cuestionarios por el usuario autenticado
-        if self.request.user.is_authenticated:
-            return Questionnarie.objects.filter(user=self.request.user)
-        return Questionnarie.objects.none()
+        return Questionnarie.objects.filter(user=self.request.user)
 
 class QuestionnarieInline():
     form_class = QuestionnarieForm
@@ -258,18 +260,18 @@ def delete_section(request, pk):
 def create_study(request):
     if request.method == 'POST':
         print(request.POST)
-        """
-        # Procesar el formulario del cuestionario
         questionnaire_form = QuestionnarieForm(request.POST)
+        #section_formset = SectionFormSet(request.POST)
+
         if questionnaire_form.is_valid():
-            # Guardamos el cuestionario
-            questionnaire = questionnaire_form.save()
-            
-            # Procesamos las secciones y preguntas
-            # Usamos un contador para las secciones (0,1,2,...) hasta que no encontremos título
+        #if questionnaire_form.is_valid() and section_formset.is_valid():
+            questionnaire = questionnaire_form.save(commit=False)
+            questionnaire.user = User.objects.get(id=request.session.get('userid'))
+            questionnaire.save()
+        
             section_index = 0
             while True:
-                section_title_key = f"sections[{section_index}][title]"
+                section_title_key = f"sections-{section_index}-title"
                 section_title = request.POST.get(section_title_key, "").strip()
                 if not section_title:
                     # Si no se encuentra un título, asumimos que ya no hay más secciones
@@ -284,7 +286,7 @@ def create_study(request):
                 # Procesar las preguntas de esta sección
                 question_index = 0
                 while True:
-                    question_text_key = f"sections[{section_index}][questions][{question_index}][text]"
+                    question_text_key = f"questions-{section_index}-{question_index}-text"
                     question_text = request.POST.get(question_text_key, "").strip()
                     if not question_text:
                         # No se encontró más pregunta para esta sección
@@ -301,12 +303,6 @@ def create_study(request):
 
             # Redireccionar o mostrar mensaje de éxito
             return redirect('my-studies')  # Reemplaza 'success_url' por tu ruta de éxito
-        else:
-            # Si el formulario del cuestionario no es válido, volver a mostrar la página
-            return render(request, 'createstudy.html', {
-                'questionnarie_form': questionnaire_form,
-            })
-        """
     
     # Si es GET, simplemente mostramos el formulario vacío
     questionnaire_form = QuestionnarieForm()
@@ -320,7 +316,6 @@ def create_study(request):
         'question_formset': question_formset,
         'choice_formset': choice_formset,
     })
-
 
 def create_section_ajax(request):
     if request.method == "POST":

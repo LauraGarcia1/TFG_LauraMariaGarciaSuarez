@@ -35,6 +35,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Mostrar mensaje de error de que no existe el usuario (pag. inicial)
 - [X] Género en registro
 - [ ] Revisar traducciones de todas las páginas
+- [ ] Limpiar código que no se use
 - [X] Hacer boton logout y si accede a home y esta login, que vaya directamente a user-home (27/01/2025)
 - [ ] Poner todos los label de register -> valido
 - [X] Comprobar forloop de questionnarie.html (15/01/2025)
@@ -53,6 +54,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
   - [ ] Que las preguntas tengan choices si es necesario
   - [ ] El algoritmo usado para el cuestionario
 - [ ] Eliminacion de objetos en la creación de cuestionario
+- [ ] Questionnarie a questionnaire
 
 ### Evaluación del participante
 

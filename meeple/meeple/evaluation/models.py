@@ -179,6 +179,15 @@ class Question(models.Model):
     def __str__(self):
         return f"{self.id} - {self.text}"
     
+    
+
+class Choice(models.Model):
+    question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True, related_name='choices')
+    text = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.text}"
+    
 
 class Answer(models.Model):
     question = models.ForeignKey('Question', on_delete=models.CASCADE, null=False)
@@ -269,11 +278,4 @@ class Preference(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.category}"
-    
 
-class Choice(models.Model):
-    question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True, related_name='choices')
-    text = models.CharField(max_length=50, blank=True, null=True)
-
-    def __str__(self):
-        return f"{self.text}"
