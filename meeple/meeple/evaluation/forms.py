@@ -78,25 +78,7 @@ class ChoiceForm(forms.ModelForm):
             'data-question-index': '__qindexc__',
         })
 
-"""
-# Formset para añadir Sections dentro de Questionnarie
-SectionFormSet = inlineformset_factory(
-    Questionnarie, Section, form=SectionForm, extra=1, can_delete=True
-)
-
-# Formset para añadir Questions dentro de Section
-QuestionFormSet = inlineformset_factory(
-    Section, Question, form=QuestionForm, extra=1, can_delete=True
-)
-
-# Formset para añadir Choice dentro de Question
-ChoiceFormSet = inlineformset_factory(
-    Question, Choice, form=ChoiceForm, extra=1, can_delete=True
-)
-"""
-
 # Librería para crear forms anidados
 ChoiceFormSet = inlineformset_factory(Question, Choice, form=ChoiceForm, extra=1, can_delete=True)
-#ChoiceFormSet = nestedformset_factory(Question, Choice, form=ChoiceForm, nested_formset={}, extra=1)
 QuestionFormSet = nestedformset_factory(Section, Question, form=QuestionForm, nested_formset=ChoiceFormSet, extra=1)
 SectionFormSet = modelformset_factory(Section, form=SectionForm, extra=1)

@@ -26,15 +26,56 @@
                 <h1>{% trans "CreateStudyTitle" %}</h1>
                 <form action="" method="post">
                     {% csrf_token %}
-                <div id="questionnarie-form">
-                    {{ questionnarie_form.as_p }}
-                </div>
-                <button id="create-section-btn" class="btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateSection" %}</button>
-                <button id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
-
+                    <div id="questionnarie-form">
+                        {{ questionnaire.as_p }}
+                    </div>
+                    <button id="create-section-btn" class="btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateSection" %}</button>
+                    <button id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
+                    
                 <h3 class="pt-3">{% trans "Sections" %}</h3>
                 {{ section_formset.management_form }}
                 <div id="sections-container">
+                {% for section, questions in sections_dict.items %}
+                <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
+                    <div class="section-form">
+                      <h3>{% trans "Section" %}</h3>
+                        <div>
+                            {{ section.as_p }}
+                        </div>
+                        <button class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
+                        <button class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
+                        {{ question_formset.management_form }}
+                          <!-- Contenedor para las preguntas de esta sección -->
+                            <div class="questions-container">
+                                <!-- Se agregarán los formularios de preguntas aquí -->
+                                {% for question, choices in questions.items %}
+                                <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
+                                    <div class="question-form" data-index="__qindex__" data-section-index="__section_index__">
+                                        <h4>{% trans "Question" %}</h4>
+                                        <div>
+                                            {{ question.as_p }}
+                                        </div>
+                                        <button class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
+                                        <button class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
+                                        {{ choice_formset.management_form }}
+                                        <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body mt-3">
+                                            <h4>{% trans "Choices" %}</h4>
+                                            <div class="choices-container">
+                                            <!-- Se agregarán los formularios de preguntas aquí -->
+                                                {% for choice in choices %}
+                                                <div class="choice-form">
+                                                    {{ choice.as_p }}
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                    </div>
+                </div>
+                {% endfor %}
                     <!-- Secciones que se añaden dinámicamente -->
                     <script type="text/template" id="section-template">
                         <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
@@ -85,8 +126,8 @@
                     </script>
                 </div>
                 <div class="mb-0">
-                    <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "StudiesButtom" %}</button>
-                    <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota mt-3">{% trans "ReturnToStudyList" %}</a>
+                    <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "EditStudy" %}</button>
+                    <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota">{% trans "ReturnToStudyList" %}</a>
                 </div>
                 </form>
             </div>

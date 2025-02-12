@@ -1,5 +1,5 @@
 from urllib import request
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -11,7 +11,7 @@ from django.db import connections, transaction
 from django.views.generic.list import ListView
 from django.views.generic import UpdateView, CreateView
 from django.utils.translation import gettext_lazy as _
-from .forms import SignUpForm, QuestionnarieForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
+from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnarieForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
 from .models import Preference, User, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction, Section
 import json
 
@@ -219,33 +219,6 @@ class QuestionnarieInline():
         for section in sections:
             section.questionnarie = self.object
             section.save()
-
-class QuestionnarieCreate(LoginRequiredMixin, QuestionnarieInline, CreateView):
-
-    def get_context_data(self, **kwargs):
-        ctx = super(QuestionnarieCreate, self).get_context_data(**kwargs)
-        ctx['named_formsets'] = self.get_named_formsets()
-
-    def get_named_formsets(self):
-        if self.request.method == "GET":
-            return {
-                'sections': SectionFormSet(prefix='sections'),
-            }
-        else:
-            return {
-                'sections': SectionFormSet(self.request.POST or None, self.request.FILES or None, prefix='sections'),
-            }
-        
-class QuestionnarieUpdate(LoginRequiredMixin, QuestionnarieInline, UpdateView):
-
-    def get_context_data(self, **kwargs):
-        ctx = super(QuestionnarieUpdate, self).get_context_data(**kwargs)
-        ctx['named_formsets'] = self.get_named_formsets()
-
-    def get_named_formsets(self):
-        return {
-            'sections': SectionFormSet(self.request.POST or None, self.request.FILES or None, instance=self.object, prefix='sections'),
-        }
     
 def delete_section(request, pk):
     try:
@@ -259,7 +232,6 @@ def delete_section(request, pk):
 @login_required
 def create_study(request):
     if request.method == 'POST':
-        print(request.POST)
         questionnaire_form = QuestionnarieForm(request.POST)
         #section_formset = SectionFormSet(request.POST)
 
@@ -340,37 +312,83 @@ def create_section_ajax(request):
         section = Section.objects.create(title=title)
         return JsonResponse({"id": section.id})
     
-class EditStudyView(LoginRequiredMixin, UpdateView):
-    model = Questionnarie
-    form_class = QuestionnarieForm
-    template_name = 'editstudy.html'
-    success_url = reverse_lazy('my-studies')
+@login_required
+def edit_study(request, pk):
+    if request.method == 'POST':
+        questionnaire_form = QuestionnarieForm(request.POST)
+        #section_formset = SectionFormSet(request.POST)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['section_formset'] = SectionFormSet(self.request.POST, instance=self.object)
-        else:
-            context['section_formset'] = SectionFormSet(instance=self.object)
-        return context
+        if questionnaire_form.is_valid():
+        #if questionnaire_form.is_valid() and section_formset.is_valid():
+            questionnaire = questionnaire_form.save(commit=False)
+            questionnaire.user = User.objects.get(id=request.session.get('userid'))
+            questionnaire.save()
+        
+            section_index = 0
+            while True:
+                section_title_key = f"sections-{section_index}-title"
+                section_title = request.POST.get(section_title_key, "").strip()
+                if not section_title:
+                    # Si no se encuentra un título, asumimos que ya no hay más secciones
+                    break
 
-    def form_valid(self, form):
-        context = self.get_context_data()
-        section_formset = context['section_formset']
+                # Crear la sección para este cuestionario
+                section = Section.objects.create(
+                    questionnarie=questionnaire,
+                    title=section_title
+                )
+                # TODO: delete va a hacer que no sea así la función
+                # Procesar las preguntas de esta sección
+                question_index = 0
+                while True:
+                    question_key_prefix = f"questions-{section_index}-{question_index}"
+                    question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
+                    if not question_keys:
+                        # No se encontró más preguntas para esta sección
+                        break
+                    # Crear la pregunta para la sección
+                    question = Question.objects.create(
+                        section=section,
+                        text=question_keys[0],
+                        type=question_keys[1],
+                        language=question_keys[2]
+                    )
+                    choice_index = 0
+                    while True:
+                        choice_text_key = f"choices-{section_index}-{question_index}-{choice_index}-text"
+                        choice_keys = request.POST.get(choice_text_key, "").strip()
+                        if not choice_keys:
+                            # No se encontró más preguntas para esta sección
+                            break
+                        # Crear la pregunta para la sección
+                        Choice.objects.create(
+                            question=question,
+                            text=choice_keys,
+                        )
+                        choice_index += 1
+                    question_index += 1
+                # Incrementamos el índice de sección y seguimos con la siguiente
+                section_index += 1
 
-        # Usar una transacción para guardar todo o nada
-        with transaction.atomic():
-            self.object = form.save()
-            if section_formset.is_valid():
-                sections = section_formset.save(commit=False)
-                for section in sections:
-                    section.questionnarie = self.object
-                    section.save()
-                section_formset.save_m2m()
-            else:
-                return self.form_invalid(form)
+            # Redireccionar o mostrar mensaje de éxito
+            return redirect('my-studies')  # Reemplaza 'success_url' por tu ruta de éxito
+    
+    # Si es GET, simplemente mostramos el formulario vacío
+    questionnaire = get_object_or_404(Questionnarie, id=pk, user=User.objects.get(id=request.session.get('userid')))
+    sections_dict = {}
+    for section in questionnaire.sections.all():
+        question_forms = {}
 
-        return super().form_valid(form)
+        for question in section.questions.all():
+
+            choices = question.choices.all()
+            question_forms[QuestionForm(instance=question)] = [ChoiceForm(instance=choice) for choice in choices]
+            
+        sections_dict[SectionForm(instance=section)] = question_forms
+    
+    questionnaire_form = QuestionnarieForm(instance=questionnaire)
+
+    return render(request, 'editstudy.html', {'questionnaire': questionnaire_form, 'sections_dict': sections_dict})
 
 @login_required
 def recommendPage(request):
