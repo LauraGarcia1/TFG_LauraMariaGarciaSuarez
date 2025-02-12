@@ -128,7 +128,6 @@
                     var $input = $(this);
                     var currentName = $input.attr('name');
                     var currentId = $input.attr('id');
-
                     // Reemplazar el índice de 'sections-0' a 'sections-<sectionIndex>'
                     var newName = currentName.replace(/sections-\d+/, "sections-" + (sectionIndex - 1));
                     var newId = currentId.replace(/sections-\d+/, "sections-" + (sectionIndex - 1));
@@ -170,25 +169,11 @@
                 var qCount = $sectionForm.find(".questions-container .question-form").length;
                 // Obtener la plantilla del formulario de pregunta
                 var questionTemplate = $("#question-template").html();
-                var newQuestionHtml = questionTemplate.replace(/__section_index__/g, sindex).replace(/__qindex__/g, qCount);
+                var newQuestionHtml = questionTemplate.replace(/__section_index__/g, sindex).replace(/__qindex__/g, qCount).replace(/questions-\d+/g, "questions-" + qCount + "-" + sindex);
 
-                var totalFormsInput = $("input[name='sections-TOTAL_FORMS']");
+                var totalFormsInput = $("input[name='questions-TOTAL_FORMS']");
                 totalFormsInput.val(parseInt(qCount)+1);
-
-                var newQuestion = $("#questions-container .question-form").last();
-                newQuestion.find("input[id^='id_questions-']").each(function() {
-                    var $input = $(this);
-                    var currentName = $input.attr('name');
-                    var currentId = $input.attr('id');
-
-                    // Reemplazar el índice de 'questions-0' a 'questions-<questionIndex>'
-                    var newName = currentName.replace(/questions-\d+/, "questions-" + qCount + "-" + sindex);
-                    var newId = currentId.replace(/questions-\d+/, "questions-" + qCount + "-" + sindex);
-
-                    // Asignar los nuevos name e id al input
-                    $input.attr('name', newName);
-                    $input.attr('id', newId);
-                });
+                
                 // Añadir el nuevo formulario al contenedor de preguntas de esa sección
                 $sectionForm.find(".questions-container").append(newQuestionHtml);
             });
@@ -213,10 +198,14 @@
                 // Obtener el índice de la sección desde el atributo data-index
                 var qindex = $questionForm.attr("data-index");
                 // Contar las opciones existentes en esa sección para determinar el índice de la nueva pregunta
-                var qCount = $questionForm.find(".choices-container .choice-form").length;
+                var cCount = $questionForm.find(".choices-container .choice-form").length;
                 // Obtener la plantilla del formulario de opción
                 var choiceTemplate = $("#choice-template").html();
-                var newChoiceHtml = choiceTemplate.replace(/__cindex__/g, qCount).replace(/__sindexc__/g, sindex).replace(/__qindexc__/g, qindex);
+                var newChoiceHtml = choiceTemplate.replace(/__cindex__/g, cCount).replace(/__sindexc__/g, sindex).replace(/__qindexc__/g, qindex).replace(/choices-\d+/g, "choices-" + cCount + "-" + sindex + "-" + qindex);
+
+                var totalFormsInput = $("input[name='choices-TOTAL_FORMS']");
+                totalFormsInput.val(parseInt(cCount)+1);
+
                 // Añadir el nuevo formulario al contenedor de opciones de esa sección
                 $questionForm.find(".choices-container").append(newChoiceHtml);
             });

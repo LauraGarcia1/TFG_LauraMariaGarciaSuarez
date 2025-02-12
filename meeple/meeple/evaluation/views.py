@@ -254,7 +254,7 @@ def delete_section(request, pk):
         messages.success(
             request, 'Object Does not exist'
         )
-        return redirect('edit-study', pk=section.questionnarie.id)
+        return redirect('edit-questionnarie', pk=section.questionnarie.id)
 
 @login_required
 def create_study(request):
@@ -282,21 +282,36 @@ def create_study(request):
                     questionnarie=questionnaire,
                     title=section_title
                 )
-                
+                # TODO: delete va a hacer que no sea así la función
                 # Procesar las preguntas de esta sección
                 question_index = 0
                 while True:
-                    question_text_key = f"questions-{section_index}-{question_index}-text"
-                    question_text = request.POST.get(question_text_key, "").strip()
-                    if not question_text:
-                        # No se encontró más pregunta para esta sección
+                    question_key_prefix = f"questions-{section_index}-{question_index}"
+                    question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
+                    print(question_keys)
+                    if not question_keys:
+                        # No se encontró más preguntas para esta sección
                         break
                     # Crear la pregunta para la sección
-                    Question.objects.create(
+                    question = Question.objects.create(
                         section=section,
-                        text=question_text
-                        # Puedes incluir otros campos si es necesario, p.ej. type, language, etc.
+                        text=question_keys[0],
+                        type=question_keys[1],
+                        language=question_keys[2]
                     )
+                    choice_index = 0
+                    while True:
+                        choice_text_key = f"choices-{section_index}-{question_index}-{choice_index}-text"
+                        choice_keys = request.POST.get(choice_text_key, "").strip()
+                        if not choice_keys:
+                            # No se encontró más preguntas para esta sección
+                            break
+                        # Crear la pregunta para la sección
+                        Choice.objects.create(
+                            question=question,
+                            text=choice_keys,
+                        )
+                        choice_index += 1
                     question_index += 1
                 # Incrementamos el índice de sección y seguimos con la siguiente
                 section_index += 1
@@ -306,9 +321,11 @@ def create_study(request):
     
     # Si es GET, simplemente mostramos el formulario vacío
     questionnaire_form = QuestionnarieForm()
-    section_formset = SectionFormSet(prefix='sections')
+    section_formset = SectionFormSet(queryset=Section.objects.none(), prefix='sections')
     question_formset = QuestionFormSet(prefix='questions')
-    choice_formset = ChoiceFormSet(prefix='choices')
+    choice_formset = ChoiceFormSet(queryset=Choice.objects.none(), prefix='choices')
+
+    print(section_formset)
 
     return render(request, 'createstudy.html', {
         'questionnarie_form': questionnaire_form,
