@@ -181,44 +181,6 @@ class StudiesView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Questionnarie.objects.filter(user=self.request.user)
-
-class QuestionnarieInline():
-    form_class = QuestionnarieForm
-    model = Questionnarie
-    template_name = 'createstudy.html'
-
-    def form_valid(self, form):
-        named_formsets = self.get_named_formsets()
-        if not all((x.is_valid() for x in named_formsets.values())):
-            return self.render_to_response(self.get_context_data(forms=form))
-        
-        self.object = form.save()
-
-        # Save objects
-        for name, formset in named_formsets.items():
-            formset_save_func = getattr(self, 'formset_{0}_valid'.format(name), None)
-            if formset_save_func is not None:
-                formset_save_func(formset)
-            else:
-                formset.save()
-        return redirect('my-studies')
-    
-    def formset_sections_valid(self, formset):
-        """
-        def formset_questions_valid(self, formset):
-        """
-
-        """
-        questions = formset.save(commit=False)
-        for question in questions:
-            question.sect = self.object
-            question.save()
-
-        """
-        sections = formset.save(commit=False)
-        for section in sections:
-            section.questionnarie = self.object
-            section.save()
     
 def delete_section(request, pk):
     try:

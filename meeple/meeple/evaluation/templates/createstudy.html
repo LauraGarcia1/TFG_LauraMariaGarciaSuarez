@@ -37,22 +37,28 @@
                 <div id="sections-container">
                     <!-- Secciones que se añaden dinámicamente -->
                     <script type="text/template" id="section-template">
-                        <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
-                            <div class="section-form" data-index="__index__">
+                        <div class="section-form" data-index="__index__">
+                            <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
                               <h3>{% trans "Section" %}</h3>
                                 {% for form in section_formset %}
                                 <div>
                                     {{ form.as_p }}
+                                    <p>
+                                        <label for="id_sections-0-DELETE">Eliminar:</label>
+                                        <input type="checkbox" name="sections-0-DELETE" id="id_sections-0-DELETE">
+                                        <input type="hidden" name="sections-0-section" id="id_sections-0-section">
+                                        <input type="hidden" name="sections-0-id" id="id_sections-0-id">
+                                    </p>
                                 </div>
                                 <button class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
-                                <button class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
+                                <button id="del-questions-0-btn" class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
                                 {{ question_formset.management_form }}
                                   <!-- Contenedor para las preguntas de esta sección -->
                                     <div class="questions-container">
                                         <!-- Se agregarán los formularios de preguntas aquí -->
                                         <script type="text/template" id="question-template">
-                                        <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
                                             <div class="question-form" data-index="__qindex__" data-section-index="__section_index__">
+                                                <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
                                                 <h4>{% trans "Question" %}</h4>
                                                 {% for form_q in question_formset %}
                                                 <div>
@@ -136,6 +142,13 @@
                     $input.attr('name', newName);
                     $input.attr('id', newId);
                 });
+                newSection.find("button[id^='del-questions-0-btn']").each(function() {
+                    var $button = $(this);
+                    var currentId = $button.attr('id');
+                    // Reemplazar el índice 0 en el ID con el nuevo índice dinámico
+                    var newId = currentId.replace(/del-questions-\d+-btn/, "del-questions-" + (sectionIndex - 1) + "-btn");
+                    $button.attr('id', newId);
+                });
             });
 
             // Delegar evento: cuando se escriba en el título de la sección, habilitar el botón "Añadir Pregunta" si hay texto.
@@ -209,7 +222,75 @@
                 // Añadir el nuevo formulario al contenedor de opciones de esa sección
                 $questionForm.find(".choices-container").append(newChoiceHtml);
             });
+
+            // FUNCIONES DE ELIMINACIÓN DE ELEMENTOS
+            // Función para habilitar o deshabilitar el botón de "Eliminar" según si hay checkboxes seleccionados
+            function toggleDeleteButtonSection() {
+                var deleteButton = $("#delete-sections-btn");
+                // Comprobamos si al menos un checkbox de eliminación está marcado
+                var hasChecked = $("input[id^='id_sections-'][id$='-DELETE']:checked").length > 0;
+                deleteButton.prop("disabled", !hasChecked);
+            }
+
+            // Escuchamos los cambios en los checkboxes de eliminación
+            $(document).on("change", "input[id^='id_sections-'][id$='-DELETE']", function () {
+                toggleDeleteButtonSection(); // Revisa si hay checkboxes seleccionados
+            });
+
+            // Al pulsar el botón de "Eliminar Secciones"
+            $("#delete-sections-btn").click(function (e) {
+                e.preventDefault();
+
+                // Encontramos todas las secciones cuyo checkbox de eliminación está marcado
+                $("input[id^='id_sections-'][id$='-DELETE']:checked").each(function () {
+                    var sectionCheckbox = $(this);
+                    var sectionForm = sectionCheckbox.closest(".section-form");
+                    // Eliminar el formulario de la sección y sus preguntas y opciones
+                    sectionForm.remove();
+                });
+
+                // Después de eliminar las secciones, deshabilitamos el botón de eliminación
+                toggleDeleteButtonSection();
+            });
+
+            // Función para habilitar o deshabilitar el botón de "Eliminar" según si hay checkboxes seleccionados
+            function toggleDeleteButtonQuestion(section) {
+                button = $("button[id^='del-questions-" + section + "-btn']");
+                // Comprobamos si al menos un checkbox de eliminación está marcado en los formularios de preguntas
+                var hasChecked = $("input[id^='id_questions-'][id$='-DELETE']:checked").length > 0;
+                button.prop("disabled", !hasChecked);
+            }
+
+            // Escuchamos los cambios en los checkboxes de eliminación dentro de los formularios de preguntas
+            $(document).on("change", "input[id^='id_questions-'][id$='-DELETE']", function () {
+                var checkboxId = $(this).attr("id");
+                var regex = /^id_questions-(\d+)-(\d+)-DELETE$/;
+                var match = checkboxId.match(regex);
+                toggleDeleteButtonQuestion(match[2]); // Revisa si hay checkboxes seleccionados
+            });
+
+            // Al pulsar el botón de "Eliminar Preguntas"
+            $("#delete-questions-btn").click(function (e) {
+                e.preventDefault();
+
+                // Encontramos todas las preguntas cuyo checkbox de eliminación está marcado
+                $("input[id^='id_questions-'][id$='-DELETE']:checked").each(function () {
+                    var questionCheckbox = $(this);
+                    var questionForm = questionCheckbox.closest(".question-form");
+                    // Eliminar el formulario de la pregunta y sus opciones
+                    questionForm.remove();
+                });
+                
+                var checkboxId = $(this).attr("id");
+                var regex = /^id_questions-(\d+)-(\d+)-DELETE$/;
+                var match = checkboxId.match(regex);
+
+                // Después de eliminar las preguntas, deshabilitamos el botón de eliminación
+                toggleDeleteButtonQuestion(match[2]);
+            });
+
         });
-    </script>
+
+        </script>
 
     {% endblock body %}
