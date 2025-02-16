@@ -20,21 +20,29 @@
         </div>
 
         <div
-            class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+            class="justify-content-start shadow-lg p-4 p-md-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
             <!-- Form de Questionnarie -->
             <h1>{% trans "CreateStudyTitle" %}</h1>
             <form action="" method="post">
-                <div class="row p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
+                <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme">
                     {% csrf_token %}
-                    <div id="questionnarie-form">
+                    <div id="questionnarie-form" class="w-100 px-3 overflow-auto">
                         {{ questionnarie_form.as_p }}
                     </div>
 
-                    <div class="button-container mt-3">
-                        <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateSection" %}</button>
-                        <button type="button" id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
-                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "StudiesButtom" %}</button>
-                        <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "ReturnToStudyList" %}</a>
+                    <div class="row">
+                        <div class="col-6 col-md-3 mb-2">
+                            <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateSection" %}</button>
+                        </div>
+                        <div class="col-6 col-md-3 mb-2">
+                            <button type="button" id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
+                        </div>
+                        <div class="col-6 col-md-3 mb-2">
+                            <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "StudiesButtom" %}</button>
+                        </div>
+                        <div class="col-6 col-md-3 mb-2">
+                            <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "ReturnToStudyList" %}</a>
+                        </div>
                     </div>
                     <h3 class="pt-3">{% trans "Sections" %}</h3>
                     {{ section_formset.management_form }}
@@ -42,7 +50,7 @@
                         <!-- Secciones que se añaden dinámicamente -->
                         <script type="text/template" id="section-template">
                             <div class="section-form" data-index="__index__">
-                                <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
+                                <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body mb-3">
                                 <h3>{% trans "Section" %}</h3>
                                     {% for form in section_formset %}
                                     <div>
@@ -64,7 +72,7 @@
                                             <!-- Se agregarán los formularios de preguntas aquí -->
                                             <script type="text/template" id="question-template">
                                                 <div class="question-form" data-index="__qindex__" data-section-index="__section_index__">
-                                                    <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
+                                                    <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme mt-3">
                                                     <h4>{% trans "Question" %}</h4>
                                                     {% for form_q in question_formset %}
                                                     <div>
@@ -75,7 +83,7 @@
                                                         <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
                                                     </div>
                                                         {{ choice_formset.management_form }}
-                                                    <div class="row p-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
+                                                    <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
                                                         <h4>{% trans "Choices" %}</h4>
                                                         <div class="choices-container">
                                                         <!-- Se agregarán los formularios de preguntas aquí -->
@@ -304,7 +312,6 @@
                 var checkboxId = $(this).attr("id");
                 var regex = /^id_choices-(\d+)-(\d+)-(\d+)-DELETE$/;
                 var match = checkboxId.match(regex);
-                console.log("choices?", match[1], match[2], match[3]);
                 toggleDeleteButtonChoice(match[2], match[3]); // Revisa si hay checkboxes seleccionados
             });
 
