@@ -71,7 +71,7 @@
                                                     <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
                                                     <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
                                                     {{ choice_formset.management_form }}
-                                                    <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body mt-3">
+                                                    <div class="row p-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
                                                         <h4>{% trans "Choices" %}</h4>
                                                         <div class="choices-container">
                                                         <!-- Se agregarán los formularios de preguntas aquí -->
@@ -183,8 +183,7 @@
                 var qCount = $sectionForm.find(".questions-container .question-form").length;
                 // Obtener la plantilla del formulario de pregunta
                 var questionTemplate = $("#question-template").html();
-                var newQuestionHtml = questionTemplate.replace(/__section_index__/g, sindex).replace(/__qindex__/g, qCount).replace(/questions-\d+/g, "questions-" + qCount + "-" + sindex).replace(/choices-TOTAL_FORMS/g, "choices-" + sindex + "-" + qCount + "-TOTAL_FORMS").replace(/\bid="del-choices-btn"\b/g, 'id="del-choices-' + sindex + '-' + qCount + '-btn"');
-                console.log(newQuestionHtml);
+                var newQuestionHtml = questionTemplate.replace(/__section_index__/g, sindex).replace(/__qindex__/g, qCount).replace(/questions-\d+/g, "questions-" + qCount + "-" + sindex).replace(/choices-TOTAL_FORMS/g, "choices-" + sindex + "-" + qCount + "-TOTAL_FORMS").replace(/id="del-choices-btn"/g, 'id="del-choices-' + sindex + '-' + qCount + '-btn"');
                 var totalFormsInput = $("input[name='questions-" + sindex + "-TOTAL_FORMS']");
                 totalFormsInput.val(parseInt(qCount) + 1);
                 // Añadir el nuevo formulario al contenedor de preguntas de esa sección
