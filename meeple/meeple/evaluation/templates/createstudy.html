@@ -54,8 +54,10 @@
                                             <input type="hidden" name="sections-0-id" id="id_sections-0-id">
                                         </p>
                                     </div>
-                                    <button type="button" class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
-                                    <button type="button" id="del-questions-btn" class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
+                                    <div class="button-container mt-3">
+                                        <button type="button" class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
+                                        <button type="button" id="del-questions-btn" class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
+                                    </div>
                                     <!-- Contenedor para las preguntas de esta sección -->
                                     <div class="questions-container">
                                             {{ question_formset.management_form }}
@@ -68,9 +70,11 @@
                                                     <div>
                                                         {{ form_q.as_p }}
                                                     </div>
-                                                    <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
-                                                    <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
-                                                    {{ choice_formset.management_form }}
+                                                    <div class="button-container mt-3">
+                                                        <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
+                                                        <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
+                                                    </div>
+                                                        {{ choice_formset.management_form }}
                                                     <div class="row p-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
                                                         <h4>{% trans "Choices" %}</h4>
                                                         <div class="choices-container">
@@ -290,10 +294,8 @@
             // Función para habilitar o deshabilitar el botón de "Eliminar" según si hay checkboxes seleccionados
             function toggleDeleteButtonChoice(section, question) {
                 button = $("button[id='del-choices-" + section + "-" + question + "-btn']");
-                console.log(button);
                 // Comprobamos si al menos un checkbox de eliminación está marcado en los formularios de opciones
                 var hasChecked = $("input[id^='id_choices-'][id$='-" + section + "-" + question + "-DELETE']:checked").length > 0;
-                console.log("input[id^='id_choices-'][id$='-" + section + "-" + question + "-DELETE']:checked", hasChecked);
                 button.prop("disabled", !hasChecked);
             }
 
@@ -309,19 +311,15 @@
             // Al pulsar el botón de "Eliminar Opciones"
             $(document).on("click", ".del-choices-btn", function (e) {
                 e.preventDefault();
-                console.log("entre");
 
                 var checkboxId = $(this).attr("id");
                 var match = checkboxId.match(/^del-choices-(\d+)-(\d+)-btn$/);
-                console.log("---->", match[1], match[2], "input[id='id_choices-" + match[1] + "'][id$='-DELETE']:checked");
                 
                 // Verificar y eliminar la opcion correspondiente
                 $("input[id^='id_choices-'][id$='" + match[1] + "-" + match[2] + "-DELETE']:checked").each(function () {
-                    console.log("Voy a eliminar");
                     var choiceCheckbox = $(this);
                     var choiceForm = choiceCheckbox.closest(".choice-form");
                     choiceForm.remove();
-                    console.log("----> finalizadoooo");
                 });
 
 

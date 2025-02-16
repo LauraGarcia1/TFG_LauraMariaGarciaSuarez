@@ -46,8 +46,8 @@ class SectionForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ['text', 'type', 'language']
-        exclude = ['date_created']
+        fields = ['text', 'type']
+        exclude = ['date_created', 'language']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -56,10 +56,6 @@ class QuestionForm(forms.ModelForm):
             'data-section-index': '__section_index__',
         })
         self.fields['type'].widget.attrs.update({
-            'data-index': '__qindex__',
-            'data-section-index': '__section_index__',
-        })
-        self.fields['language'].widget.attrs.update({
             'data-index': '__qindex__',
             'data-section-index': '__section_index__',
         })

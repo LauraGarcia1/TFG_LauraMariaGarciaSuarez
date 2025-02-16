@@ -204,8 +204,9 @@ def create_study(request):
             questionnaire.save()
             print(request.POST)
         
-            number_sections = int(request.POST.get("sections-TOTAL_FORMS", "").strip())
-            for section_index in range(0, number_sections):
+            number_sections = int(request.POST.get("sections-TOTAL_FORMS", "").strip() or 0)
+            print("cuantas secciones", number_sections)
+            for section_index in range(0, number_sections+1):
                 section_title_key = f"sections-{section_index}-title"
                 section_title = request.POST.get(section_title_key, "").strip()
                 if section_title:
@@ -216,25 +217,24 @@ def create_study(request):
                     )
                     # TODO: delete va a hacer que no sea así la función
                     # Procesar las preguntas de esta sección
-                    print(request.POST.get(f"questions-{section_index}-TOTAL_FORMS", "").strip())
-                    number_questions = int(request.POST.get(f"questions-{section_index}-TOTAL_FORMS", "").strip())
-                    print(number_questions)
-                    for question_index in range(0, number_questions):
-                        question_key_prefix = f"questions-{section_index}-{question_index}"
+                    number_questions = int(request.POST.get(f"questions-{section_index}-TOTAL_FORMS", "").strip() or 0)
+                    print("cuantas preguntas", number_questions, "con seccion", section_index)
+                    for question_index in range(0, number_questions+1):
+                        question_key_prefix = f"questions-{question_index}-{section_index}"
                         question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
-                        print(question_keys)
+                        print("que tienen las preguntas", question_keys)
                         if question_keys:
                             # Si hay preguntas de la sección, las guardamos
                             question = Question.objects.create(
                                 section=section,
                                 text=question_keys[0],
                                 type=question_keys[1],
-                                language=question_keys[2]
+                                language=questionnaire.language
                             )
-                            number_choices = int(request.POST.get(f"choices-{section_index}-{question_index}-TOTAL_FORMS", "").strip())
-                            print(number_choices)
-                            for choice_index in range(0, number_choices):
-                                choice_text_key = f"choices-{section_index}-{question_index}-{choice_index}-text"
+                            number_choices = int(request.POST.get(f"choices-{section_index}-{question_index}-TOTAL_FORMS", "").strip() or 0)
+                            print("cuantas opciones", number_choices)
+                            for choice_index in range(0, number_choices+1):
+                                choice_text_key = f"choices-{choice_index}-{section_index}-{question_index}-text"
                                 choice_keys = request.POST.get(choice_text_key, "").strip()
                                 if choice_keys:
                                     # Si hay opciones de la pregunta, las guardamos
