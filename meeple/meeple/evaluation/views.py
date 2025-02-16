@@ -202,53 +202,46 @@ def create_study(request):
             questionnaire = questionnaire_form.save(commit=False)
             questionnaire.user = User.objects.get(id=request.session.get('userid'))
             questionnaire.save()
+            print(request.POST)
         
-            section_index = 0
-            while True:
+            number_sections = int(request.POST.get("sections-TOTAL_FORMS", "").strip())
+            for section_index in range(0, number_sections):
                 section_title_key = f"sections-{section_index}-title"
                 section_title = request.POST.get(section_title_key, "").strip()
-                if not section_title:
-                    # Si no se encuentra un título, asumimos que ya no hay más secciones
-                    break
-
-                # Crear la sección para este cuestionario
-                section = Section.objects.create(
-                    questionnarie=questionnaire,
-                    title=section_title
-                )
-                # TODO: delete va a hacer que no sea así la función
-                # Procesar las preguntas de esta sección
-                question_index = 0
-                while True:
-                    question_key_prefix = f"questions-{section_index}-{question_index}"
-                    question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
-                    print(question_keys)
-                    if not question_keys:
-                        # No se encontró más preguntas para esta sección
-                        break
-                    # Crear la pregunta para la sección
-                    question = Question.objects.create(
-                        section=section,
-                        text=question_keys[0],
-                        type=question_keys[1],
-                        language=question_keys[2]
+                if section_title:
+                    # Si hay secciones del cuestionario, las guardamos
+                    section = Section.objects.create(
+                        questionnarie=questionnaire,
+                        title=section_title
                     )
-                    choice_index = 0
-                    while True:
-                        choice_text_key = f"choices-{section_index}-{question_index}-{choice_index}-text"
-                        choice_keys = request.POST.get(choice_text_key, "").strip()
-                        if not choice_keys:
-                            # No se encontró más preguntas para esta sección
-                            break
-                        # Crear la pregunta para la sección
-                        Choice.objects.create(
-                            question=question,
-                            text=choice_keys,
-                        )
-                        choice_index += 1
-                    question_index += 1
-                # Incrementamos el índice de sección y seguimos con la siguiente
-                section_index += 1
+                    # TODO: delete va a hacer que no sea así la función
+                    # Procesar las preguntas de esta sección
+                    print(request.POST.get(f"questions-{section_index}-TOTAL_FORMS", "").strip())
+                    number_questions = int(request.POST.get(f"questions-{section_index}-TOTAL_FORMS", "").strip())
+                    print(number_questions)
+                    for question_index in range(0, number_questions):
+                        question_key_prefix = f"questions-{section_index}-{question_index}"
+                        question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
+                        print(question_keys)
+                        if question_keys:
+                            # Si hay preguntas de la sección, las guardamos
+                            question = Question.objects.create(
+                                section=section,
+                                text=question_keys[0],
+                                type=question_keys[1],
+                                language=question_keys[2]
+                            )
+                            number_choices = int(request.POST.get(f"choices-{section_index}-{question_index}-TOTAL_FORMS", "").strip())
+                            print(number_choices)
+                            for choice_index in range(0, number_choices):
+                                choice_text_key = f"choices-{section_index}-{question_index}-{choice_index}-text"
+                                choice_keys = request.POST.get(choice_text_key, "").strip()
+                                if choice_keys:
+                                    # Si hay opciones de la pregunta, las guardamos
+                                    Choice.objects.create(
+                                        question=question,
+                                        text=choice_keys,
+                                    )
 
             # Redireccionar o mostrar mensaje de éxito
             return redirect('my-studies')  # Reemplaza 'success_url' por tu ruta de éxito
@@ -258,8 +251,6 @@ def create_study(request):
     section_formset = SectionFormSet(queryset=Section.objects.none(), prefix='sections')
     question_formset = QuestionFormSet(prefix='questions')
     choice_formset = ChoiceFormSet(queryset=Choice.objects.none(), prefix='choices')
-
-    print(section_formset)
 
     return render(request, 'createstudy.html', {
         'questionnarie_form': questionnaire_form,
@@ -351,6 +342,16 @@ def edit_study(request, pk):
     questionnaire_form = QuestionnarieForm(instance=questionnaire)
 
     return render(request, 'editstudy.html', {'questionnaire': questionnaire_form, 'sections_dict': sections_dict})
+
+@login_required
+def delete_study(request, pk):
+    # Obtén el cuestionario por su ID
+    questionnaire = get_object_or_404(Questionnarie, pk=pk)
+
+    # Elimina el cuestionario
+    questionnaire.delete()
+    return redirect('my-studies')  # Redirige a la lista de cuestionarios
+
 
 @login_required
 def recommendPage(request):
@@ -459,7 +460,6 @@ def newRecomm(request, answers=None):
         evaluation = Evaluation.objects.create(algorithm=Algorithm.objects.get(id=1), recommendation=Recommendation.objects.get(
             id=request.session.get('recommendation')), user=User.objects.get(id=request.session.get('userid')), puntuation=puntuation)
 
-        print(selections)
         for id_game, list_values in selections.items():
             print(list_values)
             interaction = Interaction.objects.create(evaluation=evaluation, gamerecommended=GameRecommended.objects.get(recommendation=request.session['recommendation'], game=Game.objects.get(

@@ -230,3 +230,7 @@ Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especia
 -> Inline Factory -> https://micropyramid.com/blog/how-to-use-nested-formsets-in-django
 
 -> https://github.com/mbertheau/jquery.django-formset-example/tree/master
+
+-> Herramientas para visualizar bases de datos
+   https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools
+   Dbeaver

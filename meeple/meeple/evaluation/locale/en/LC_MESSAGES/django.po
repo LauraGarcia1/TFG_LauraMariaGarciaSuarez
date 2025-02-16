@@ -398,6 +398,10 @@ msgstr "My Studies"
 msgid "liststudies"
 msgstr "You have no studies created yet. You can create them with the buttom above."
 
+#: evaluation/templates/mystudies.html:58
+msgid "WarningDelete"
+msgstr "Are you sure you want to delete this study?"
+
 #: evaluation/templates/createstudy.html:32
 msgid "CreateStudyTitle"
 msgstr "Create a New Study"

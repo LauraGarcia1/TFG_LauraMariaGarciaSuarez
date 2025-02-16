@@ -21,84 +21,85 @@
 
         <div
             class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-            <div class="row p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
-                <!-- Form de Questionnarie -->
-                <h1>{% trans "CreateStudyTitle" %}</h1>
-                <form action="" method="post">
+            <!-- Form de Questionnarie -->
+            <h1>{% trans "CreateStudyTitle" %}</h1>
+            <form action="" method="post">
+                <div class="row p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
                     {% csrf_token %}
-                <div id="questionnarie-form">
-                    {{ questionnarie_form.as_p }}
-                </div>
-                <button id="create-section-btn" class="btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateSection" %}</button>
-                <button id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
+                    <div id="questionnarie-form">
+                        {{ questionnarie_form.as_p }}
+                    </div>
 
-                <h3 class="pt-3">{% trans "Sections" %}</h3>
-                {{ section_formset.management_form }}
-                <div id="sections-container">
-                    <!-- Secciones que se añaden dinámicamente -->
-                    <script type="text/template" id="section-template">
-                        <div class="section-form" data-index="__index__">
-                            <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
-                              <h3>{% trans "Section" %}</h3>
-                                {% for form in section_formset %}
-                                <div>
-                                    {{ form.as_p }}
-                                    <p>
-                                        <label for="id_sections-0-DELETE">Eliminar:</label>
-                                        <input type="checkbox" name="sections-0-DELETE" id="id_sections-0-DELETE">
-                                        <input type="hidden" name="sections-0-section" id="id_sections-0-section">
-                                        <input type="hidden" name="sections-0-id" id="id_sections-0-id">
-                                    </p>
-                                </div>
-                                <button class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
-                                <button id="del-questions-0-btn" class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
-                                {{ question_formset.management_form }}
-                                  <!-- Contenedor para las preguntas de esta sección -->
+                    <div class="button-container mt-3">
+                        <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateSection" %}</button>
+                        <button type="button" id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
+                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "StudiesButtom" %}</button>
+                        <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "ReturnToStudyList" %}</a>
+                    </div>
+                    <h3 class="pt-3">{% trans "Sections" %}</h3>
+                    {{ section_formset.management_form }}
+                    <div id="sections-container">
+                        <!-- Secciones que se añaden dinámicamente -->
+                        <script type="text/template" id="section-template">
+                            <div class="section-form" data-index="__index__">
+                                <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
+                                <h3>{% trans "Section" %}</h3>
+                                    {% for form in section_formset %}
+                                    <div>
+                                        {{ form.as_p }}
+                                        <p>
+                                            <label for="id_sections-0-DELETE">Eliminar:</label>
+                                            <input type="checkbox" name="sections-0-DELETE" id="id_sections-0-DELETE">
+                                            <input type="hidden" name="sections-0-section" id="id_sections-0-section">
+                                            <input type="hidden" name="sections-0-id" id="id_sections-0-id">
+                                        </p>
+                                    </div>
+                                    <button type="button" class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
+                                    <button type="button" id="del-questions-btn" class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
+                                    <!-- Contenedor para las preguntas de esta sección -->
                                     <div class="questions-container">
-                                        <!-- Se agregarán los formularios de preguntas aquí -->
-                                        <script type="text/template" id="question-template">
-                                            <div class="question-form" data-index="__qindex__" data-section-index="__section_index__">
-                                                <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
-                                                <h4>{% trans "Question" %}</h4>
-                                                {% for form_q in question_formset %}
-                                                <div>
-                                                    {{ form_q.as_p }}
-                                                </div>
-                                                <button class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
-                                                <button class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
-                                                {{ choice_formset.management_form }}
-                                                <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body mt-3">
-                                                    <h4>{% trans "Choices" %}</h4>
-                                                    <div class="choices-container">
-                                                    <!-- Se agregarán los formularios de preguntas aquí -->
-                                                        <script type="text/template" id="choice-template">
-                                                            {% for form_c in choice_formset %}
-                                                            <div class="choice-form" data-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
-                                                                {{ form_c.as_p }}
-                                                            </div>
-                                                            {% endfor %}
-                                                        </script>
+                                            {{ question_formset.management_form }}
+                                            <!-- Se agregarán los formularios de preguntas aquí -->
+                                            <script type="text/template" id="question-template">
+                                                <div class="question-form" data-index="__qindex__" data-section-index="__section_index__">
+                                                    <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
+                                                    <h4>{% trans "Question" %}</h4>
+                                                    {% for form_q in question_formset %}
+                                                    <div>
+                                                        {{ form_q.as_p }}
+                                                    </div>
+                                                    <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
+                                                    <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
+                                                    {{ choice_formset.management_form }}
+                                                    <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body mt-3">
+                                                        <h4>{% trans "Choices" %}</h4>
+                                                        <div class="choices-container">
+                                                        <!-- Se agregarán los formularios de preguntas aquí -->
+                                                            <script type="text/template" id="choice-template">
+                                                                {% for form_c in choice_formset %}
+                                                                <div class="choice-form" data-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
+                                                                    {{ form_c.as_p }}
+                                                                </div>
+                                                                {% endfor %}
+                                                            </script>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
                                                     </div>
                                                 </div>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                        </script>
+                                            </script>
                                     </div>
-                                {% endfor %}
+                                    {% endfor %}
+                                </div>
                             </div>
-                        </div>
-                    </script>
+                        </script>
+                    </div>
+
                 </div>
-                <div class="mb-0">
-                    <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "StudiesButtom" %}</button>
-                    <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota mt-3">{% trans "ReturnToStudyList" %}</a>
-                </div>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
-    
+
 
     <script>
         $(document).ready(function () {
@@ -122,7 +123,7 @@
             $("#create-section-btn").click(function (e) {
                 e.preventDefault();
                 var sectionTemplate = $("#section-template").html();
-                var newSectionHtml = sectionTemplate.replace(/__index__/g, sectionIndex);
+                var newSectionHtml = sectionTemplate.replace(/__index__/g, sectionIndex).replace(/questions-TOTAL_FORMS/g, "questions-" + sectionIndex + "-TOTAL_FORMS");
                 $("#sections-container").append(newSectionHtml);
                 sectionIndex++;
 
@@ -130,7 +131,7 @@
                 totalFormsInput.val(sectionIndex);
 
                 var newSection = $("#sections-container .section-form").last();
-                newSection.find("input[id^='id_sections-']").each(function() {
+                newSection.find("input[id^='id_sections-']").each(function () {
                     var $input = $(this);
                     var currentName = $input.attr('name');
                     var currentId = $input.attr('id');
@@ -142,11 +143,11 @@
                     $input.attr('name', newName);
                     $input.attr('id', newId);
                 });
-                newSection.find("button[id^='del-questions-0-btn']").each(function() {
+                newSection.find("button[id='del-questions-btn']").each(function () {
                     var $button = $(this);
                     var currentId = $button.attr('id');
                     // Reemplazar el índice 0 en el ID con el nuevo índice dinámico
-                    var newId = currentId.replace(/del-questions-\d+-btn/, "del-questions-" + (sectionIndex - 1) + "-btn");
+                    var newId = currentId.replace(/del-questions-btn/, "del-questions-" + (sectionIndex - 1) + "-btn");
                     $button.attr('id', newId);
                 });
             });
@@ -182,11 +183,10 @@
                 var qCount = $sectionForm.find(".questions-container .question-form").length;
                 // Obtener la plantilla del formulario de pregunta
                 var questionTemplate = $("#question-template").html();
-                var newQuestionHtml = questionTemplate.replace(/__section_index__/g, sindex).replace(/__qindex__/g, qCount).replace(/questions-\d+/g, "questions-" + qCount + "-" + sindex);
-
-                var totalFormsInput = $("input[name='questions-TOTAL_FORMS']");
-                totalFormsInput.val(parseInt(qCount)+1);
-                
+                var newQuestionHtml = questionTemplate.replace(/__section_index__/g, sindex).replace(/__qindex__/g, qCount).replace(/questions-\d+/g, "questions-" + qCount + "-" + sindex).replace(/choices-TOTAL_FORMS/g, "choices-" + sindex + "-" + qCount + "-TOTAL_FORMS").replace(/\bid="del-choices-btn"\b/g, 'id="del-choices-' + sindex + '-' + qCount + '-btn"');
+                console.log(newQuestionHtml);
+                var totalFormsInput = $("input[name='questions-" + sindex + "-TOTAL_FORMS']");
+                totalFormsInput.val(parseInt(qCount) + 1);
                 // Añadir el nuevo formulario al contenedor de preguntas de esa sección
                 $sectionForm.find(".questions-container").append(newQuestionHtml);
             });
@@ -216,8 +216,8 @@
                 var choiceTemplate = $("#choice-template").html();
                 var newChoiceHtml = choiceTemplate.replace(/__cindex__/g, cCount).replace(/__sindexc__/g, sindex).replace(/__qindexc__/g, qindex).replace(/choices-\d+/g, "choices-" + cCount + "-" + sindex + "-" + qindex);
 
-                var totalFormsInput = $("input[name='choices-TOTAL_FORMS']");
-                totalFormsInput.val(parseInt(cCount)+1);
+                var totalFormsInput = $("input[name='choices-" + sindex + "-" + qindex + "-TOTAL_FORMS']");
+                totalFormsInput.val(parseInt(cCount) + 1);
 
                 // Añadir el nuevo formulario al contenedor de opciones de esa sección
                 $questionForm.find(".choices-container").append(newChoiceHtml);
@@ -255,9 +255,9 @@
 
             // Función para habilitar o deshabilitar el botón de "Eliminar" según si hay checkboxes seleccionados
             function toggleDeleteButtonQuestion(section) {
-                button = $("button[id^='del-questions-" + section + "-btn']");
+                button = $("button[id='del-questions-" + section + "-btn']");
                 // Comprobamos si al menos un checkbox de eliminación está marcado en los formularios de preguntas
-                var hasChecked = $("input[id^='id_questions-'][id$='-DELETE']:checked").length > 0;
+                var hasChecked = $("input[id^='id_questions-'][id$='" + section + "-DELETE']:checked").length > 0;
                 button.prop("disabled", !hasChecked);
             }
 
@@ -270,27 +270,67 @@
             });
 
             // Al pulsar el botón de "Eliminar Preguntas"
-            $("#delete-questions-btn").click(function (e) {
+            $(document).on("click", ".del-questions-btn", function (e) {
                 e.preventDefault();
 
-                // Encontramos todas las preguntas cuyo checkbox de eliminación está marcado
-                $("input[id^='id_questions-'][id$='-DELETE']:checked").each(function () {
+                var checkboxId = $(this).attr("id");
+                var match = checkboxId.match(/^del-questions-(\d+)-btn$/);
+
+                // Verificar y eliminar la pregunta correspondiente
+                $("input[id^='id_questions-'][id$='" + match[1] + "-DELETE']:checked").each(function () {
                     var questionCheckbox = $(this);
                     var questionForm = questionCheckbox.closest(".question-form");
-                    // Eliminar el formulario de la pregunta y sus opciones
                     questionForm.remove();
                 });
-                
-                var checkboxId = $(this).attr("id");
-                var regex = /^id_questions-(\d+)-(\d+)-DELETE$/;
-                var match = checkboxId.match(regex);
+
 
                 // Después de eliminar las preguntas, deshabilitamos el botón de eliminación
-                toggleDeleteButtonQuestion(match[2]);
+                toggleDeleteButtonQuestion(match[1]);
             });
 
+            // Función para habilitar o deshabilitar el botón de "Eliminar" según si hay checkboxes seleccionados
+            function toggleDeleteButtonChoice(section, question) {
+                button = $("button[id='del-choices-" + section + "-" + question + "-btn']");
+                console.log(button);
+                // Comprobamos si al menos un checkbox de eliminación está marcado en los formularios de opciones
+                var hasChecked = $("input[id^='id_choices-'][id$='-" + section + "-" + question + "-DELETE']:checked").length > 0;
+                console.log("input[id^='id_choices-'][id$='-" + section + "-" + question + "-DELETE']:checked", hasChecked);
+                button.prop("disabled", !hasChecked);
+            }
+
+            // Escuchamos los cambios en los checkboxes de eliminación dentro de los formularios de opciones
+            $(document).on("change", "input[id^='id_choices-'][id$='-DELETE']", function () {
+                var checkboxId = $(this).attr("id");
+                var regex = /^id_choices-(\d+)-(\d+)-(\d+)-DELETE$/;
+                var match = checkboxId.match(regex);
+                console.log("choices?", match[1], match[2], match[3]);
+                toggleDeleteButtonChoice(match[2], match[3]); // Revisa si hay checkboxes seleccionados
+            });
+
+            // Al pulsar el botón de "Eliminar Opciones"
+            $(document).on("click", ".del-choices-btn", function (e) {
+                e.preventDefault();
+                console.log("entre");
+
+                var checkboxId = $(this).attr("id");
+                var match = checkboxId.match(/^del-choices-(\d+)-(\d+)-btn$/);
+                console.log("---->", match[1], match[2], "input[id='id_choices-" + match[1] + "'][id$='-DELETE']:checked");
+                
+                // Verificar y eliminar la opcion correspondiente
+                $("input[id^='id_choices-'][id$='" + match[1] + "-" + match[2] + "-DELETE']:checked").each(function () {
+                    console.log("Voy a eliminar");
+                    var choiceCheckbox = $(this);
+                    var choiceForm = choiceCheckbox.closest(".choice-form");
+                    choiceForm.remove();
+                    console.log("----> finalizadoooo");
+                });
+
+
+                // Después de eliminar las opcion, deshabilitamos el botón de eliminación
+                toggleDeleteButtonChoice(match[1], match[2]);
+            });
         });
 
-        </script>
+    </script>
 
     {% endblock body %}

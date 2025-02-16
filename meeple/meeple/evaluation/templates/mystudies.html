@@ -18,17 +18,17 @@
                     style="transform: rotate(31deg);">
             </div>
 
-            <form action="" method="post">
                 {% csrf_token %}
                 <div
                     class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
 
+                    <form action="" method="post">
                     <div class="m-auto text-end">
                         <a href="{% url 'create-questionnarie' %}" class="btn btn-primary rounded-pill btn-mostaza w-50 mt-auto">
                             {% trans "StudiesButtom" %}
                         </a>
-                        
                     </div>
+                    </form>
 
                     {% if questionnaries.exists %}
                     <ul class="list-group list-group-flush pt-5">
@@ -45,9 +45,19 @@
                                 <tr>
                                     <td>{{ qtnn.name }}</td>
                                     <td>
-                                        <a href="{% url 'edit-questionnarie' qtnn.id %}" class="btn btn-link">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                        <div class="d-inline">
+                                            <form action="" method="post" class="d-inline">
+                                                <a href="{% url 'edit-questionnarie' qtnn.id %}" class="btn btn-link">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </form>
+                                            <form method="POST" action="{% url 'delete-questionnarie' qtnn.id %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-link" onclick="return confirm({% trans 'WarningDelete' %});">
+                                                    <i class="fas fa-trash-alt text-danger"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -59,7 +69,6 @@
                     <p class="text-muted mt-5">{% trans "liststudies" %}</p>
                     {% endif %}
                 </div>
-            </form>
         </div>
 
         {% endblock body %}
