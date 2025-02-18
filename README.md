@@ -21,40 +21,42 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Dar la opción de mostrar más información de los juegos (16/10/2024)
 - [X] Modificar página de home del usuario (17/10/24)
 - [X] Cambiar base de datos de sqlite (10/10/24)
-- [ ] Mostrar errores del registro
 - [X] Cargar BD de BGG (13/10/24)
-- [ ] Comprobar CSS inutilizable
-- [ ] Comprimir HTML
 - [X] Hacer uso de los datos contenidos en BGG(17/11/2024)
 - [X] Obtener las preferencias y guardarlas en una BD (05/01/2025)
 - [X] Poner todo en inglés (26/10/2024)
 - [X] Modificar páginas de recomendaciones (24/10/24 y 26/10/24)
 - [X] Obtener los juegos recomendados gustados en views.py (28/10/24)
 - [X] Conseguir traducción de la página (17/11/2024)
-- [ ] Comprobar el error que está ocasionando algunos juegos en la página de preferencias
-- [ ] Mostrar mensaje de error de que no existe el usuario (pag. inicial)
 - [X] Género en registro
-- [ ] Revisar traducciones de todas las páginas
-- [ ] Limpiar código que no se use
 - [X] Hacer boton logout y si accede a home y esta login, que vaya directamente a user-home (27/01/2025)
-- [ ] Poner todos los label de register -> valido
 - [X] Comprobar forloop de questionnarie.html (15/01/2025)
-- [ ] Comprobar muchas questions en questionnarie
-- [ ] Violacion de segmento?
 - [X] Arreglar vulnerabilidades de github (18/01/2025)
 - [X] Cambiar color checkbox (21/01/2025)
 - [X] Cambio de idioma de las questions (23/01/2025)
+- [X] Poner todos los label de register -> valido (16/02/2025)
+- [X] Comprobar muchas questions en questionnarie (16/02/2025)
+- [X] Cambiar etiquetas de roles de usuario (16/02/2025)
+- [X] un creador no puede tener preferencias (17/02/2025)
+- [X] Eliminacion de objetos en la creación de cuestionario (17/02/2025)
+- [ ] Eliminacion de objetos en la edición de cuestionario
+- [ ] Página de creación de algoritmos. Cómo lo uso?
 - [ ] Probar cambios questionnarie y language
-- [ ] Cambiar etiquetas de roles de usuario
-- [ ] un evaluador no puede tener preferencias
 - [ ] Hacer validación de la página de creación de questionarios
   - [ ] Que haya datos en el cuestionario, secciones, preguntas y choices (este último si fuese necesario)
   - [ ] Que tenga secciones
   - [ ] Que las secciones tengan preguntas
   - [ ] Que las preguntas tengan choices si es necesario
   - [ ] El algoritmo usado para el cuestionario
-- [ ] Eliminacion de objetos en la creación de cuestionario
-- [ ] Questionnarie a questionnaire
+- [ ] Revisar traducciones de todas las páginas
+- [ ] Documentar correctamente el código
+- [ ] Comprobar el error que está ocasionando algunos juegos en la página de preferencias
+- [ ] Violacion de segmento?
+- [ ] Mostrar mensaje de error de que no existe el usuario (pag. inicial)
+- [ ] Comprimir HTML
+- [ ] Limpiar código que no se use
+- [ ] Comprobar CSS inutilizable
+- [ ] Mostrar errores del registro
 
 ### Evaluación del participante
 
@@ -126,14 +128,14 @@ Carlos evalúa cada uno de los juegos recomendados respondiendo a las preguntas 
 1. La plataforma debe poder presentar varios estudios al participante.
 2. La plataforma debe poder usar algoritmos de recomendación.
 3. Los participantes deben de ser capaces de registrarse e iniciar sesión en la plataforma.
-4. Los usuarios deben poder escoger entre 2 roles, el rol de Evaluador y el rol de Evaluado.
-5. Los Evaluadores deben poder añadir nuevos estudios.
-6. Los Evaluadores deben poder añadir preguntas para las recomendaciones.
-7. Los Evaluados deben poder responder las preguntas de forma individual para cada juego recomendado por el Algoritmo.
-8. Los Evaluadores deben poder hacer uso de distintos algoritmos de Recomendación.
+4. Los usuarios deben poder escoger entre 2 roles, el rol de Creador y el rol de Participante.
+5. Los Creadores deben poder añadir nuevos estudios.
+6. Los Creadores deben poder añadir preguntas para las recomendaciones.
+7. Los Participantes deben poder responder las preguntas de forma individual para cada juego recomendado por el Algoritmo.
+8. Los Creadores deben poder hacer uso de distintos algoritmos de Recomendación.
 9. La plataforma debe poder traducir todo el contenido en Español o Inglés.
 10. La plataforma debe guardar las respuestas del Evaluado en la base de datos.
-11. 
+11. Los Participantes, una vez registrados, deberán introducir una serie de preferencias de juegos que le puedan interesar.
 
 ## Base de Datos
 
@@ -199,7 +201,7 @@ composer require vlucas/phpdotenv
 
 ## Mejoras
 
-- Control de rol evaluador de la aplicación
+- Control de rol creador de la aplicación
 - El usuario puede modificar sus datos
 - El perfil se puede definir para cada experimento
 - Que se haga una comprobación de que los cuestionarios añadidos estén en el idioma seleccionado

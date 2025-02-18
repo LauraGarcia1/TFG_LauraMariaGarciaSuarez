@@ -14,10 +14,10 @@ class User(AbstractUser):
     rol = models.CharField(
         max_length = 5,
         choices = [
-            ('ER', 'Evaluator'),
-            ('ED', 'Evaluated')
+            ('CR', 'Creator'),
+            ('PT', 'Participant')
         ],
-        default='ER'
+        default='PT'
     )
     frequencyGame = models.CharField(
         max_length = 10,

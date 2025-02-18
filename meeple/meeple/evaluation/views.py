@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnarieForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
 from .models import Preference, User, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction, Section
 import json
+from django.contrib.auth.models import Group
 
 def home(request):
     """
@@ -28,7 +29,7 @@ def home(request):
     signup_home = _("Sign up")
 
     if request.user.is_authenticated:
-        if User.objects.get(id=request.session.get('userid')).rol == "ER":
+        if User.objects.get(id=request.session.get('userid')).rol == "CR":
             return redirect(reverse('my-studies'))
         redirect(reverse('my-recommendations'))
 
@@ -40,7 +41,7 @@ def home(request):
             if user is not None:
                 login(request, user)
                 request.session['userid'] = user.id
-                if user.rol == "ER":
+                if user.rol == "CR":
                     return redirect(reverse('my-studies'))
                 return redirect(reverse('my-recommendations'))
             
@@ -91,7 +92,10 @@ def signup(request):
 
             if user is not None:
                 login(request, user)
-                return redirect('preferences')
+                print("queeee soooyyy ", user.rol)
+                if user.rol == "PT":
+                    return redirect('preferences')
+                return redirect('my-studies')
         else:
             print(form.errors)
     else:
@@ -106,6 +110,7 @@ def logout(request):
 
 @login_required
 def preferences(request):
+    # TODO: solo podrá entrar en caso de que sea su primera vez escogiendo
     if request.method == "POST":
         preferences = request.POST.getlist('likedPreferences')
 
@@ -118,7 +123,7 @@ def preferences(request):
             Preference.objects.create(text=Game.objects.get_or_create(id_BGG=int(pref))[0], category=str(
                 categories), value=0, user=User.objects.get(id=request.session.get('userid')))
 
-        if request.session.get('rol') == "ER":
+        if request.session.get('rol') == "CR":
             return redirect(reverse('my-studies'))
         return redirect(reverse('my-recommendations'))
 

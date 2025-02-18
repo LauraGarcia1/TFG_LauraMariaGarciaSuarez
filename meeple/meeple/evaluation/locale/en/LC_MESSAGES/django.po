@@ -39,19 +39,19 @@ msgid "Logout"
 msgstr "Logout"
 
 #: evaluation/templates/newrecommendations.html:18
-msgid "EvaluatorPtOne"
-msgstr "Thank you Evaluator"
+msgid "CreatorPtOne"
+msgstr "Thank you Participant"
 
 #: evaluation/templates/newrecommendations.html:20
-msgid "EvaluatorPtTwo"
+msgid "CreatorPtTwo"
 msgstr "We are grateful for your interest and time, and appreciate your evaluation/evaluations."
 
 #: evaluation/templates/newrecommendations.html:24
-msgid "EvaluatorButtonPtOne"
+msgid "CreatorButtonPtOne"
 msgstr "One more!"
 
 #: evaluation/templates/newrecommendations.html:26
-msgid "EvaluatorButtonPtTwo"
+msgid "CreatorButtonPtTwo"
 msgstr "Exit :("
 
 #: evaluation/templates/newrecommendations.html:46
@@ -291,12 +291,12 @@ msgid "Rol"
 msgstr "Rol"
 
 #: evaluation/templates/register.html:45
-msgid "Evaluator"
-msgstr "Evaluator"
+msgid "Creator"
+msgstr "Creator"
 
 #: evaluation/templates/register.html:45
-msgid "Evaluated"
-msgstr "Evaluated"
+msgid "Participant"
+msgstr "Participant"
 
 #: evaluation/templates/register.html:50
 msgid "Frequency"
