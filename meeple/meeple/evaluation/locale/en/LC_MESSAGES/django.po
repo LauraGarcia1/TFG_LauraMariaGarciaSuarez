@@ -110,6 +110,10 @@ msgstr "Other"
 msgid "textfield"
 msgstr "Write here..."
 
+#: evaluation/templates/preferences.html:18
+msgid "Loading"
+msgstr "Loading"
+
 #: evaluation/templates/preferences.html:33
 msgid "PreferencesNotTitle"
 msgstr "Preferences page information"

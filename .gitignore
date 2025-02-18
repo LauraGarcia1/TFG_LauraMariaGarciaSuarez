@@ -1,6 +1,9 @@
-meeple/meeple/database
-meeple/meeple/media
-meeple/meeple/evaluation/__pycache__/
-meeple/meeple/evaluation/migrations
-meeple/meeple/meeple/__pycache__/
-vendor
+meeple/meeple/database/
+meeple/meeple/media/
+**/__pycache__/
+meeple/meeple/evaluation/migrations/
+vendor/
+bgg_zacatrus_sql.zip
+database/
+meeple/meeple/meeple/migrations/
+meeple/meeple/meeple/management/

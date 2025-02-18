@@ -236,3 +236,5 @@ Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especia
 -> Herramientas para visualizar bases de datos
    https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools
    Dbeaver
+
+-> Traducción dinámica -> API Google Cloud Translate

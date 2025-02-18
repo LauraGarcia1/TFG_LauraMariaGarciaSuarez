@@ -119,6 +119,10 @@ msgstr "Escribe aquí..."
 msgid "Questionnarie"
 msgstr "¡Descubre tu juego ideal! Responde estas preguntas y encuentra la mejor recomendación para ti."
 
+#: evaluation/templates/preferences.html:18
+msgid "Loading"
+msgstr "Cargando"
+
 #: evaluation/templates/preferences.html:33
 msgid "PreferencesNotTitle"
 msgstr "Información relevante"

@@ -5,7 +5,7 @@
 {% block body %}
 
 <div id="infoGame" class="modal information">
-    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh; padding-top: 5%;">
         <div class="position-relative info-content p-5 border-1 m-auto">
             <span class="close" onclick="closeInformation()">&times;</span>
 
@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-md-8">
                     <h2 id="infoTitle"></h2>
-                    <p id="infoKeys" style="word-wrap: break-word;"></p>
+                    <p id="infoKeys" style="word-wrap: break-word;">{% trans "Loading" %}...</p>
                 </div>
             </div>
             <div class="row">
@@ -51,6 +51,8 @@
         <div class="scroll-hover-pref w-100 flex-grow-1 overflow-auto">
             <form action="" method="post" class="d-flex flex-column justify-content-center align-items-center w-100">
                 {% csrf_token %}
+                <!-- Se guarda el token en esta etiqueta para permitir mandar con ajax la petición -->
+                <meta name="csrf-token" content="{{ csrf_token }}">
 
                 <div class="row w-100 h-100">
                     {% for gameRow in zacatrus_games %}
@@ -75,9 +77,9 @@
 
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    // Uso de javascript en vez de :has() porque no podemos asegurar
-    // el uso de navegadores modernos
     const checkboxes = document.querySelectorAll('.changeColorCheckbox');
     let minimumFour = 0;
 
@@ -115,8 +117,11 @@
         }
         $.ajax({
             type: 'POST',
-            url: "{% url 'get_data_game' %",
+            url: "{% url 'get_data_game' %}",
             data: {id: idGame},
+            headers: {
+                "X-CSRFToken": document.querySelector("meta[name='csrf-token']").getAttribute("content")
+            },
             success: function(response) {
                 if (response.error) {
                     document.getElementById("infoKeys").textContent = "";
@@ -127,7 +132,7 @@
                 }
             },
             error: function() {
-                document.getElementById("infoDescription").textContent = "Internal error.";
+                document.getElementById("infoKeys").textContent = "Internal error.";
             }
         });
     }
@@ -139,8 +144,6 @@
         document.getElementById("infoTitle").textContent = title;
         document.getElementById("infoImage").src = imageUrl;
         getDataGame(id)
-        //document.getElementById("infoKeys").textContent = categories + " " + types + " " + contexts;
-        //document.getElementById("infoDescription").textContent = description;
     }
 
     // Función para cerrar el modal
