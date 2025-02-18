@@ -1,6 +1,6 @@
+import asyncio
 from urllib import request
-import requests
-from langdetect import detect
+from googletrans import Translator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import login, authenticate
@@ -148,16 +148,21 @@ def get_preferences_games():
 def get_data_game(request):
     if request.method == 'POST':
         id = request.POST.get('id')
-        print("Entrooo --->>")
         with connections['external_db'].cursor() as cursor:
             cursor.execute(
                 'SELECT zg.name, zgd.description, GROUP_CONCAT(DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories, TRUNCATE(AVG (zr.rating), 1) AS ratings, GROUP_CONCAT(DISTINCT zgt.name ORDER BY zgt.name ASC) AS types, GROUP_CONCAT(DISTINCT zgct.name ORDER BY zgct.name ASC) AS contexts FROM zacatrus_games zg LEFT JOIN zacatrus_game_descriptions zgd ON zg.id = zgd.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_categories) zgc ON zg.id = zgc.gameid LEFT JOIN (SELECT DISTINCT gameid, rating FROM zacatrus_ratings) zr ON zg.id = zr.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_types) zgt ON zg.id = zgt.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_contexts) zgct ON zg.id = zgct.gameid WHERE zg.id = %s GROUP BY zg.name, zgd.description;', [id])
             result = cursor.fetchone()
 
             # Al enviar los resultados, enviamos el contenido en el idioma usado por el usuario
-            print("Asi es y asi queda ->", result[1] + "\n" +  translate_text(result[1], translation.get_language()))
+            name = asyncio.run(translate_text(result[0], translation.get_language()))
+            description = asyncio.run(translate_text(result[1], translation.get_language()))
+            categories = asyncio.run(translate_text(result[2], translation.get_language()))
+            ratings = asyncio.run(translate_text(result[3], translation.get_language()))
+            types = asyncio.run(translate_text(result[4], translation.get_language()))
+            contexts = asyncio.run(translate_text(result[5], translation.get_language()))
+            
             if result:
-                return JsonResponse({'name': result[0], 'description': result[1], 'categories': result[2], 'ratings': result[3], 'types': result[4], 'contexts': result[5]})
+                return JsonResponse({'name': name, 'description': description, 'categories': categories, 'ratings': ratings, 'types': types, 'contexts': contexts})
             else:
                 return JsonResponse({'error': 'No se encontraron datos'})
 
@@ -500,26 +505,19 @@ def newRecomm(request, answers=None):
 
 ###### FUNCIONES GENERALES
 
-def translate_text(text, target_language):
-    # Detectar el idioma del texto
-    source_language = detect(text)
+async def translate_text(text, target_language):
+    # Crear un objeto de traductor
+    translator = Translator()
+
+    detected_language = await translator.detect(text)
+
+    if detected_language.lang == target_language:
+        return text
     
-    # URL de la API de LibreTranslate (en tu caso, podría ser local)
-    url = "http://libretranslate:5000/translate"
+    # Traducir el texto al idioma deseado
+    translated = await translator.translate(text, dest=target_language)
     
-    params = {
-        "q": text,
-        "source": source_language,  # Usar el idioma detectado
-        "target": target_language,  # Idioma al que se quiere traducir
-        "format": "text"
-    }
-    
-    response = requests.post(url, data=params)
-    
-    if response.status_code == 200:
-        return response.json()['translatedText']
-    else:
-        return "Error: No se pudo traducir el texto."
+    return translated.text  # Devolver el texto traducido
 
 # TODO: quitar esto
 

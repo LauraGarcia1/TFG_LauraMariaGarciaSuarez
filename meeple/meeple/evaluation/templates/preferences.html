@@ -154,6 +154,8 @@
     // Función para cerrar la ventana de información del juego
     function closeInformation() {
         document.getElementById("infoGame").style.display = "none";
+        document.getElementById("infoKeys").textContent = "{% trans "Loading" %}...";
+        document.getElementById("infoDescription").textContent = "";
     }
 
     // Cerrar el modal si se hace clic fuera de él
