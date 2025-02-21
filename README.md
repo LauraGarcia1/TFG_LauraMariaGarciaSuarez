@@ -52,6 +52,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Revisar traducciones de todas las páginas
 - [ ] Documentar correctamente el código
 - [ ] Comprobar el error que está ocasionando algunos juegos en la página de preferencias
+- [ ] edad a fecha de nacimiento ???
 - [ ] Violacion de segmento?
 - [ ] Mostrar mensaje de error de que no existe el usuario (pag. inicial)
 - [ ] Comprimir HTML
@@ -126,17 +127,107 @@ Carlos evalúa cada uno de los juegos recomendados respondiendo a las preguntas 
 
 ## Análisis de requisitos
 
-1. La plataforma debe poder presentar varios estudios al participante.
-2. La plataforma debe poder usar algoritmos de recomendación.
-3. Los participantes deben de ser capaces de registrarse e iniciar sesión en la plataforma.
-4. Los usuarios deben poder escoger entre 2 roles, el rol de Creador y el rol de Participante.
-5. Los Creadores deben poder añadir nuevos estudios.
-6. Los Creadores deben poder añadir preguntas para las recomendaciones.
-7. Los Participantes deben poder responder las preguntas de forma individual para cada juego recomendado por el Algoritmo.
-8. Los Creadores deben poder hacer uso de distintos algoritmos de Recomendación.
-9. La plataforma debe poder traducir todo el contenido en Español o Inglés.
-10. La plataforma debe guardar las respuestas del Evaluado en la base de datos.
-11. Los Participantes, una vez registrados, deberán introducir una serie de preferencias de juegos que le puedan interesar.
+### Requisitos funcionales
+
+#### Subsistema de usuarios y perfiles de evaluacion
+1. El sistema permitirá la participación de dos tipos de usuarios: creadores y participantes.
+2. El usuario podrá registrar una cuenta en el sistema. Para ello, se requerirá del nombre de usuario, contraseña, correo electrónico, ubicación, rol, género, frecuencia con la que ha jugado a juegos de mesa y el nivel de experiencia del usuario en juegos.
+3. El usuario podrá iniciar sesión una vez creada la cuenta.
+4. El usuario autenticado, creador o participante, podrá cerrar sesión en cualquier momento.
+5. El usuario con rol Creador debe poder añadir nuevos estudios.
+&nbsp;&nbsp;&nbsp;a. El usuario con rol Creador debe poder añadir secciones.
+&nbsp;&nbsp;&nbsp;b. El usuario con rol Creador debe poder añadir preguntas.
+&nbsp;&nbsp;&nbsp;c. El usuario con rol Creador debe poder añadir opciones.
+9. El usuario Participante podrá visualizar los detalles de un repertorio de cuestionarios.
+10. El usuario con rol Creador debe poder eliminar sus estudios.
+11. El usuario Creador debe poder visualizar sus estudios.
+12. El sistema debe restringir el acceso a funcionalidades según el rol del usuario.
+13. El participante debe poder ver un historial de evaluaciones completadas.
+
+(ESPECIFICAR QUE CUANDO ME REFIERO A CUESTIONARIO EN EL PERFIL DE CREADOR, ME REFIERO A ESTUDIO)
+
+#### Subsistema de creación de evaluaciones
+
+1. El usuario Creador debe poder agregar algoritmos de recomendación en los cuestionarios.
+2. El sistema debe permitir crear, editar y eliminar secciones dentro de una evaluación.
+3. El sistema debe poder asignar distintos algoritmos entre las secciones de un cuestionario.
+4. Cada pregunta debe tener un tipo de respuesta (opción múltiple, opción única, respuesta abierta, rango, número, etc.)
+5. El sistema debe permitir crear, editar y eliminar preguntas dentro de una sección.
+5. El sistema debe permitir crear, editar y eliminar opciones dentro de una pregunta.
+7. Si la pregunta es de opción múltiple, opción única, rango o número, el creador debe poder añadir opciones de respuesta.
+8. El creador debe poder publicar una evaluación para que los participantes puedan acceder.
+9. Una vez publicada, el creador no debe poder modificar la estructura de la evaluación.
+10. El sistema recopilará la siguiente información de un cuestionario.
+   - Nombre de un cuestionario
+   - Usuario Creador
+   - Descripción del cuestionario
+   - Idioma del cuestionario
+   - Fecha de creación
+11. El sistema recopilará la siguiente información de una sección.
+   - Cuestionario al que pertenece
+   - Título de la sección
+12. El sistema recopilará la siguiente información de una pregunta.
+   - Sección a la que pertenece
+   - Fecha de creación
+   - Texto de la pregunta
+   - Tipo de la pregunta
+13. El sistema recopilará la siguiente información de una opción.
+   - Pregunta a la que pertenece
+   - Texto de la opción
+14. Debe haber una opción para guardar y continuar después, si está habilitado por el creador.
+
+#### Subsistema de realización de evaluaciones
+
+1. El sistema debe poder usar algoritmos de recomendación en las evaluaciones.
+2. El sistema debe comprobar las evaluaciones antes de su uso de tal manera de que muestre solo las evaluaciones con preguntas.
+3. El sistema debe mostrar una lista de evaluaciones disponibles para el participante.
+4. El sistema sólo podrá mostrar las evaluaciones publicadas.
+5. El participante debe poder navegar entre secciones, preguntas y opciones dentro de una evaluación.
+6. En caso de respuestas abiertas, el sistema debe validar caracteres permitidos y longitud.
+7. Las respuestas deben almacenarse en la base de datos.
+8. Las respuestas deberán registrarse junto con la fecha y hora en la que el usuario envió la evaluación.
+9. Solo el Creador puede acceder a las respuestas.
+
+### Requisitos no funcionales
+
+#### Interfaz y usabilidad
+
+1. Los participantes no podrán acceder ni modificar cuestionarios ajenos.
+2. La interfaz debe ser clara, ocultando botones innecesarios para cada rol.
+3. El sistema deberá permitir agregar más roles en el futuro.
+4. La interfaz del sistema será “responsiva”: adaptará su visualización para dispositivos móviles y ordenadores con pantallas de cualquier dimensión.
+5. El sistema hará uso de iconos que faciliten la interpretación del usuario de la funcionalidad.
+
+##### Documentación
+
+1. El sistema estará disponible tanto en inglés como en español.
+
+##### Mantenimiento
+
+1. El sistema permitirá su uso tanto en un entorno desplegado como en un entorno local.
+2. El sistema permitirá especificar la base de datos a utilizar en cada entorno desde un fichero de variables de entorno (.env).
+
+
+##### Seguridad
+
+1. La contraseña de una cuenta de usuario deberá cumplir con los siguientes requisitos mínimos de seguridad:
+   - Uso mínimo de 1 letra mayúscula.
+   - Uso mínimo de 1 letra minúscula.
+   - Uso mínimo de 1 número.
+   - Uso mínimo de 1 carácter especial.
+   - Longitud mínima de 8 carácteres.
+   
+X. Los Participantes deben poder responder las preguntas de forma individual para cada juego recomendado por el Algoritmo.
+
+X. Los Creadores deben poder hacer uso de distintos algoritmos de Recomendación.
+
+X. La plataforma debe poder traducir todo el contenido en Español o Inglés.
+
+X. La plataforma debe guardar las respuestas del Evaluado en la base de datos.
+
+X. Los Participantes, una vez registrados, deberán introducir una serie de preferencias de juegos que le puedan interesar.
+
+X. Se debe validar que al menos una sección esté presente antes de publicar la evaluación.
 
 ## Base de Datos
 
@@ -206,6 +297,8 @@ composer require vlucas/phpdotenv
 - El usuario puede modificar sus datos
 - El perfil se puede definir para cada experimento
 - Que se haga una comprobación de que los cuestionarios añadidos estén en el idioma seleccionado
+- Se debe registrar quién crea, edita y elimina cuestionarios y respuestas.
+- Que una evaluacion tenga tipos, pública o privada.
 
 ## Palabras clave
 
