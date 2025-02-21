@@ -23,8 +23,14 @@
             </div>
             <div class="mb-4">
                 <label for="password" class="form-label fw-bold required">{% trans "Password" %}:</label>
-                <input type="password" id="password" name="password" class="form-control rounded-pill"
-                    value="{{ password }}" required>
+                
+                <div class="input-group">
+                    <input type="password" id="password" name="password" class="form-control rounded-pill" value="{{ password }}" required>
+                    <span class="input-group-text bg-white border-0" id="togglePassword"
+                        style="cursor: pointer;">
+                    <i class="bi bi-eye-slash" id="icono"></i>
+                    </span>
+                </div>
                 <div id="password-error-message" class="text-danger"></div>
             </div>
             <div class="mb-4">
@@ -323,19 +329,19 @@
         let errorMessage = '';
 
         if (password.length < minLength) {
-            errorMessage += 'Password must be at least 8 characters long.<br>';
+            errorMessage += '{% trans "PasswordReqOne" %}';
         }
         if (!hasUpperCase) {
-            errorMessage += 'Password must contain at least one uppercase letter.<br>';
+            errorMessage += '{% trans "PasswordReqTwo" %}';
         }
         if (!hasLowerCase) {
-            errorMessage += 'Password must contain at least one lowercase letter.<br>';
+            errorMessage += '{% trans "PasswordReqThree" %}';
         }
         if (!hasNumbers) {
-            errorMessage += 'Password must contain at least one number.<br>';
+            errorMessage += '{% trans "PasswordReqFour" %}';
         }
         if (!hasSpecialChar) {
-            errorMessage += 'Password must contain at least one special character.<br>';
+            errorMessage += '{% trans "PasswordReqFive" %}';
         }
 
         const messageDiv = document.getElementById('password-error-message');
@@ -363,13 +369,13 @@
 
         // Is the format right?
         if (!emailRegex.test(email)) {
-            errorMessage += 'Please enter a valid email address.<br>';
+            errorMessage += '{% trans "EmailReqOne" %}';
         }
 
         // Is the domain right?
         const domain = email.split('@')[1];
         if (domain && !allowedDomains.includes(domain)) {
-            errorMessage += `Only email addresses from ${allowedDomains.join(', ')} are allowed.<br>`;
+            errorMessage += `{% trans "EmailReqTwo" %} ${allowedDomains.join(', ')} {% trans "EmailReqThree" %}`;
         }
 
         const messageDiv = document.getElementById('email-error-message');
@@ -388,6 +394,21 @@
 
     $(document).ready(function () {
         checkForm();
+    });
+
+    // Función para manejar la visibilidad de la contraseña
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordInput = document.querySelector('#password');
+    const icono = document.querySelector('#icono');
+
+    togglePassword.addEventListener('click', function () {
+        // Change the password input to text and vice versa
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Change the icon
+        icono.classList.toggle('bi-eye');
+        icono.classList.toggle('bi-eye-slash');
     });
 
 </script>

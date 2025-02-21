@@ -362,6 +362,38 @@ msgstr "Sign up"
 msgid "RequiredFields"
 msgstr "* Please fill all required fields to enable this button."
 
+#: evaluation/templates/register.html:332
+msgid "PasswordReqOne"
+msgstr "Password must be at least 8 characters long.<br>"
+
+#: evaluation/templates/register.html:335
+msgid "PasswordReqTwo"
+msgstr "Password must contain at least one uppercase letter.<br>"
+
+#: evaluation/templates/register.html:338
+msgid "PasswordReqThree"
+msgstr "Password must contain at least one lowercase letter.<br>"
+
+#: evaluation/templates/register.html:341
+msgid "PasswordReqFour"
+msgstr "Password must contain at least one number.<br>"
+
+#: evaluation/templates/register.html:344
+msgid "PasswordReqFive"
+msgstr "Password must contain at least one special character.<br>"
+
+#: evaluation/templates/register.html:372
+msgid "EmailReqOne"
+msgstr "Please enter a valid email address.<br>"
+
+#: evaluation/templates/register.html:378
+msgid "EmailReqTwo"
+msgstr "Only email addresses from"
+
+#: evaluation/templates/register.html:378
+msgid "EmailReqThree"
+msgstr "are allowed.<br>"
+
 #: evaluation/templates/userhomepage.html:16
 msgid "FirstExperiment"
 msgstr "1st experiment: evaluation of recommendation algorithms system"

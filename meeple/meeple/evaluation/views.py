@@ -33,7 +33,8 @@ def home(request):
     if request.user.is_authenticated:
         if User.objects.get(id=request.session.get('userid')).rol == "CR":
             return redirect(reverse('my-studies'))
-        redirect(reverse('my-recommendations'))
+        
+        return redirect(reverse('my-recommendations'))
 
     if request.method == "POST":
         username = request.POST.get("username")

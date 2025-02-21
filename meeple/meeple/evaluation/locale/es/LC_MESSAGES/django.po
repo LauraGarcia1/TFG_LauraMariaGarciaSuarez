@@ -366,6 +366,38 @@ msgid "RequiredFields"
 msgstr ""
 "* Por favor, rellene todas los campos necesarios para habilitar este botón."
 
+#: evaluation/templates/register.html:332
+msgid "PasswordReqOne"
+msgstr "La contraseña debe tener al menos 8 caracteres.<br>"
+
+#: evaluation/templates/register.html:335
+msgid "PasswordReqTwo"
+msgstr "La contraseña debe contener al menos una letra mayúscula.<br>"
+
+#: evaluation/templates/register.html:338
+msgid "PasswordReqThree"
+msgstr "La contraseña debe contener al menos una letra minúscula.<br>"
+
+#: evaluation/templates/register.html:341
+msgid "PasswordReqFour"
+msgstr "La contraseña debe contener al menos un número.<br>"
+
+#: evaluation/templates/register.html:344
+msgid "PasswordReqFive"
+msgstr "La contraseña debe contener al menos un carácter especial.<br>"
+
+#: evaluation/templates/register.html:372
+msgid "EmailReqOne"
+msgstr "Por favor, introduce una dirección de correo electrónico válida.<br>"
+
+#: evaluation/templates/register.html:378
+msgid "EmailReqTwo"
+msgstr "Sólo direcciones de correo electrónico de"
+
+#: evaluation/templates/register.html:378
+msgid "EmailReqThree"
+msgstr "estan permitidos.<br>"
+
 #: evaluation/templates/userhomepage.html:16
 msgid "FirstExperiment"
 msgstr "1er experimento: sistema de evaluación de algoritmos de recomendación"
