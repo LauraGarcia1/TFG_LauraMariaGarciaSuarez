@@ -40,6 +40,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] un creador no puede tener preferencias (17/02/2025)
 - [X] Eliminacion de objetos en la creación de cuestionario (17/02/2025)
 - [ ] Eliminacion de objetos en la edición de cuestionario
+- [ ] Cambiar de "questionnarie" a "questionaire"
 - [ ] Poner páginas de recomendaciones anteriores hechas
 - [ ] Guardar en cache la informacion de los juegos de preferencias? 
 - [ ] Página de creación de algoritmos. Cómo lo uso?

@@ -95,7 +95,6 @@ def signup(request):
 
             if user is not None:
                 login(request, user)
-                print("queeee soooyyy ", user.rol)
                 if user.rol == "PT":
                     return redirect('preferences')
                 return redirect('my-studies')
@@ -218,10 +217,8 @@ def create_study(request):
             questionnaire = questionnaire_form.save(commit=False)
             questionnaire.user = User.objects.get(id=request.session.get('userid'))
             questionnaire.save()
-            print(request.POST)
         
             number_sections = int(request.POST.get("sections-TOTAL_FORMS", "").strip() or 0)
-            print("cuantas secciones", number_sections)
             for section_index in range(0, number_sections+1):
                 section_title_key = f"sections-{section_index}-title"
                 section_title = request.POST.get(section_title_key, "").strip()
@@ -234,11 +231,9 @@ def create_study(request):
                     # TODO: delete va a hacer que no sea así la función
                     # Procesar las preguntas de esta sección
                     number_questions = int(request.POST.get(f"questions-{section_index}-TOTAL_FORMS", "").strip() or 0)
-                    print("cuantas preguntas", number_questions, "con seccion", section_index)
                     for question_index in range(0, number_questions+1):
                         question_key_prefix = f"questions-{question_index}-{section_index}"
                         question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
-                        print("que tienen las preguntas", question_keys)
                         if question_keys:
                             # Si hay preguntas de la sección, las guardamos
                             question = Question.objects.create(
@@ -248,7 +243,6 @@ def create_study(request):
                                 language=questionnaire.language
                             )
                             number_choices = int(request.POST.get(f"choices-{section_index}-{question_index}-TOTAL_FORMS", "").strip() or 0)
-                            print("cuantas opciones", number_choices)
                             for choice_index in range(0, number_choices+1):
                                 choice_text_key = f"choices-{choice_index}-{section_index}-{question_index}-text"
                                 choice_keys = request.POST.get(choice_text_key, "").strip()
@@ -366,6 +360,15 @@ def delete_study(request, pk):
 
     # Elimina el cuestionario
     questionnaire.delete()
+    return redirect('my-studies')  # Redirige a la lista de cuestionarios
+
+@login_required
+def upload_study(request, pk):
+    # Obtén el cuestionario por su ID
+    questionnaire = get_object_or_404(Questionnarie, pk=pk)
+    questionnaire.uploaded = True
+    questionnaire.save()
+
     return redirect('my-studies')  # Redirige a la lista de cuestionarios
 
 

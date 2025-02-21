@@ -38,6 +38,10 @@ msgstr "Contact"
 msgid "Logout"
 msgstr "Logout"
 
+#: evaluation/templates/base.html:99
+msgid "ChangeLanguage"
+msgstr "Change Language"
+
 #: evaluation/templates/newrecommendations.html:18
 msgid "CreatorPtOne"
 msgstr "Thank you Participant"
@@ -429,6 +433,18 @@ msgstr "Create study"
 #: evaluation/templates/mystudies.html:35
 msgid "MyStudies"
 msgstr "My Studies"
+
+#: evaluation/templates/mystudies.html:39
+msgid "Study Name"
+msgstr "Study Name"
+
+#: evaluation/templates/mystudies.html:40
+msgid "Uploaded"
+msgstr "Uploaded"
+
+#: evaluation/templates/mystudies.html:41
+msgid "Actions"
+msgstr "Actions"
 
 #: evaluation/templates/mystudies.html:55
 msgid "liststudies"

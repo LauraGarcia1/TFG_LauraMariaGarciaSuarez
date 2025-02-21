@@ -125,6 +125,7 @@ class Questionnarie(models.Model):
     name = models.CharField(max_length=150, blank=False, null=False)
     user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     description = models.TextField()
+    uploaded = models.BooleanField(default=False)
     language = models.CharField(
         max_length = 10,
         choices = [

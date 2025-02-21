@@ -37,6 +37,11 @@
                             <thead>
                                 <tr>
                                     <th>{% trans "Study Name" %}</th>
+                                    <th>
+                                        <div class="text-center">
+                                            {% trans "Uploaded" %}
+                                        </div>
+                                    </th>
                                     <th>{% trans "Actions" %}</th>
                                 </tr>
                             </thead>
@@ -45,12 +50,37 @@
                                 <tr>
                                     <td>{{ qtnn.name }}</td>
                                     <td>
+                                        <div class="text-center">
+                                            {% if qtnn.uploaded %}
+                                                <i class="fas fa-check text-success"></i>
+                                            {% else %}
+                                                <i class="fas fa-times text-danger"></i>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
                                         <div class="d-inline">
-                                            <form action="" method="post" class="d-inline">
-                                                <a href="{% url 'edit-questionnarie' qtnn.id %}" class="btn btn-link">
+                                            {% if not qtnn.uploaded %}
+                                            <form action="{% url 'edit-questionnarie' qtnn.id %}" method="post" class="d-inline">
+                                                {% csrf_token %}
+                                                <button class="btn btn-link">
                                                     <i class="fas fa-edit"></i>
-                                                </a>
+                                                </button>
                                             </form>
+                                            <form method="POST" action="{% url 'upload-questionnarie' qtnn.id %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-link" onclick="confirmUpload()">
+                                                    <i class="fas fa-upload text-dark"></i>
+                                                </button>
+                                            </form>
+                                            {% else %}
+                                            <button class="btn btn-link" disabled>
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-link" disabled>
+                                                <i class="fas fa-upload text-dark" disabled></i>
+                                            </button>
+                                            {% endif %}
                                             <form method="POST" action="{% url 'delete-questionnarie' qtnn.id %}" class="d-inline">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-link" onclick="return confirm({% trans 'WarningDelete' %});">
@@ -70,5 +100,15 @@
                     {% endif %}
                 </div>
         </div>
+
+
+    <script>
+        function confirmUpload() {
+            const confirmAction = confirm("¿Estás seguro de que deseas subir el cuestionario?");
+            if (confirmAction) {
+                document.getElementById('upload-form').submit();  // Envía el formulario si el usuario confirma
+            }
+        }
+    </script>
 
         {% endblock body %}

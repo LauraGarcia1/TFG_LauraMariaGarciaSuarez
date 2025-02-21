@@ -96,7 +96,7 @@
                                     <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
                                     <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Español</option>
                                 </select>
-                                <input class="btn btn-success my-2 my-sm-0" type="submit" value="Change Language">
+                                <input class="btn btn-success my-2 my-sm-0" type="submit" value="{% trans 'ChangeLanguage' %}">
                             </form>
                         </li>
                     </ul>
