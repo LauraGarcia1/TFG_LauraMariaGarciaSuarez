@@ -67,7 +67,7 @@
                                 <!-- Se agregarán los formularios de preguntas aquí -->
                                 {% for question, choices in questions.items %}
                                 <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
-                                    <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}" data-index="__qindex__" data-section-index="__section_index__">
+                                    <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}" data-index="{{ question.instance.id }}" data-section-index="{{ section.instance.id }}">
                                         <h4>{% trans "Question" %}</h4>
                                         <div>
                                             {{ question.as_p }}
@@ -85,7 +85,7 @@
                                             <div class="choices-container">
                                             <!-- Se agregarán los formularios de preguntas aquí -->
                                                 {% for choice in choices %}
-                                                <div class="choice-form" id="{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}" data-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
+                                                <div class="choice-form" id="{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}" data-choice-index="{{ choice.instance.id }}" data-section-index="{{ section.instance.id }}" data-question-index="{{ question.instance.id }}">
                                                     {{ choice.as_p }}
                                                     <p>
                                                         <label for="id_choices-{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}-DELETE">Eliminar:</label>
@@ -153,7 +153,7 @@
     
     <script type="text/template" id="choice-template">
         {% for form_c in choice_formset %}
-        <div class="choice-form" data-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
+        <div class="choice-form" data-choice-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
             {{ form_c.as_p }}
         </div>
         {% endfor %}
@@ -161,6 +161,49 @@
     
 
     <script>
+        var uniqueSectionIndexes = []
+        var uniqueChoiceIndexes = []
+        var uniqueQuestionIndexes = []
+        // Función para guardar los ids de los elementos existentes
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(() => {
+                const sectionElements = document.querySelectorAll("[data-section-index]");
+                const choiceElements = document.querySelectorAll("[data-choice-index]");
+                const questionElements = document.querySelectorAll("[data-question-index]");
+                
+                const sectionIndexes = [];
+                const choiceIndexes = [];
+                const questionIndexes = [];
+
+                sectionElements.forEach(el => {
+                    const value = el.getAttribute("data-section-index");
+                    if (!isNaN(value) && Number.isInteger(parseFloat(value))) {
+                        sectionIndexes.push(value);
+                    }
+                });
+
+                choiceElements.forEach(el => {
+                    const value = el.getAttribute("data-choice-index");
+                    if (!isNaN(value) && Number.isInteger(parseFloat(value))) {
+                        choiceIndexes.push(value);
+                    }
+                });
+
+                questionElements.forEach(el => {
+                    const value = el.getAttribute("data-question-index");
+                    if (!isNaN(value) && Number.isInteger(parseFloat(value))) {
+                        questionIndexes.push(value);
+                    }
+                });
+
+                uniqueSectionIndexes = [...new Set(sectionIndexes)];
+                uniqueChoiceIndexes = [...new Set(choiceIndexes)];
+                uniqueQuestionIndexes = [...new Set(questionIndexes)];
+
+                console.log(uniqueSectionIndexes, uniqueChoiceIndexes, uniqueQuestionIndexes)
+            }, 100); // Para aseguramos que el DOM esté completamente cargado
+        });
+
         $(document).ready(function () {
             var sectionIndex = 0; // Variable para llevar el índice de secciones
             var deletedSectionIds = []; // Lista con las secciones a eliminar del cuestionario
@@ -206,6 +249,10 @@
             // Función con acciones al añadir una nueva sección
             $("#create-section-btn").click(function (e) {
                 e.preventDefault();
+                while (uniqueSectionIndexes.includes(sectionIndex.toString())) {
+                    sectionIndex++;
+                }
+
                 var sectionTemplate = $("#section-template").html();
                 var newSectionHtml = sectionTemplate.replace(/__index__/g, sectionIndex).replace(/questions-TOTAL_FORMS/g, "questions-" + sectionIndex + "-TOTAL_FORMS");
                 $("#sections-container").append(newSectionHtml);
@@ -244,9 +291,12 @@
                 var $sectionForm = $(this).closest(".section-form");
                 var sindex = $sectionForm.attr("data-index");
                 var qCount = $sectionForm.find(".questions-container .question-form").length;
+                while (uniqueSectionIndexes.includes(qCount.toString())) {
+                    qCount++;
+                }
+
                 var questionTemplate = $(document).find("#question-template").html();
 
-                console.log("A que no tengo indiceeee", questionTemplate);
                 // Identificamos el botón añadiendo el id de la sección a la que pertenece y el id de la pregunta
                 var newQuestionHtml = questionTemplate.replace(/__section_index__/g, sindex).replace(/__qindex__/g, qCount).replace(/questions-\d+/g, "questions-" + qCount + "-" + sindex).replace(/id="del-choices-btn"/g, 'id="del-choices-' + sindex + '-' + qCount + '-btn"').replace(/choices-TOTAL_FORMS/g, "choices-" + sindex + "-" + qCount + "-TOTAL_FORMS");
 
@@ -261,8 +311,12 @@
                 e.preventDefault();
                 var $questionForm = $(this).closest(".question-form");
                 var sindex = $questionForm.attr("data-section-index");
-                var qindex = $questionForm.attr("data-index");
+                var qindex = $questionForm.attr("data-choice-index");
                 var cCount = $questionForm.find(".choices-container .choice-form").length;
+                while (uniqueSectionIndexes.includes(cCount.toString())) {
+                    cCount++;
+                }
+
                 var choiceTemplate = $("#choice-template").html();
 
                 // Identificamos el botón añadiendo el id de la sección y el id de la pregunta a las que pertenece y el id de la opción

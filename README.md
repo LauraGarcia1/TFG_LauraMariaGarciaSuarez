@@ -41,7 +41,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Eliminacion de objetos en la creación de cuestionario (17/02/2025)
 - [X] Eliminacion de objetos en la edición de cuestionario (23/02/2025)
 - [X] Poner informacion que explique los iconos de la página de creador (22/02/2025)
-- [ ] Puede haber coincidencias en edit-study!!
+- [X] Puede haber coincidencias en edit-study!! (23/02/2025) (Comprobar) 
 - [ ] edit y create study -> tipos de preguntas
 - [ ] Cambiar de "questionnarie" a "questionaire"
 - [ ] Poner páginas de recomendaciones anteriores hechas
