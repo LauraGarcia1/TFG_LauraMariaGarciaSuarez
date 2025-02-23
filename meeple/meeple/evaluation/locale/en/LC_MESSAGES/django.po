@@ -454,13 +454,21 @@ msgstr "You have no studies created yet. You can create them with the buttom abo
 msgid "WarningDelete"
 msgstr "Are you sure you want to delete this study?"
 
+#: evaluation/templates/mystudies.html:73
+msgid "UploadStudy"
+msgstr "Upload study"
+
+#: evaluation/templates/mystudies.html:87
+msgid "DeleteStudy"
+msgstr "Delete study"
+
 #: evaluation/templates/createstudy.html:32
 msgid "CreateStudyTitle"
 msgstr "Create a New Study"
 
 #: evaluation/templates/createstudy.html:38
 msgid "ReturnToStudyList"
-msgstr "Return to the list"
+msgstr "Cancel"
 
 #: evaluation/templates/createstudy.html:
 msgid "CreateSection"

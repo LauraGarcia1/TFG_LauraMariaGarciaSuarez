@@ -208,12 +208,18 @@ def delete_section(request, pk):
 
 @login_required
 def create_study(request):
+    """Función para crear cuestionarios/estudios con sus respectivas secciones, preguntas y opciones.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+
+    Returns:
+        HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
+    """
     if request.method == 'POST':
         questionnaire_form = QuestionnarieForm(request.POST)
-        #section_formset = SectionFormSet(request.POST)
 
         if questionnaire_form.is_valid():
-        #if questionnaire_form.is_valid() and section_formset.is_valid():
             questionnaire = questionnaire_form.save(commit=False)
             questionnaire.user = User.objects.get(id=request.session.get('userid'))
             questionnaire.save()
@@ -228,7 +234,6 @@ def create_study(request):
                         questionnarie=questionnaire,
                         title=section_title
                     )
-                    # TODO: delete va a hacer que no sea así la función
                     # Procesar las preguntas de esta sección
                     number_questions = int(request.POST.get(f"questions-{section_index}-TOTAL_FORMS", "").strip() or 0)
                     for question_index in range(0, number_questions+1):
@@ -254,7 +259,7 @@ def create_study(request):
                                     )
 
             # Redireccionar o mostrar mensaje de éxito
-            return redirect('my-studies')  # Reemplaza 'success_url' por tu ruta de éxito
+            return redirect('my-studies')
     
     # Si es GET, simplemente mostramos el formulario vacío
     questionnaire_form = QuestionnarieForm()
@@ -277,12 +282,21 @@ def create_section_ajax(request):
     
 @login_required
 def edit_study(request, pk):
+    """Función para editar cuestionarios/estudios con sus respectivas secciones, preguntas y opciones.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+
+    Returns:
+        HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
+    """
     if request.method == 'POST':
+        print(request.POST)
+        return redirect("my-studies")
+        """
         questionnaire_form = QuestionnarieForm(request.POST)
-        #section_formset = SectionFormSet(request.POST)
 
         if questionnaire_form.is_valid():
-        #if questionnaire_form.is_valid() and section_formset.is_valid():
             questionnaire = questionnaire_form.save(commit=False)
             questionnaire.user = User.objects.get(id=request.session.get('userid'))
             questionnaire.save()
@@ -334,7 +348,8 @@ def edit_study(request, pk):
                 section_index += 1
 
             # Redireccionar o mostrar mensaje de éxito
-            return redirect('my-studies')  # Reemplaza 'success_url' por tu ruta de éxito
+            return redirect('my-studies')
+        """
     
     # Si es GET, simplemente mostramos el formulario vacío
     questionnaire = get_object_or_404(Questionnarie, id=pk, user=User.objects.get(id=request.session.get('userid')))
@@ -345,13 +360,25 @@ def edit_study(request, pk):
         for question in section.questions.all():
 
             choices = question.choices.all()
+
             question_forms[QuestionForm(instance=question)] = [ChoiceForm(instance=choice) for choice in choices]
             
         sections_dict[SectionForm(instance=section)] = question_forms
     
     questionnaire_form = QuestionnarieForm(instance=questionnaire)
 
-    return render(request, 'editstudy.html', {'questionnaire': questionnaire_form, 'sections_dict': sections_dict})
+    # Si es GET, simplemente mostramos el formulario vacío
+    section_formset = SectionFormSet(queryset=Section.objects.none(), prefix='sections')
+    question_formset = QuestionFormSet(prefix='questions')
+    choice_formset = ChoiceFormSet(queryset=Choice.objects.none(), prefix='choices')
+
+    return render(request, 'editstudy.html', {
+        'questionnaire': questionnaire_form, 
+        'sections_dict': sections_dict,
+        'section_formset': section_formset,
+        'question_formset': question_formset,
+        'choice_formset': choice_formset
+        })
 
 @login_required
 def delete_study(request, pk):

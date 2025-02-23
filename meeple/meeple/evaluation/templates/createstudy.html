@@ -55,12 +55,6 @@
                                     {% for form in section_formset %}
                                     <div>
                                         {{ form.as_p }}
-                                        <p>
-                                            <label for="id_sections-0-DELETE">Eliminar:</label>
-                                            <input type="checkbox" name="sections-0-DELETE" id="id_sections-0-DELETE">
-                                            <input type="hidden" name="sections-0-section" id="id_sections-0-section">
-                                            <input type="hidden" name="sections-0-id" id="id_sections-0-id">
-                                        </p>
                                     </div>
                                     <div class="button-container mt-3">
                                         <button type="button" class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
@@ -330,7 +324,7 @@
                 });
 
 
-                // Después de eliminar las opcion, deshabilitamos el botón de eliminación
+                // Después de eliminar las opciones, deshabilitamos el botón de eliminación
                 toggleDeleteButtonChoice(match[1], match[2]);
             });
         });

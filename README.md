@@ -39,7 +39,10 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Cambiar etiquetas de roles de usuario (16/02/2025)
 - [X] un creador no puede tener preferencias (17/02/2025)
 - [X] Eliminacion de objetos en la creación de cuestionario (17/02/2025)
-- [ ] Eliminacion de objetos en la edición de cuestionario
+- [X] Eliminacion de objetos en la edición de cuestionario (23/02/2025)
+- [X] Poner informacion que explique los iconos de la página de creador (22/02/2025)
+- [ ] Puede haber coincidencias en edit-study!!
+- [ ] edit y create study -> tipos de preguntas
 - [ ] Cambiar de "questionnarie" a "questionaire"
 - [ ] Poner páginas de recomendaciones anteriores hechas
 - [ ] Guardar en cache la informacion de los juegos de preferencias? 

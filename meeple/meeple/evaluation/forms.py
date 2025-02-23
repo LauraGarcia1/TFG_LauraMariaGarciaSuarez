@@ -76,5 +76,5 @@ class ChoiceForm(forms.ModelForm):
 
 # Librería para crear forms anidados
 ChoiceFormSet = inlineformset_factory(Question, Choice, form=ChoiceForm, extra=1, can_delete=True)
-QuestionFormSet = nestedformset_factory(Section, Question, form=QuestionForm, nested_formset=ChoiceFormSet, extra=1)
-SectionFormSet = modelformset_factory(Section, form=SectionForm, extra=1)
+QuestionFormSet = nestedformset_factory(Section, Question, form=QuestionForm, nested_formset=ChoiceFormSet, extra=1, can_delete=True)
+SectionFormSet = modelformset_factory(Section, form=SectionForm, extra=1, can_delete=True)

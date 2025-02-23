@@ -458,13 +458,21 @@ msgstr "No tienes estudios creados aún. Puedes hacerlos con el botón de arriba
 msgid "WarningDelete"
 msgstr "¿Estás seguro de que quieres eliminar este estudio?"
 
+#: evaluation/templates/mystudies.html:73
+msgid "UploadStudy"
+msgstr "Subir estudio"
+
+#: evaluation/templates/mystudies.html:87
+msgid "DeleteStudy"
+msgstr "Delete study"
+
 #: evaluation/templates/createstudy.html:32
 msgid "CreateStudyTitle"
 msgstr "Crear un Nuevo Estudio"
 
 #: evaluation/templates/createstudy.html:38
 msgid "ReturnToStudyList"
-msgstr "Volver a la lista"
+msgstr "Cancelar"
 
 #: evaluation/templates/createstudy.html:
 msgid "CreateSection"

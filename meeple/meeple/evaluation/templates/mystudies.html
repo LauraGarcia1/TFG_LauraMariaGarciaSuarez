@@ -61,16 +61,16 @@
                                     <td>
                                         <div class="d-inline">
                                             {% if not qtnn.uploaded %}
-                                            <form action="{% url 'edit-questionnarie' qtnn.id %}" method="post" class="d-inline">
+                                            <form method="GET" action="{% url 'edit-questionnarie' qtnn.id %}" class="d-inline">
                                                 {% csrf_token %}
                                                 <button class="btn btn-link">
-                                                    <i class="fas fa-edit"></i>
+                                                    <i class="fas fa-edit" title="{% trans 'EditStudy' %}"></i>
                                                 </button>
                                             </form>
                                             <form method="POST" action="{% url 'upload-questionnarie' qtnn.id %}" class="d-inline">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-link" onclick="confirmUpload()">
-                                                    <i class="fas fa-upload text-dark"></i>
+                                                    <i class="fas fa-upload text-dark" title="{% trans 'UploadStudy' %}"></i>
                                                 </button>
                                             </form>
                                             {% else %}
@@ -84,7 +84,7 @@
                                             <form method="POST" action="{% url 'delete-questionnarie' qtnn.id %}" class="d-inline">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-link" onclick="return confirm({% trans 'WarningDelete' %});">
-                                                    <i class="fas fa-trash-alt text-danger"></i>
+                                                    <i class="fas fa-trash-alt text-danger" title="{% trans 'DeleteStudy' %}"></i>
                                                 </button>
                                             </form>
                                         </div>
