@@ -266,8 +266,8 @@ msgstr "Search new recommendations"
 msgid "RecommendationThirdTitle"
 msgstr "Previous recommendations"
 
-#: evaluation/templates/questionnarie.html:30
-msgid "Questionnarie"
+#: evaluation/templates/questionnaire.html:30
+msgid "Questionnaire"
 msgstr "Discover your ideal game! Answer these questions and find the best recommendation for you."
 
 #: evaluation/templates/register.html:20 evaluation/views.py:34
@@ -455,6 +455,10 @@ msgid "WarningDelete"
 msgstr "Are you sure you want to delete this study?"
 
 #: evaluation/templates/mystudies.html:73
+msgid "ViewStudy"
+msgstr "View study"
+
+#: evaluation/templates/mystudies.html:79
 msgid "UploadStudy"
 msgstr "Upload study"
 

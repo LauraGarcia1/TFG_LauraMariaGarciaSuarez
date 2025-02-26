@@ -119,8 +119,8 @@ msgstr "Otro"
 msgid "textfield"
 msgstr "Escribe aquí..."
 
-#: evaluation/templates/questionnarie.html:30
-msgid "Questionnarie"
+#: evaluation/templates/questionnaire.html:30
+msgid "Questionnaire"
 msgstr "¡Descubre tu juego ideal! Responde estas preguntas y encuentra la mejor recomendación para ti."
 
 #: evaluation/templates/preferences.html:18
@@ -459,6 +459,10 @@ msgid "WarningDelete"
 msgstr "¿Estás seguro de que quieres eliminar este estudio?"
 
 #: evaluation/templates/mystudies.html:73
+msgid "ViewStudy"
+msgstr "Visualizar estudio"
+
+#: evaluation/templates/mystudies.html:79
 msgid "UploadStudy"
 msgstr "Subir estudio"
 

@@ -30,24 +30,26 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Conseguir traducción de la página (17/11/2024)
 - [X] Género en registro
 - [X] Hacer boton logout y si accede a home y esta login, que vaya directamente a user-home (27/01/2025)
-- [X] Comprobar forloop de questionnarie.html (15/01/2025)
+- [X] Comprobar forloop de questionnaire.html (15/01/2025)
 - [X] Arreglar vulnerabilidades de github (18/01/2025)
 - [X] Cambiar color checkbox (21/01/2025)
 - [X] Cambio de idioma de las questions (23/01/2025)
 - [X] Poner todos los label de register -> valido (16/02/2025)
-- [X] Comprobar muchas questions en questionnarie (16/02/2025)
+- [X] Comprobar muchas questions en questionnaire (16/02/2025)
 - [X] Cambiar etiquetas de roles de usuario (16/02/2025)
 - [X] un creador no puede tener preferencias (17/02/2025)
 - [X] Eliminacion de objetos en la creación de cuestionario (17/02/2025)
 - [X] Eliminacion de objetos en la edición de cuestionario (23/02/2025)
 - [X] Poner informacion que explique los iconos de la página de creador (22/02/2025)
 - [X] Puede haber coincidencias en edit-study!! (23/02/2025) (Comprobar) 
+- [X] Cambiar de "questionnaire" a "questionaire" (27/02/2025)
+- [ ] Vista de estudio
+- [ ] Página de creación de algoritmos. Cómo lo uso?
 - [ ] edit y create study -> tipos de preguntas
-- [ ] Cambiar de "questionnarie" a "questionaire"
 - [ ] Poner páginas de recomendaciones anteriores hechas
 - [ ] Guardar en cache la informacion de los juegos de preferencias? 
-- [ ] Página de creación de algoritmos. Cómo lo uso?
-- [ ] Probar cambios questionnarie y language
+- [ ] Verificar actualización de choices
+- [ ] Probar cambios questionnaire y language
 - [ ] Hacer validación de la página de creación de questionarios
   - [ ] Que haya datos en el cuestionario, secciones, preguntas y choices (este último si fuese necesario)
   - [ ] Que tenga secciones
@@ -235,6 +237,9 @@ X. Los Participantes, una vez registrados, deberán introducir una serie de pref
 X. Se debe validar que al menos una sección esté presente antes de publicar la evaluación.
 
 ## Base de Datos
+
+Admin
+x:KV|921lS`p
 
 ### PostgreSQL (La más recomendada)
 

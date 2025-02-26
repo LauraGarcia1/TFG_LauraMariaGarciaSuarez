@@ -28,7 +28,7 @@
             <div
                 class="text-end shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
                 <ul class="list-group list-group-flush text-start">
-                    <h1>{% trans "Questionnarie" %}</h1>
+                    <h1>{% trans "Questionnaire" %}</h1>
                     {% for question, choices in list_questions.items %}
                     <li class="list-group-item py-3">
                         <div class="row h-100 p-4 rounded rounded-5 border border-dark border-1 w-100 background-creme">
@@ -42,7 +42,7 @@
                                     <button type="button"
                                         class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
                                         name="question-{{ question.id }}" value="{{ choice.id }}"
-                                        onclick="pressedButton(this)">{{ choice.text }}</button>
+                                        onclick="pressedButton(this)">{{ choice.choice_text }}</button>
                                     {% endfor %}
                                     {% elif question.type == "SCCB" %}
                                     {% for choice in choices %}
@@ -50,7 +50,7 @@
                                         class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
                                         name="question-{{ question.id }}" value="{{ choice.id }}"
                                         onclick="pressedButtonSingle(this)">{{
-                                        choice.text }}</button>
+                                        choice.choice_text }}</button>
                                     {% endfor %}
                                     {% elif question.type == "SCRB" %}
                                     {% for choice in choices %}
@@ -59,7 +59,7 @@
                                             name="questionsingle-{{ question.id }}" id="choice-{{ choice.id }}"
                                             value="{{ choice.id }}" onclick="pressedRadio(this)">
                                         <label class="form-check-label" for="choice-{{ choice.id }}">
-                                            {{ choice.text }}
+                                            {{ choice.choice_text }}
                                         </label>
                                     </div>
                                     {% endfor %}
@@ -70,7 +70,7 @@
                                             name="question-{{ question.id }}" id="choice-{{ choice.id }}"
                                             value="{{ choice.id }}" onclick="pressedCheckbox(this)">
                                         <label class="form-check-label" for="choice-{{ choice.id }}">
-                                            {{ choice.text }}
+                                            {{ choice.choice_text }}
                                         </label>
                                     </div>
                                     {% endfor %}
@@ -82,10 +82,10 @@
                                         onclick="pressedText(this)">
                                     {% elif question.type == "R" %}
                                     <input type="range" id="choice-{{ choice.id }}" name="question-{{ question.id }}"
-                                        min="0" max="{{ choice.text }}" onclick="pressedRange(this)">
+                                        min="0" max="{{ choice.choice_text }}" onclick="pressedRange(this)">
                                     {% elif question.type == "N" %}
                                     <input type="number" id="choice-{{ choice.id }}" name="question-{{ question.id }}"
-                                        min="0" max="{{ choice.text }}" onclick="pressedNumber(this)">
+                                        min="0" max="{{ choice.choice_text }}" onclick="pressedNumber(this)">
                                     {% endif %}
                                 </div>
                             </div>

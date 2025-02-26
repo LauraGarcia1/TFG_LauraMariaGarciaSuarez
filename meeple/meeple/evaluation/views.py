@@ -1,4 +1,5 @@
 import asyncio
+import sys
 from urllib import request
 from googletrans import Translator
 from django.shortcuts import render, redirect, get_object_or_404
@@ -13,8 +14,8 @@ from django.db import connections
 from django.views.generic.list import ListView
 from django.utils.translation import gettext_lazy as _
 from django.utils import translation
-from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnarieForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
-from .models import Preference, User, Game, Questionnarie, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction, Section
+from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnaireForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
+from .models import Preference, User, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction, Section
 import json
 from django.contrib.auth.models import Group
 
@@ -167,7 +168,7 @@ def get_data_game(request):
                 return JsonResponse({'error': 'No se encontraron datos'})
 
 @login_required
-def questionnaries(request):
+def questionnaires(request):
     """
         Función que muestra la página principal del usuario
 
@@ -176,13 +177,13 @@ def questionnaries(request):
 
     if request.method == "POST":
         if request.POST.get("button") == "recommendations":
-            return redirect(reverse('questionnarie'))
+            return redirect(reverse('questionnaire'))
 
         return redirect(reverse('home'))
     
-    questionnaries = Questionnarie.objects.get_queryset()
+    questionnaires = Questionnaire.objects.get_queryset()
 
-    return render(request, 'liststudies.html', {'questionnaries' : questionnaries})
+    return render(request, 'liststudies.html', {'questionnaires' : questionnaires})
 
 class StudiesView(LoginRequiredMixin, ListView):
     """
@@ -190,12 +191,12 @@ class StudiesView(LoginRequiredMixin, ListView):
 
         Autor: Laura Mª García Suárez
     """
-    model = Questionnarie
+    model = Questionnaire
     template_name = 'mystudies.html'
-    context_object_name = 'questionnaries'
+    context_object_name = 'questionnaires'
 
     def get_queryset(self):
-        return Questionnarie.objects.filter(user=self.request.user)
+        return Questionnaire.objects.filter(user=self.request.user)
     
 def delete_section(request, pk):
     try:
@@ -204,7 +205,7 @@ def delete_section(request, pk):
         messages.success(
             request, 'Object Does not exist'
         )
-        return redirect('edit-questionnarie', pk=section.questionnarie.id)
+        return redirect('edit-questionnaire', pk=section.questionnaire.id)
 
 @login_required
 def create_study(request):
@@ -217,7 +218,7 @@ def create_study(request):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
-        questionnaire_form = QuestionnarieForm(request.POST)
+        questionnaire_form = QuestionnaireForm(request.POST)
 
         if questionnaire_form.is_valid():
             questionnaire = questionnaire_form.save(commit=False)
@@ -231,7 +232,7 @@ def create_study(request):
                 if section_title:
                     # Si hay secciones del cuestionario, las guardamos
                     section = Section.objects.create(
-                        questionnarie=questionnaire,
+                        questionnaire=questionnaire,
                         title=section_title
                     )
                     # Procesar las preguntas de esta sección
@@ -243,7 +244,7 @@ def create_study(request):
                             # Si hay preguntas de la sección, las guardamos
                             question = Question.objects.create(
                                 section=section,
-                                text=question_keys[0],
+                                question_text=question_keys[0],
                                 type=question_keys[1],
                                 language=questionnaire.language
                             )
@@ -255,20 +256,20 @@ def create_study(request):
                                     # Si hay opciones de la pregunta, las guardamos
                                     Choice.objects.create(
                                         question=question,
-                                        text=choice_keys,
+                                        choice_text=choice_keys,
                                     )
 
             # Redireccionar o mostrar mensaje de éxito
             return redirect('my-studies')
     
     # Si es GET, simplemente mostramos el formulario vacío
-    questionnaire_form = QuestionnarieForm()
+    questionnaire_form = QuestionnaireForm()
     section_formset = SectionFormSet(queryset=Section.objects.none(), prefix='sections')
     question_formset = QuestionFormSet(prefix='questions')
     choice_formset = ChoiceFormSet(queryset=Choice.objects.none(), prefix='choices')
 
     return render(request, 'createstudy.html', {
-        'questionnarie_form': questionnaire_form,
+        'questionnaire_form': questionnaire_form,
         'section_formset': section_formset,
         'question_formset': question_formset,
         'choice_formset': choice_formset,
@@ -291,31 +292,77 @@ def edit_study(request, pk):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
-        print(request.POST)
-        return redirect("my-studies")
-        """
-        questionnaire_form = QuestionnarieForm(request.POST)
+        print(request.POST, pk)
+        questionnaire = Questionnaire.objects.get(id=pk)
+        questionnaire.name = request.POST.get('name')
+        questionnaire.description = request.POST.get('description')
+        questionnaire.language = request.POST.get('language')
 
-        if questionnaire_form.is_valid():
-            questionnaire = questionnaire_form.save(commit=False)
-            questionnaire.user = User.objects.get(id=request.session.get('userid'))
-            questionnaire.save()
-        
-            section_index = 0
-            while True:
-                section_title_key = f"sections-{section_index}-title"
-                section_title = request.POST.get(section_title_key, "").strip()
-                if not section_title:
-                    # Si no se encuentra un título, asumimos que ya no hay más secciones
-                    break
+        if questionnaire:
+            # Comprobamos si hay objetos a eliminar y de ser así se eliminan
+            delete_sections_list = request.POST.getlist('deleted_section_ids')
+            delete_questions_list = request.POST.getlist('deleted_question_ids')
+            delete_choices_list = request.POST.getlist('deleted_choice_ids')
+            
+            if delete_sections_list:
+                delete_sections_list = [int(section_id) for section_id in delete_sections_list if section_id.strip()]
+                sections_to_delete = Section.objects.filter(id__in=delete_sections_list)
+                sections_to_delete.delete()
 
-                # Crear la sección para este cuestionario
-                section = Section.objects.create(
-                    questionnarie=questionnaire,
-                    title=section_title
-                )
-                # TODO: delete va a hacer que no sea así la función
-                # Procesar las preguntas de esta sección
+            if delete_questions_list:
+                delete_questions_list = [int(question_id) for question_id in delete_questions_list if question_id.strip()]
+                questions_to_delete = Question.objects.filter(id__in=delete_questions_list)
+                questions_to_delete.delete()
+
+            if delete_choices_list:
+                delete_choices_list = [int(choice_id) for choice_id in delete_choices_list if choice_id.strip()]
+                choices_to_delete = Choice.objects.filter(id__in=delete_choices_list)
+                choices_to_delete.delete()
+
+            # Comprobamos si hay que actualizar algún objeto
+            section_ids = request.POST.getlist('sections-id')
+            section_titles = request.POST.getlist('title')
+            
+            question_ids = request.POST.getlist('questions-id')
+            # TODO: este campo hay que solucionarlo
+            question_texts = request.POST.getlist('question_text')
+            question_types = request.POST.getlist('question_type')
+
+            choice_ids = request.POST.getlist('choices-id')
+            choice_texts = request.POST.getlist('choice_text')
+
+            # ---- Actualizar secciones ---- > title
+            sections_to_update = []
+            for section_id, title in zip(section_ids, section_titles):
+                section = Section(id=section_id, title=title)
+                sections_to_update.append(section)
+
+            # Realizar la actualización en masa para las secciones
+            if sections_to_update:
+                Section.objects.bulk_update(sections_to_update, ['title'])
+
+            # ---- Actualizar preguntas ---- > question_text, type, language
+            questions_to_update = []
+            for question_id, text, type in zip(question_ids, question_texts, question_types):
+                question = Question(id=question_id, question_text=text, type=type, language=questionnaire.language)
+                questions_to_update.append(question)
+
+            # Realizar la actualización en masa para las preguntas
+            if questions_to_update:
+                Question.objects.bulk_update(questions_to_update, ['question_text', 'type', 'language'])
+
+            # ---- Actualizar opciones ---- > choice_text
+            choices_to_update = []
+            for choice_id, text in zip(choice_ids, choice_texts):
+                choice = Choice(id=choice_id, choice_text=text)
+                choices_to_update.append(choice)
+
+            # Realizar la actualización en masa para las opciones
+            if choices_to_update:
+                Choice.objects.bulk_update(choices_to_update, ['choice_text'])
+
+            # Comprobamos si hay objetos nuevos, si es así los creamos
+            for section in section_ids:
                 question_index = 0
                 while True:
                     question_key_prefix = f"questions-{section_index}-{question_index}"
@@ -326,7 +373,7 @@ def edit_study(request, pk):
                     # Crear la pregunta para la sección
                     question = Question.objects.create(
                         section=section,
-                        text=question_keys[0],
+                        question_text=question_keys[0],
                         type=question_keys[1],
                         language=question_keys[2]
                     )
@@ -340,19 +387,77 @@ def edit_study(request, pk):
                         # Crear la pregunta para la sección
                         Choice.objects.create(
                             question=question,
-                            text=choice_keys,
+                            choice_text=choice_keys,
                         )
                         choice_index += 1
+                    
+                    for choice in choice_ids:
+                        choice_text_key = f"choices-{section_index}-{question_index}-{choice}-text"
+                        choice_keys = request.POST.get(choice_text_key, "").strip()
+                        if not choice_keys:
+                            # No se encontró más preguntas para esta sección
+                            break
+                        # Crear la pregunta para la sección
+                        Choice.objects.create(
+                            question=question,
+                            choice_text=choice_keys,
+                        )
+                    question_index += 1
+
+                for question in question_ids:
+                    question_key_prefix = f"questions-{section}-{question}"
+                    question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
+                    if not question_keys:
+                        # No se encontró más preguntas para esta sección
+                        break
+                    # Crear la pregunta para la sección
+                    question = Question.objects.create(
+                        section=section,
+                        question_text=question_keys[0],
+                        type=question_keys[1],
+                        language=question_keys[2]
+                    )
+                    create_choices(request, question, section_index = section_index, question_index = question_index)
+                    
+                    create_choices(request, question, section_index = section, question_index = question_index, list = choice_ids)
+            section_index = 0
+            while True:
+                section_title_key = f"sections-{section_index}-title"
+                section_title = request.POST.get(section_title_key, "").strip()
+                if not section_title:
+                    # Si no se encuentra un título, asumimos que ya no hay más secciones
+                    break
+
+                section = Section.objects.create(
+                    questionnaire=questionnaire,
+                    title=section_title
+                )
+                # Procesar las preguntas de esta sección
+                question_index = 0
+                while True:
+                    question_key_prefix = f"questions-{section_index}-{question_index}"
+                    question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
+                    if not question_keys:
+                        # No se encontró más preguntas para esta sección
+                        break
+                    # Crear la pregunta para la sección
+                    question = Question.objects.create(
+                        section=section,
+                        question_text=question_keys[0],
+                        type=question_keys[1],
+                        language=question_keys[2]
+                    )
+
+                    create_choices(request, question, section_index = section_index, question_index = question_index)
                     question_index += 1
                 # Incrementamos el índice de sección y seguimos con la siguiente
                 section_index += 1
 
             # Redireccionar o mostrar mensaje de éxito
             return redirect('my-studies')
-        """
     
-    # Si es GET, simplemente mostramos el formulario vacío
-    questionnaire = get_object_or_404(Questionnarie, id=pk, user=User.objects.get(id=request.session.get('userid')))
+    # Si es GET, simplemente mostramos el formulario con los objetos existentes
+    questionnaire = get_object_or_404(Questionnaire, id=pk, user=User.objects.get(id=request.session.get('userid')))
     sections_dict = {}
     for section in questionnaire.sections.all():
         question_forms = {}
@@ -365,9 +470,9 @@ def edit_study(request, pk):
             
         sections_dict[SectionForm(instance=section)] = question_forms
     
-    questionnaire_form = QuestionnarieForm(instance=questionnaire)
+    questionnaire_form = QuestionnaireForm(instance=questionnaire)
 
-    # Si es GET, simplemente mostramos el formulario vacío
+    # Y enviamos el formulario vacío por si se creasen nuevos objetos
     section_formset = SectionFormSet(queryset=Section.objects.none(), prefix='sections')
     question_formset = QuestionFormSet(prefix='questions')
     choice_formset = ChoiceFormSet(queryset=Choice.objects.none(), prefix='choices')
@@ -382,21 +487,67 @@ def edit_study(request, pk):
 
 @login_required
 def delete_study(request, pk):
-    # Obtén el cuestionario por su ID
-    questionnaire = get_object_or_404(Questionnarie, pk=pk)
+    # Obtenemos el cuestionario por su ID
+    questionnaire = get_object_or_404(Questionnaire, pk=pk)
 
-    # Elimina el cuestionario
+    # Eliminamos el cuestionario
     questionnaire.delete()
-    return redirect('my-studies')  # Redirige a la lista de cuestionarios
+    return redirect('my-studies')  # Redirigimos a la lista de cuestionarios
 
 @login_required
 def upload_study(request, pk):
     # Obtén el cuestionario por su ID
-    questionnaire = get_object_or_404(Questionnarie, pk=pk)
+    questionnaire = get_object_or_404(Questionnaire, pk=pk)
     questionnaire.uploaded = True
     questionnaire.save()
 
     return redirect('my-studies')  # Redirige a la lista de cuestionarios
+
+@login_required
+def view_study(request, pk):
+    # Obtener el cuestionario
+    questionnaire = get_object_or_404(Questionnaire, id=pk, user=User.objects.get(id=request.session.get('userid')))
+    
+    # Crear el formulario del cuestionario y deshabilitar los campos
+    questionnaire_form = QuestionnaireForm(instance=questionnaire)
+    for field in questionnaire_form.fields.values():
+        field.widget.attrs['readonly'] = 'readonly'
+        field.widget.attrs['disabled'] = 'disabled'
+
+    # Crear el diccionario de secciones y preguntas con sus elecciones
+    sections_dict = {}
+    for section in questionnaire.sections.all():
+        question_forms = {}
+
+        for question in section.questions.all():
+            # Formulario de pregunta y sus opciones de respuesta (si las tiene)
+            choices = question.choices.all()
+            question_form = QuestionForm(instance=question)
+            
+            # Deshabilitar todos los campos de la pregunta
+            for field in question_form.fields.values():
+                field.widget.attrs['readonly'] = 'readonly'
+                field.widget.attrs['disabled'] = 'disabled'
+
+            choice_forms = [ChoiceForm(instance=choice) for choice in choices]
+            for choice_form in choice_forms:
+                for field in choice_form.fields.values():
+                    field.widget.attrs['readonly'] = 'readonly'
+                    field.widget.attrs['disabled'] = 'disabled'
+
+            question_forms[question_form] = choice_forms
+        
+        section_form = SectionForm(instance=section)
+        for field in section_form.fields.values():
+            field.widget.attrs['readonly'] = 'readonly'
+            field.widget.attrs['disabled'] = 'disabled'
+
+        sections_dict[section_form] = question_forms
+    
+    return render(request, 'viewstudy.html', {
+        'questionnaire_form': questionnaire_form,
+        'sections_dict': sections_dict,
+    })
 
 
 @login_required
@@ -409,7 +560,7 @@ def recommendPage(request):
 
     if request.method == "POST":
         if request.POST.get("button") == "newrecommendation":
-            return redirect(reverse('list-questionnaries'))
+            return redirect(reverse('list-questionnaires'))
             # return redirect(reverse('first'))
 
         return redirect(reverse('home'))
@@ -441,7 +592,7 @@ def questions(request):
     return render(request, 'liststudies.html')
 
 @login_required
-def questionnarie(request):
+def questionnaire(request):
     """
         Función que muestra la página del cuestionario
 
@@ -465,7 +616,7 @@ def questionnarie(request):
 
     questions = get_data_questions()
 
-    return render(request, 'questionnarie.html', {'list_questions': questions})
+    return render(request, 'questionnaire.html', {'list_questions': questions})
 
 
 def get_data_questions():
@@ -476,8 +627,8 @@ def get_data_questions():
     """
 
     # TODO: como hago con los cuestionarios
-    questionnarie = Questionnarie.objects.first()
-    questions = questionnarie.questions.all()
+    questionnaire = Questionnaire.objects.first()
+    questions = questionnaire.questions.all()
 
     questions_and_choices = {
         question: question.choices.all() for question in questions
@@ -514,7 +665,7 @@ def newRecomm(request, answers=None):
 
         if request.POST.get("button") == "exit":
             request.session.pop('recommendation', None)
-            return redirect(reverse('list-questionnaries'))
+            return redirect(reverse('list-questionnaires'))
         elif request.POST.get("button") == "moreEvals":
             request.session.pop('recommendation', None)
             # TODO: Guardar zacatrus_games?
@@ -549,6 +700,59 @@ async def translate_text(text, target_language):
     translated = await translator.translate(text, dest=target_language)
     
     return translated.text  # Devolver el texto traducido
+
+def create_choices(request, question, section_index, question_index, list = None):
+    if list is None:
+        choice_index = 0
+        while True:
+            choice_text_key = f"choices-{section_index}-{question_index}-{choice_index}-text"
+            choice_keys = request.POST.get(choice_text_key, "").strip()
+            if not choice_keys:
+                # No se encontró más preguntas para esta sección
+                break
+            # Crear la pregunta para la sección
+            Choice.objects.create(
+                question=question,
+                choice_text=choice_keys,
+            )
+            choice_index += 1
+    else:
+        for choice_index in list:
+            choice_text_key = f"choices-{section_index}-{question_index}-{choice_index}-text"
+            choice_keys = request.POST.get(choice_text_key, "").strip()
+            # Crear la pregunta para la sección
+            Choice.objects.create(
+                question=question,
+                choice_text=choice_keys,
+            )
+
+def execute_algorithm(code, user, responses):
+    environment = {}
+    
+    # Definir un entorno restringido para evitar ejecuciones peligrosas
+    safe_builtins = {
+        "print": print,
+        "list": list,
+        "dict": dict,
+        "int": int,
+        "float": float,
+        "str": str,
+        "len": len,
+        "range": range
+    }
+
+    try:
+        print(code)
+        # Ejecutar el código del usuario en un espacio controlado
+        exec(code, {"__builtins__": safe_builtins}, environment)
+        
+        # Verificar que el código haya definido la función necesaria
+        if "recomendar" in environment:
+            return environment["recomendar"](user, responses)
+        else:
+            return ["Error: The algorithm must define the function 'recommend(user, responses)'."]
+    except Exception as e:
+        return [f"Algorithm execution error: {str(e)}"]
 
 # TODO: quitar esto
 

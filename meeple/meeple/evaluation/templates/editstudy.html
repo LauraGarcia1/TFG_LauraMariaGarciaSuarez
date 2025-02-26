@@ -22,11 +22,11 @@
         <div
             class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
             <div class="row p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
-                <!-- Form de Questionnarie -->
+                <!-- Form de Questionnaire -->
                 <h1>{% trans "EditStudy" %}</h1>
-                <form action="" method="post">
+                <form action="" method="post" id="formSubmit">
                     {% csrf_token %}
-                    <div id="questionnarie-form">
+                    <div id="questionnaire-form">
                         {{ questionnaire.as_p }}
                     </div>
                     <div class="row">
@@ -37,7 +37,7 @@
                             <button type="button" id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
                         </div>
                         <div class="col-6 col-md-3 mb-2">
-                            <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "SaveChanges" %}</button>
+                            <button type="submit" class="btn btn-primary rounded-pill btn-mostaza" id="submitBtn">{% trans "SaveChanges" %}</button>
                         </div>
                         <div class="col-6 col-md-3 mb-2">
                             <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "ReturnToStudyList" %}</a>
@@ -48,7 +48,7 @@
                 <div id="sections-container">
                 {% for section, questions in sections_dict.items %}
                 <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
-                    <div class="section-form" id="{{ section.instance.id }}" data-index="{{ section.instance.id }}">
+                    <div class="section-form" id="{{ section.instance.id }}" data-section-index="{{ section.instance.id }}">
                       <h3>{% trans "Section" %}</h3>
                         <div>
                             {{ section.as_p }}
@@ -67,7 +67,7 @@
                                 <!-- Se agregarán los formularios de preguntas aquí -->
                                 {% for question, choices in questions.items %}
                                 <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
-                                    <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}" data-index="{{ question.instance.id }}" data-section-index="{{ section.instance.id }}">
+                                    <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}" data-question-index="{{ question.instance.id }}" data-section-index="{{ section.instance.id }}">
                                         <h4>{% trans "Question" %}</h4>
                                         <div>
                                             {{ question.as_p }}
@@ -104,13 +104,16 @@
                 </div>
                 {% endfor %}
                 </div>
+                <input type="hidden" name="deleted_section_ids" id="deleted-section-ids">
+                <input type="hidden" name="deleted_question_ids" id="deleted-question-ids">
+                <input type="hidden" name="deleted_choice_ids" id="deleted-choice-ids">
                 </form>
             </div>
         </div>
     </div>
 
     <script type="text/template" id="section-template">
-        <div class="section-form" data-index="__index__">
+        <div class="section-form" data-section-index="__index__">
             <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body mb-3">
                 <h3>{% trans "Section" %}</h3>
                 {% for form in section_formset %}
@@ -130,7 +133,7 @@
     </script>
     
     <script type="text/template" id="question-template">
-        <div class="question-form" data-index="__qindex__" data-section-index="__section_index__">
+        <div class="question-form" data-question-index="__qindex__" data-section-index="__section_index__">
             <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme mt-3">
                 <h4>{% trans "Question" %}</h4>
                 {% for form_q in question_formset %}
@@ -170,6 +173,7 @@
                 const sectionElements = document.querySelectorAll("[data-section-index]");
                 const choiceElements = document.querySelectorAll("[data-choice-index]");
                 const questionElements = document.querySelectorAll("[data-question-index]");
+                const submitButton = document.getElementById("submitBtn");
                 
                 const sectionIndexes = [];
                 const choiceIndexes = [];
@@ -200,8 +204,8 @@
                 uniqueChoiceIndexes = [...new Set(choiceIndexes)];
                 uniqueQuestionIndexes = [...new Set(questionIndexes)];
 
-                console.log(uniqueSectionIndexes, uniqueChoiceIndexes, uniqueQuestionIndexes)
             }, 100); // Para aseguramos que el DOM esté completamente cargado
+
         });
 
         $(document).ready(function () {
@@ -209,6 +213,24 @@
             var deletedSectionIds = []; // Lista con las secciones a eliminar del cuestionario
             var deletedQuestionIds = []; // Lista con las preguntas a eliminar del cuestionario
             var deletedChoiceIds = []; // Lista con las opciones a eliminar del cuestionario
+            var submitButton = document.getElementById("submitBtn"); // Botón que envía el POST
+
+            // Función para enviar a views los objetos borrados
+            submitButton.addEventListener("click", function (event) {
+
+                // Evitar que el formulario se envíe inmediatamente
+                event.preventDefault(); 
+
+                // Procesar los datos antes de enviar
+                console.log("Procesando datos antes de enviar...");
+
+                document.getElementById("deleted-section-ids").value = deletedSectionIds;
+                document.getElementById("deleted-question-ids").value = deletedQuestionIds;
+                document.getElementById("deleted-choice-ids").value = deletedChoiceIds;
+
+                // Enviar el formulario manualmente
+                document.getElementById("formSubmit").submit();
+            });
 
             // Funciones para habilitar la creación de secciones en caso de haber datos en los campos del cuestionario
             function checkQuestionnaireFields() {
@@ -244,7 +266,7 @@
                 }
             });
 
-            $("#questionnarie-form input, #questionnarie-form textarea").on("input", checkQuestionnaireFields);
+            $("#questionnaire-form input, #questionnaire-form textarea").on("input", checkQuestionnaireFields);
 
             // Función con acciones al añadir una nueva sección
             $("#create-section-btn").click(function (e) {
@@ -289,7 +311,7 @@
             $(document).on("click", ".add-question-btn", function (e) {
                 e.preventDefault();
                 var $sectionForm = $(this).closest(".section-form");
-                var sindex = $sectionForm.attr("data-index");
+                var sindex = $sectionForm.attr("data-section-index");
                 var qCount = $sectionForm.find(".questions-container .question-form").length;
                 while (uniqueSectionIndexes.includes(qCount.toString())) {
                     qCount++;
@@ -311,7 +333,7 @@
                 e.preventDefault();
                 var $questionForm = $(this).closest(".question-form");
                 var sindex = $questionForm.attr("data-section-index");
-                var qindex = $questionForm.attr("data-choice-index");
+                var qindex = $questionForm.attr("data-question-index");
                 var cCount = $questionForm.find(".choices-container .choice-form").length;
                 while (uniqueSectionIndexes.includes(cCount.toString())) {
                     cCount++;
@@ -425,7 +447,7 @@
                     var choiceId = choiceForm.attr("id")?.split("-")[0] || "";
     
                     if (choiceId) {
-                        deletedSChoiceIds.push(choiceId);
+                        deletedChoiceIds.push(choiceId);
                     }
                     choiceForm.remove();
                 });
@@ -433,7 +455,6 @@
                 toggleDeleteButtonChoice(match[1], match[2]);
             });
         });
-
     </script>
 
     {% endblock body %}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 import nested_admin
-from .models import Choice, User, Interaction, Questionnarie, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, GameRecommended, Section
+from .models import Choice, User, Interaction, Questionnaire, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, GameRecommended, Section
 
     # Inline para Choices dentro de Questions
 class ChoiceInline(nested_admin.NestedTabularInline):
@@ -13,7 +13,7 @@ class QuestionInline(nested_admin.NestedTabularInline):
     inlines = [ChoiceInline]
     extra = 1
 
-# Inline para Sections dentro de Questionnarie
+# Inline para Sections dentro de Questionnaire
 class SectionInline(nested_admin.NestedStackedInline):
     model = Section
     inlines = [QuestionInline]
@@ -26,9 +26,9 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ['username', 'email']
     list_filter = ['gender', 'frequencyGame', 'expertiseGame', 'date_created']
 
-# Questionnarie model
-@admin.register(Questionnarie)
-class QuestionnarieAdmin(nested_admin.NestedModelAdmin):
+# Questionnaire model
+@admin.register(Questionnaire)
+class QuestionnaireAdmin(nested_admin.NestedModelAdmin):
     inlines = [SectionInline]
     list_display = ['name', 'language', 'date_created']
     search_fields = ['name']
@@ -37,8 +37,8 @@ class QuestionnarieAdmin(nested_admin.NestedModelAdmin):
 # Question model
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ['section', 'text', 'type', 'language', 'date_created']
-    search_fields = ['text', 'type']
+    list_display = ['section', 'question_text', 'type', 'language', 'date_created']
+    search_fields = ['question_text', 'type']
     list_filter = ['type', 'language', 'date_created']
 
 # Answer model
@@ -85,9 +85,9 @@ class PreferenceAdmin(admin.ModelAdmin):
 # Choice model
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ['question', 'text']
-    search_fields = ['text']
-    list_filter = ['question', 'text']
+    list_display = ['question', 'choice_text']
+    search_fields = ['choice_text']
+    list_filter = ['question', 'choice_text']
 
 # Interaction model
 @admin.register(Interaction)
@@ -138,10 +138,10 @@ class GameRecommendedAdmin(admin.ModelAdmin):
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     inlines = [QuestionInline]
-    list_display = ('title', 'questionnarie')
-    search_fields = ('title', 'questionnarie')
-    list_filter = ('questionnarie',)
+    list_display = ('title', 'questionnaire')
+    search_fields = ('title', 'questionnaire')
+    list_filter = ('questionnaire',)
 
     def __str__(self):
-        return f"{self.questionnarie} - {self.title}"
+        return f"{self.questionnaire} - {self.title}"
 

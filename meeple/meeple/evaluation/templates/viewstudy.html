@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block overflow %}
+
+<body style="overflow-x: hidden;">
+    {% endblock overflow %}
+
+    {% block body %}
+    <div class="position-relative custom-container">
+        <div class="position-absolute top-0 start-0">
+            <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+                style="transform: rotate(64deg);">
+        </div>
+
+        <div class="position-absolute bottom-0 end-0">
+            <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
+                style="transform: rotate(31deg);">
+        </div>
+
+        <div
+            class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+            <div class="row p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
+                <!-- Form de Questionnaire -->
+
+                <div class="row">
+                    <div class="col-md-10">
+                        <h1>{% trans "ViewStudy" %}</h1>
+                    </div>
+
+                    <div class="col-md-2 text-right">
+                        <form method="GET" action="{% url 'my-studies' %}" class="d-inline">
+                            {% csrf_token %}
+                            <button class="btn btn-link">
+                                <span class="close">&times;</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="questionnaire-form">
+                    {{ questionnaire.as_p }}
+                </div>
+
+                <h3 class="pt-3">{% trans "Sections" %}</h3>
+                <div id="sections-container">
+                    {% for section, questions in sections_dict.items %}
+                    <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
+                        <div class="section-form" id="{{ section.instance.id }}"
+                            data-section-index="{{ section.instance.id }}">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <h3>{% trans "Section" %}</h3> {{ section.as_p }}
+                            </div>
+                            <!-- Contenedor para las preguntas de esta sección -->
+                            <div class="questions-container">
+                                <!-- Se agregarán los formularios de preguntas aquí -->
+                                <div
+                                    class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
+                                    <h4>{% trans "Question" %}s</h4>
+                                    {% for question, choices in questions.items %}
+                                    <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}"
+                                        data-question-index="{{ question.instance.id }}"
+                                        data-section-index="{{ section.instance.id }}">
+                                        <div class="container my-4">
+                                            <div class="row">
+                                                <!-- Columna 1: Imagen -->
+                                                <div class="col-lg-3 col-md-12 mb-3 text-center">
+                                                    <img src="https://via.placeholder.com/400x300"
+                                                        class="img-fluid rounded shadow-lg" alt="Imagen de ejemplo">
+                                                </div>
+
+                                                <!-- Columna 2 y 3: Tabla con Preguntas y Opciones -->
+                                                <div class="col-lg-9 col-md-12">
+                                                    <table class="table table-borderless">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>{{ question.question_text }}</td>
+                                                                <td>
+                                                                    {% if question.type.value == "OAS" %}
+                                                                    <input type="text" id="choice-{{ choice.id.value }}"
+                                                                        name="question-{{ question.id.value }}"
+                                                                        onclick="pressedText(this)">
+                                                                    {% elif question.type.value == "OAL" %}
+                                                                    <input type="text" id="choice-{{ choice.id.value }}"
+                                                                        name="question-{{ question.id.value }}"
+                                                                        onclick="pressedText(this)">
+                                                                    {% elif question.type.value == "R" %}
+                                                                    <input type="range"
+                                                                        id="choice-{{ choice.id.value }}"
+                                                                        name="question-{{ question.id.value }}" min="0"
+                                                                        max="{{ choice.choice_text.value }}"
+                                                                        onclick="pressedRange(this)">
+                                                                    {% elif question.type.value == "N" %}
+                                                                    <input type="number"
+                                                                        id="choice-{{ choice.id.value }}"
+                                                                        name="question-{{ question.id.value }}" min="0"
+                                                                        max="{{ choice.choice_text.value }}"
+                                                                        onclick="pressedNumber(this)">
+                                                                    {% else %}
+                                                                    {% for choice in choices %}
+                                                                    {% if question.type.value == "MCCB" %}
+                                                                    <button type="button"
+                                                                        class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
+                                                                        name="question-{{ question.id.value }}"
+                                                                        value="{{ choice.id.value }}"
+                                                                        onclick="pressedButton(this)">{{
+                                                                        choice.choice_text.value }}</button>
+                                                                    {% elif question.type.value == "SCCB" %}
+                                                                    <button type="button"
+                                                                        class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
+                                                                        name="question-{{ question.id.value.value }}"
+                                                                        value="{{ choice.id.value }}"
+                                                                        onclick="pressedButtonSingle(this)">{{
+                                                                        choice.choice_text.value }}</button>
+                                                                    {% elif question.type.value == "SCRB" %}
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="questionsingle-{{ question.id.value }}"
+                                                                            id="choice-{{ choice.id.value }}"
+                                                                            value="{{ choice.id.value }}"
+                                                                            onclick="pressedRadio(this)">
+                                                                        <label class="form-check-label"
+                                                                            for="choice-{{ choice.id.value }}">
+                                                                            {{ choice.choice_text.value }}
+                                                                        </label>
+                                                                    </div>
+                                                                    {% elif question.type.value == "MCRB" %}
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="question-{{ question.id.value }}"
+                                                                            id="choice-{{ choice.id.value }}"
+                                                                            value="{{ choice.id.value }}"
+                                                                            onclick="pressedCheckbox(this)">
+                                                                        <label class="form-check-label"
+                                                                            for="choice-{{ choice.id.value }}">
+                                                                            {{ choice.choice_text.value }}
+                                                                        </label>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock body %}

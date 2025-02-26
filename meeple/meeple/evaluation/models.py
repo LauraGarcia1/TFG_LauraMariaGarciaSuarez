@@ -121,7 +121,28 @@ class Interaction(models.Model):
         self.influences.extend(add_influences)
         self.save()
 
-class Questionnarie(models.Model):
+class Algorithm(models.Model):
+    name = models.CharField(max_length=100)
+    version = models.CharField(max_length=15)
+    description = models.TextField()
+    code = models.TextField(help_text="You must define a function with header 'recommend(user, responses)' that returns a list of games.", null=True)
+    type = models.CharField(
+        max_length = 20,
+        choices = [
+            ('collaborative', 'Collaborative Filtering'),
+            ('content', 'Content-based Filtering'),
+            ('hybrid', 'Hybrid'),
+            ('rules', 'Rule-Based'),
+            ('contextual', 'Contextual'),
+            ('deep_learning', 'Deep learning')
+        ],
+        default='hybrid'
+    ) # TODO: No sé de qué tipos pueden ser los algoritmos
+
+    def __str__(self):
+        return self.name
+
+class Questionnaire(models.Model):
     name = models.CharField(max_length=150, blank=False, null=False)
     user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     description = models.TextField()
@@ -140,7 +161,8 @@ class Questionnarie(models.Model):
         return self.name
 
 class Section(models.Model):
-    questionnarie = models.ForeignKey(Questionnarie, related_name='sections', on_delete=models.CASCADE)
+    questionnaire = models.ForeignKey(Questionnaire, related_name='sections', on_delete=models.CASCADE)
+    algorithm = models.ForeignKey(Algorithm, related_name='algorithm', on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
@@ -149,7 +171,7 @@ class Section(models.Model):
 class Question(models.Model):
     section = models.ForeignKey('Section', on_delete=models.CASCADE, null=False, related_name='questions')
     date_created = models.DateTimeField(auto_now_add=True)
-    text = models.CharField(max_length=150, blank=False, null=False)
+    question_text = models.CharField(max_length=150, blank=False, null=False)
     # TODO: tendría sentido que hubiese otros tipos?
     type = models.CharField(
         max_length=20,
@@ -184,7 +206,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True, related_name='choices')
-    text = models.CharField(max_length=50, blank=True, null=True)
+    choice_text = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return f"{self.text}"
@@ -236,26 +258,6 @@ class Game(models.Model): # ??
 
     def __str__(self):
         return str(self.id_BGG)
-
-class Algorithm(models.Model):
-    name = models.CharField(max_length=100)
-    version = models.CharField(max_length=15)
-    description = models.TextField()
-    type = models.CharField(
-        max_length = 20,
-        choices = [
-            ('collaborative', 'Collaborative Filtering'),
-            ('content', 'Content-based Filtering'),
-            ('hybrid', 'Hybrid'),
-            ('rules', 'Rule-Based'),
-            ('contextual', 'Contextual'),
-            ('deep_learning', 'Deep learning')
-        ],
-        default='hybrid'
-    ) # TODO: No sé de qué tipos pueden ser los algoritmos
-
-    def __str__(self):
-        return self.name
 
 class Evaluation(models.Model):
     # INFO: una evaluacion no debería tener recomendaciones que le ha gustado al participante

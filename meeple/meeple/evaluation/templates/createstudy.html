@@ -21,13 +21,19 @@
 
         <div
             class="justify-content-start shadow-lg p-4 p-md-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-            <!-- Form de Questionnarie -->
+            <!-- Form de Questionnaire -->
             <h1>{% trans "CreateStudyTitle" %}</h1>
             <form action="" method="post">
                 <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme">
                     {% csrf_token %}
-                    <div id="questionnarie-form" class="w-100 px-3 overflow-auto">
-                        {{ questionnarie_form.as_p }}
+                    <div id="questionnaire-form" class="w-100 px-3 overflow-auto">
+                        {{ questionnaire_form.as_p }}
+                    </div>
+
+                    <h3 class="pt-3">{% trans "Sections" %}</h3>
+                    {{ section_formset.management_form }}
+                    <div id="sections-container">
+                        <!-- Secciones que se añaden dinámicamente -->
                     </div>
 
                     <div class="row">
@@ -44,68 +50,63 @@
                             <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "ReturnToStudyList" %}</a>
                         </div>
                     </div>
-                    <h3 class="pt-3">{% trans "Sections" %}</h3>
-                    {{ section_formset.management_form }}
-                    <div id="sections-container">
-                        <!-- Secciones que se añaden dinámicamente -->
-                        <script type="text/template" id="section-template">
-                            <div class="section-form" data-index="__index__">
-                                <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body mb-3">
-                                <h3>{% trans "Section" %}</h3>
-                                    {% for form in section_formset %}
-                                    <div>
-                                        {{ form.as_p }}
-                                    </div>
-                                    <div class="button-container mt-3">
-                                        <button type="button" class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
-                                        <button type="button" id="del-questions-btn" class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
-                                    </div>
-                                    <!-- Contenedor para las preguntas de esta sección -->
-                                    <div class="questions-container">
-                                            {{ question_formset.management_form }}
-                                            <!-- Se agregarán los formularios de preguntas aquí -->
-                                            <script type="text/template" id="question-template">
-                                                <div class="question-form" data-index="__qindex__" data-section-index="__section_index__">
-                                                    <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme mt-3">
-                                                    <h4>{% trans "Question" %}</h4>
-                                                    {% for form_q in question_formset %}
-                                                    <div>
-                                                        {{ form_q.as_p }}
-                                                    </div>
-                                                    <div class="button-container mt-3">
-                                                        <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
-                                                        <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
-                                                    </div>
-                                                        {{ choice_formset.management_form }}
-                                                    <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
-                                                        <h4>{% trans "Choices" %}</h4>
-                                                        <div class="choices-container">
-                                                        <!-- Se agregarán los formularios de preguntas aquí -->
-                                                            <script type="text/template" id="choice-template">
-                                                                {% for form_c in choice_formset %}
-                                                                <div class="choice-form" data-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
-                                                                    {{ form_c.as_p }}
-                                                                </div>
-                                                                {% endfor %}
-                                                            </script>
-                                                        </div>
-                                                    </div>
-                                                    {% endfor %}
-                                                    </div>
-                                                </div>
-                                            </script>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </script>
-                    </div>
-
                 </div>
             </form>
         </div>
     </div>
 
+    <script type="text/template" id="section-template">
+        <div class="section-form" data-section-index="__index__">
+            <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body mb-3">
+                <h3>{% trans "Section" %}</h3>
+                {% for form in section_formset %}
+                <div>
+                    {{ form.as_p }}
+                </div>
+                
+                {{ question_formset.management_form }}
+                <div class="questions-container"></div>
+
+                <div class="button-container mt-3">
+                    <button type="button" class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
+                    <button type="button" id="del-questions-btn" class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </script>
+    
+    <script type="text/template" id="question-template">
+        <div class="question-form" data-question-index="__qindex__" data-section-index="__section_index__">
+            <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme mt-3">
+                <h4>{% trans "Question" %}</h4>
+                {% for form_q in question_formset %}
+                <div>
+                    {{ form_q.as_p }}
+                </div>
+                
+                {{ choice_formset.management_form }}
+                <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
+                    <h4>{% trans "Choices" %}</h4>
+                    <div class="choices-container"></div>
+                </div>
+
+                <div class="button-container mt-3">
+                    <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
+                    <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </script>
+    
+    <script type="text/template" id="choice-template">
+        {% for form_c in choice_formset %}
+        <div class="choice-form" data-choice-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
+            {{ form_c.as_p }}
+        </div>
+        {% endfor %}
+    </script>
 
     <script>
         $(document).ready(function () {
@@ -120,7 +121,7 @@
                 }
             }
             // Escuchar cambios en los inputs y textarea del cuestionario
-            $("#questionnarie-form input, #questionnarie-form textarea").on("input", checkQuestionnaireFields);
+            $("#questionnaire-form input, #questionnaire-form textarea").on("input", checkQuestionnaireFields);
 
             // Variable para llevar el índice de secciones
             var sectionIndex = 0;
@@ -184,7 +185,7 @@
                 e.preventDefault();
                 var $sectionForm = $(this).closest(".section-form");
                 // Obtener el índice de la sección desde el atributo data-index
-                var sindex = $sectionForm.attr("data-index");
+                var sindex = $sectionForm.attr("data-section-index");
                 // Contar las preguntas existentes en esa sección para determinar el índice de la nueva pregunta
                 var qCount = $sectionForm.find(".questions-container .question-form").length;
                 // Obtener la plantilla del formulario de pregunta
@@ -214,7 +215,7 @@
                 // Obtener el índice de la sección desde el atributo data-section-index
                 var sindex = $questionForm.attr("data-section-index");
                 // Obtener el índice de la sección desde el atributo data-index
-                var qindex = $questionForm.attr("data-index");
+                var qindex = $questionForm.attr("data-question-index");
                 // Contar las opciones existentes en esa sección para determinar el índice de la nueva pregunta
                 var cCount = $questionForm.find(".choices-container .choice-form").length;
                 // Obtener la plantilla del formulario de opción

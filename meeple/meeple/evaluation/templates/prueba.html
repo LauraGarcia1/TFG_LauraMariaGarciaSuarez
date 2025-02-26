@@ -20,13 +20,13 @@
         </div>
 
         <div class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-            <!-- Form de Questionnarie -->
+            <!-- Form de Questionnaire -->
             <h1>{% trans "CreateStudyTitle" %}</h1>
             <form action="" method="post">
                 <div class="row p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
                     {% csrf_token %}
-                    <div id="questionnarie-form">
-                        {{ questionnarie_form.as_p }}
+                    <div id="questionnaire-form">
+                        {{ questionnaire_form.as_p }}
                     </div>
                     <button id="create-section-btn" class="btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateSection" %}</button>
                     <button id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
@@ -113,7 +113,7 @@
                 }
             }
             // Escuchar cambios en los inputs y textarea del cuestionario
-            $("#questionnarie-form input, #questionnarie-form textarea").on("input", checkQuestionnaireFields);
+            $("#questionnaire-form input, #questionnaire-form textarea").on("input", checkQuestionnaireFields);
 
             // Variable para llevar el índice de secciones
             var sectionIndex = 0;
