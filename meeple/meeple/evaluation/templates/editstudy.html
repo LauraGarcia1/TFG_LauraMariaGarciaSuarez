@@ -29,26 +29,13 @@
                     <div id="questionnaire-form">
                         {{ questionnaire.as_p }}
                     </div>
-                    <div class="row">
-                        <div class="col-6 col-md-3 mb-2">
-                            <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple">{% trans "CreateSection" %}</button>
-                        </div>
-                        <div class="col-6 col-md-3 mb-2">
-                            <button type="button" id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
-                        </div>
-                        <div class="col-6 col-md-3 mb-2">
-                            <button type="submit" class="btn btn-primary rounded-pill btn-mostaza" id="submitBtn">{% trans "SaveChanges" %}</button>
-                        </div>
-                        <div class="col-6 col-md-3 mb-2">
-                            <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "ReturnToStudyList" %}</a>
-                        </div>
-                    </div>
+                    
                 <h3 class="pt-3">{% trans "Sections" %}</h3>
                 {{ section_formset.management_form }}
                 <div id="sections-container">
                 {% for section, questions in sections_dict.items %}
-                <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
-                    <div class="section-form" id="{{ section.instance.id }}" data-section-index="{{ section.instance.id }}">
+                <div class="section-form" id="{{ section.instance.id }}" data-section-index="{{ section.instance.id }}">
+                    <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body m-auto mb-3">
                       <h3>{% trans "Section" %}</h3>
                         <div>
                             {{ section.as_p }}
@@ -59,15 +46,17 @@
                                 <input type="hidden" name="sections-id" id="id_sections-id" value="{{ section.instance.id }}">
                             </p>
                         </div>
-                        <button class="add-question-btn btn btn-primary rounded-pill btn-purple">{% trans "CreateQuestion" %}</button>
-                        <button class="del-questions-btn btn btn-danger rounded-pill" id="del-questions-{{ section.instance.id }}-btn" disabled>{% trans "DelQuestions" %}</button>
+                        <div class="button-container mt-3">
+                            <button class="add-question-btn btn btn-primary rounded-pill btn-purple">{% trans "CreateQuestion" %}</button>
+                            <button class="del-questions-btn btn btn-danger rounded-pill" id="del-questions-{{ section.instance.id }}-btn" disabled>{% trans "DelQuestions" %}</button>
+                        </div>
                         {{ question_formset.management_form }}
                           <!-- Contenedor para las preguntas de esta sección -->
                             <div class="questions-container">
                                 <!-- Se agregarán los formularios de preguntas aquí -->
                                 {% for question, choices in questions.items %}
-                                <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
-                                    <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}" data-question-index="{{ question.instance.id }}" data-section-index="{{ section.instance.id }}">
+                                <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}" data-question-index="{{ question.instance.id }}" data-section-index="{{ section.instance.id }}">
+                                        <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme m-auto mt-3">
                                         <h4>{% trans "Question" %}</h4>
                                         <div>
                                             {{ question.as_p }}
@@ -77,10 +66,12 @@
                                                 <input type="hidden" name="questions-id" id="id_questions-id" value="{{ question.instance.id }}">
                                             </p>
                                         </div>
-                                        <button class="add-choice-btn btn btn-primary rounded-pill btn-purple">{% trans "CreateChoice" %}</button>
-                                        <button class="del-choices-btn btn btn-danger rounded-pill" id="del-choices-{{ section.instance.id }}-{{ question.instance.id }}-btn" disabled>{% trans "DelChoices" %}</button>
+                                        <div class="button-container mt-3">
+                                            <button class="add-choice-btn btn btn-primary rounded-pill btn-purple">{% trans "CreateChoice" %}</button>
+                                            <button class="del-choices-btn btn btn-danger rounded-pill" id="del-choices-{{ section.instance.id }}-{{ question.instance.id }}-btn" disabled>{% trans "DelChoices" %}</button>
+                                        </div>
                                         {{ choice_formset.management_form }}
-                                        <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body mt-3">
+                                        <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body m-auto mt-3">
                                             <h4>{% trans "Choices" %}</h4>
                                             <div class="choices-container">
                                             <!-- Se agregarán los formularios de preguntas aquí -->
@@ -103,6 +94,20 @@
                     </div>
                 </div>
                 {% endfor %}
+                <div class="row">
+                    <div class="col-6 col-md-3 mb-2">
+                        <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple">{% trans "CreateSection" %}</button>
+                    </div>
+                    <div class="col-6 col-md-3 mb-2">
+                        <button type="button" id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
+                    </div>
+                    <div class="col-6 col-md-3 mb-2">
+                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza" id="submitBtn">{% trans "SaveChanges" %}</button>
+                    </div>
+                    <div class="col-6 col-md-3 mb-2">
+                        <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "ReturnToStudyList" %}</a>
+                    </div>
+                </div>
                 </div>
                 <input type="hidden" name="deleted_section_ids" id="deleted-section-ids">
                 <input type="hidden" name="deleted_question_ids" id="deleted-question-ids">

@@ -43,7 +43,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Poner informacion que explique los iconos de la página de creador (22/02/2025)
 - [X] Puede haber coincidencias en edit-study!! (23/02/2025) (Comprobar) 
 - [X] Cambiar de "questionnaire" a "questionaire" (27/02/2025)
-- [ ] Vista de estudio
+- [X] Vista de estudio (27/02/2025)
 - [ ] Página de creación de algoritmos. Cómo lo uso?
 - [ ] edit y create study -> tipos de preguntas
 - [ ] Poner páginas de recomendaciones anteriores hechas

@@ -81,6 +81,15 @@ body {
     /* Color del borde en estado hover mostaza */
 }
 
+.btn-inverse-mostaza.active {
+    color: black;
+    /* Color del texto en estado hover */
+    background-color: #f5b820;
+    /* Color de fondo en estado hover mostaza */
+    border-color: #f5b820;
+    /* Color del borde en estado hover mostaza */
+}
+
 .btn-inverse-mostaza:focus {
     color: black;
     /* Color del texto en estado hover */

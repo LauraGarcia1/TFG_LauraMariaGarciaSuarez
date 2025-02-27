@@ -20,21 +20,18 @@
         </div>
 
         <div
-            class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-            <div class="row p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
+            class="justify-content-start shadow-lg p-4 p-md-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+            <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme m-auto">
                 <!-- Form de Questionnaire -->
 
-                <div class="row">
+                <div class="row align-items-center">
                     <div class="col-md-10">
                         <h1>{% trans "ViewStudy" %}</h1>
                     </div>
-
-                    <div class="col-md-2 text-right">
+                    <div class="col-md-2 d-flex justify-content-end">
                         <form method="GET" action="{% url 'my-studies' %}" class="d-inline">
                             {% csrf_token %}
-                            <button class="btn btn-link">
-                                <span class="close">&times;</span>
-                            </button>
+                            <button class="btn btn-close" aria-label="Close"></button>
                         </form>
                     </div>
                 </div>
@@ -46,109 +43,88 @@
                 <h3 class="pt-3">{% trans "Sections" %}</h3>
                 <div id="sections-container">
                     {% for section, questions in sections_dict.items %}
-                    <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
-                        <div class="section-form" id="{{ section.instance.id }}"
-                            data-section-index="{{ section.instance.id }}">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <h3>{% trans "Section" %}</h3> {{ section.as_p }}
+                    <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body m-auto mb-3">
+                        <div class="section-form">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <h3 class="m-0">{% trans "Section" %}</h3>
+                                </div>
+                                <div class="col">
+                                    {{ section.as_p }}
+                                </div>
                             </div>
                             <!-- Contenedor para las preguntas de esta sección -->
                             <div class="questions-container">
                                 <!-- Se agregarán los formularios de preguntas aquí -->
                                 <div
-                                    class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
+                                    class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme m-auto mt-3">
                                     <h4>{% trans "Question" %}s</h4>
-                                    {% for question, choices in questions.items %}
-                                    <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}"
-                                        data-question-index="{{ question.instance.id }}"
-                                        data-section-index="{{ section.instance.id }}">
-                                        <div class="container my-4">
-                                            <div class="row">
+                                    <div class="question-form">
+                                        <div class="container m-auto">
+                                            <div class="row align-items-stretch">
                                                 <!-- Columna 1: Imagen -->
-                                                <div class="col-lg-3 col-md-12 mb-3 text-center">
-                                                    <img src="https://via.placeholder.com/400x300"
-                                                        class="img-fluid rounded shadow-lg" alt="Imagen de ejemplo">
+                                                <div class="col-lg-3 col-md-12 mb-3 text-center d-flex flex-column justify-content-center h-100">
+                                                    <img src="https://placehold.co/600x400/EEE/31343C" class="img-fluid rounded shadow-lg" alt="Imagen de ejemplo">
                                                 </div>
-
-                                                <!-- Columna 2 y 3: Tabla con Preguntas y Opciones -->
-                                                <div class="col-lg-9 col-md-12">
-                                                    <table class="table table-borderless">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>{{ question.question_text }}</td>
-                                                                <td>
-                                                                    {% if question.type.value == "OAS" %}
-                                                                    <input type="text" id="choice-{{ choice.id.value }}"
-                                                                        name="question-{{ question.id.value }}"
-                                                                        onclick="pressedText(this)">
-                                                                    {% elif question.type.value == "OAL" %}
-                                                                    <input type="text" id="choice-{{ choice.id.value }}"
-                                                                        name="question-{{ question.id.value }}"
-                                                                        onclick="pressedText(this)">
-                                                                    {% elif question.type.value == "R" %}
-                                                                    <input type="range"
-                                                                        id="choice-{{ choice.id.value }}"
-                                                                        name="question-{{ question.id.value }}" min="0"
-                                                                        max="{{ choice.choice_text.value }}"
-                                                                        onclick="pressedRange(this)">
-                                                                    {% elif question.type.value == "N" %}
-                                                                    <input type="number"
-                                                                        id="choice-{{ choice.id.value }}"
-                                                                        name="question-{{ question.id.value }}" min="0"
-                                                                        max="{{ choice.choice_text.value }}"
-                                                                        onclick="pressedNumber(this)">
-                                                                    {% else %}
-                                                                    {% for choice in choices %}
-                                                                    {% if question.type.value == "MCCB" %}
-                                                                    <button type="button"
-                                                                        class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                                                                        name="question-{{ question.id.value }}"
-                                                                        value="{{ choice.id.value }}"
-                                                                        onclick="pressedButton(this)">{{
-                                                                        choice.choice_text.value }}</button>
-                                                                    {% elif question.type.value == "SCCB" %}
-                                                                    <button type="button"
-                                                                        class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold m-2"
-                                                                        name="question-{{ question.id.value.value }}"
-                                                                        value="{{ choice.id.value }}"
-                                                                        onclick="pressedButtonSingle(this)">{{
-                                                                        choice.choice_text.value }}</button>
-                                                                    {% elif question.type.value == "SCRB" %}
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="questionsingle-{{ question.id.value }}"
-                                                                            id="choice-{{ choice.id.value }}"
-                                                                            value="{{ choice.id.value }}"
-                                                                            onclick="pressedRadio(this)">
-                                                                        <label class="form-check-label"
-                                                                            for="choice-{{ choice.id.value }}">
-                                                                            {{ choice.choice_text.value }}
-                                                                        </label>
-                                                                    </div>
-                                                                    {% elif question.type.value == "MCRB" %}
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox"
-                                                                            name="question-{{ question.id.value }}"
-                                                                            id="choice-{{ choice.id.value }}"
-                                                                            value="{{ choice.id.value }}"
-                                                                            onclick="pressedCheckbox(this)">
-                                                                        <label class="form-check-label"
-                                                                            for="choice-{{ choice.id.value }}">
-                                                                            {{ choice.choice_text.value }}
-                                                                        </label>
-                                                                    </div>
-                                                                    {% endif %}
-                                                                    {% endfor %}
-                                                                    {% endif %}
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                        
+                                                <!-- Columna 2: Preguntas y Opciones -->
+                                                <div class="col-lg-9 col-md-12 h-100">
+                                                    {% for question, choices in questions.items %}
+                                                    <div class="row mb-3">
+                                                        <!-- Pregunta -->
+                                                        <div class="col-lg-4 col-md-12 fw-bold">
+                                                            {{ question.question_text }}
+                                                        </div>
+                                        
+                                                        <!-- Opciones -->
+                                                        <div class="col-lg-8 col-md-12">
+                                                            {% if question.type.value == "OAS" %}
+                                                            <input type="text" class="form-control" id="choice-{{ choice.id.value }}">
+                                        
+                                                            {% elif question.type.value == "OAL" %}
+                                                            <input type="text" class="form-control" id="choice-{{ choice.id.value }}">
+                                        
+                                                            {% elif question.type.value == "R" %}
+                                                            <input type="range" class="form-range" id="choice-{{ choice.id.value }}" min="0" max="{{ choice.choice_text.value }}">
+                                        
+                                                            {% elif question.type.value == "N" %}
+                                                            <input type="number" class="form-control" id="choice-{{ choice.id.value }}" min="0" max="{{ choice.choice_text.value }}">
+                                        
+                                                            {% else %}
+                                                            <div class="d-flex flex-wrap gap-2">
+                                                                {% for choice in choices %}
+                                                                {% if question.type.value == "MCCB" %}
+                                                                <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold" name="question-{{ choice.id.value }}-{{ question.id.value }}" value="{{ choice.id.value }}" onclick="toggleActive(this)">{{ choice.choice_text.value }}</button>
+                                        
+                                                                {% elif question.type.value == "SCCB" %}
+                                                                <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold" value="{{ choice.id.value }}" onclick="toggleActiveOnlyOne(event)">{{ choice.choice_text.value }}</button>
+                                        
+                                                                {% elif question.type.value == "SCRB" %}
+                                                                <div>
+                                                                    <span class="tab"></span>
+                                                                    <input type="radio" id="choice-{{ choice.id.value }}" name="question-{{ question.id.value }}" value="{{ choice.id.value }}">
+                                                                    <label for="choice-{{ choice.id.value }}">{{ choice.choice_text.value }}</label>
+                                                                </div>
+                                        
+                                                                {% elif question.type.value == "MCRB" %}
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" id="choice-{{ choice.id.value }}">
+                                                                    <label class="form-check-label" for="choice-{{ choice.id.value }}">
+                                                                        {{ choice.choice_text.value }}
+                                                                    </label>
+                                                                </div>
+                                        
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
@@ -158,5 +134,34 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleActive(button) {
+            // Verificar si el botón ya tiene la clase 'active'
+            if (button.classList.contains('active')) {
+                // Si tiene 'active', quitarla
+                button.classList.remove('active');
+            } else {
+                // Si no tiene 'active', añadirla
+                button.classList.add('active');
+            }
+        }
+
+        function toggleActiveOnlyOne(event) {
+            // Obtener el contenedor padre donde ocurrió el evento
+            var parent = event.target.closest('.d-flex');  // Encuentra el contenedor con la clase 'd-flex'
+            
+            // Seleccionar solo los botones dentro de ese contenedor
+            var buttons = parent.querySelectorAll('button');
+            
+            // Eliminar la clase 'active' de todos los botones dentro del contenedor
+            buttons.forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+
+            // Añadir la clase 'active' solo al botón que fue presionado
+            event.target.classList.add('active');
+        }
+    </script>
 
     {% endblock body %}

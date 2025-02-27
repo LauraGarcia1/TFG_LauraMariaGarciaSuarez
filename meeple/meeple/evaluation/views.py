@@ -218,6 +218,7 @@ def create_study(request):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
+        print(request.POST)
         questionnaire_form = QuestionnaireForm(request.POST)
 
         if questionnaire_form.is_valid():
@@ -249,9 +250,8 @@ def create_study(request):
                                 language=questionnaire.language
                             )
                             number_choices = int(request.POST.get(f"choices-{section_index}-{question_index}-TOTAL_FORMS", "").strip() or 0)
-                            for choice_index in range(0, number_choices+1):
-                                choice_text_key = f"choices-{choice_index}-{section_index}-{question_index}-text"
-                                choice_keys = request.POST.get(choice_text_key, "").strip()
+                            for choice_index in range(0, number_choices):
+                                choice_keys = request.POST.get(f"choices-{choice_index}-{section_index}-{question_index}-choice_text", "").strip()
                                 if choice_keys:
                                     # Si hay opciones de la pregunta, las guardamos
                                     Choice.objects.create(
@@ -300,22 +300,23 @@ def edit_study(request, pk):
 
         if questionnaire:
             # Comprobamos si hay objetos a eliminar y de ser así se eliminan
-            delete_sections_list = request.POST.getlist('deleted_section_ids')
-            delete_questions_list = request.POST.getlist('deleted_question_ids')
-            delete_choices_list = request.POST.getlist('deleted_choice_ids')
+            delete_sections_list = request.POST.getlist('deleted_section_ids')[0]
+            delete_questions_list = request.POST.getlist('deleted_question_ids')[0]
+            delete_choices_list = request.POST.getlist('deleted_choice_ids')[0]
+
             
             if delete_sections_list:
-                delete_sections_list = [int(section_id) for section_id in delete_sections_list if section_id.strip()]
+                delete_sections_list = [int(section_id) for section_id in delete_sections_list.split(',') if section_id]
                 sections_to_delete = Section.objects.filter(id__in=delete_sections_list)
                 sections_to_delete.delete()
 
             if delete_questions_list:
-                delete_questions_list = [int(question_id) for question_id in delete_questions_list if question_id.strip()]
+                delete_questions_list = [int(question_id) for question_id in delete_questions_list.split(',') if question_id]
                 questions_to_delete = Question.objects.filter(id__in=delete_questions_list)
                 questions_to_delete.delete()
 
             if delete_choices_list:
-                delete_choices_list = [int(choice_id) for choice_id in delete_choices_list if choice_id.strip()]
+                delete_choices_list = [int(choice_id) for choice_id in delete_choices_list.split(',') if choice_id]
                 choices_to_delete = Choice.objects.filter(id__in=delete_choices_list)
                 choices_to_delete.delete()
 
@@ -362,66 +363,12 @@ def edit_study(request, pk):
                 Choice.objects.bulk_update(choices_to_update, ['choice_text'])
 
             # Comprobamos si hay objetos nuevos, si es así los creamos
-            for section in section_ids:
-                question_index = 0
-                while True:
-                    question_key_prefix = f"questions-{section_index}-{question_index}"
-                    question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
-                    if not question_keys:
-                        # No se encontró más preguntas para esta sección
-                        break
-                    # Crear la pregunta para la sección
-                    question = Question.objects.create(
-                        section=section,
-                        question_text=question_keys[0],
-                        type=question_keys[1],
-                        language=question_keys[2]
-                    )
-                    choice_index = 0
-                    while True:
-                        choice_text_key = f"choices-{section_index}-{question_index}-{choice_index}-text"
-                        choice_keys = request.POST.get(choice_text_key, "").strip()
-                        if not choice_keys:
-                            # No se encontró más preguntas para esta sección
-                            break
-                        # Crear la pregunta para la sección
-                        Choice.objects.create(
-                            question=question,
-                            choice_text=choice_keys,
-                        )
-                        choice_index += 1
-                    
-                    for choice in choice_ids:
-                        choice_text_key = f"choices-{section_index}-{question_index}-{choice}-text"
-                        choice_keys = request.POST.get(choice_text_key, "").strip()
-                        if not choice_keys:
-                            # No se encontró más preguntas para esta sección
-                            break
-                        # Crear la pregunta para la sección
-                        Choice.objects.create(
-                            question=question,
-                            choice_text=choice_keys,
-                        )
-                    question_index += 1
+            for section in section_ids: # Comprobamos en secciones existentes
+                create_questions(request, section_index=section, list_questions=question_ids)
+                create_questions(request, section_index=section)
 
-                for question in question_ids:
-                    question_key_prefix = f"questions-{section}-{question}"
-                    question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
-                    if not question_keys:
-                        # No se encontró más preguntas para esta sección
-                        break
-                    # Crear la pregunta para la sección
-                    question = Question.objects.create(
-                        section=section,
-                        question_text=question_keys[0],
-                        type=question_keys[1],
-                        language=question_keys[2]
-                    )
-                    create_choices(request, question, section_index = section_index, question_index = question_index)
-                    
-                    create_choices(request, question, section_index = section, question_index = question_index, list = choice_ids)
             section_index = 0
-            while True:
+            while True: # Creamos las secciones nuevas y comprobamos su contenido
                 section_title_key = f"sections-{section_index}-title"
                 section_title = request.POST.get(section_title_key, "").strip()
                 if not section_title:
@@ -433,23 +380,9 @@ def edit_study(request, pk):
                     title=section_title
                 )
                 # Procesar las preguntas de esta sección
-                question_index = 0
-                while True:
-                    question_key_prefix = f"questions-{section_index}-{question_index}"
-                    question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
-                    if not question_keys:
-                        # No se encontró más preguntas para esta sección
-                        break
-                    # Crear la pregunta para la sección
-                    question = Question.objects.create(
-                        section=section,
-                        question_text=question_keys[0],
-                        type=question_keys[1],
-                        language=question_keys[2]
-                    )
+                create_questions(request, section_index=section, list_questions=question_ids)
+                create_questions(request, section_index=section)
 
-                    create_choices(request, question, section_index = section_index, question_index = question_index)
-                    question_index += 1
                 # Incrementamos el índice de sección y seguimos con la siguiente
                 section_index += 1
 
@@ -658,7 +591,6 @@ def newRecomm(request, answers=None):
             id=request.session.get('recommendation')), user=User.objects.get(id=request.session.get('userid')), puntuation=puntuation)
 
         for id_game, list_values in selections.items():
-            print(list_values)
             interaction = Interaction.objects.create(evaluation=evaluation, gamerecommended=GameRecommended.objects.get(recommendation=request.session['recommendation'], game=Game.objects.get(
                 id_BGG=int(id_game))), interested=list_values["firstquestion"], buyorrecommend=list_values["secondquestion"], text=list_values["thirdquestion"], moreoptions=list_values["fourthquestion"])
             interaction.add_influences(list_values["fifthquestion"])
@@ -701,30 +633,44 @@ async def translate_text(text, target_language):
     
     return translated.text  # Devolver el texto traducido
 
-def create_choices(request, question, section_index, question_index, list = None):
-    if list is None:
-        choice_index = 0
-        while True:
-            choice_text_key = f"choices-{section_index}-{question_index}-{choice_index}-text"
-            choice_keys = request.POST.get(choice_text_key, "").strip()
-            if not choice_keys:
+def create_questions(request, section_index, list_questions = None):
+    if list_questions is None:
+        question_index = 0
+        while True: # Creamos las preguntas nuevas y comprobamos su contenido
+            question_key_prefix = f"questions-{section_index}-{question_index}"
+            question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
+            if not question_keys:
                 # No se encontró más preguntas para esta sección
                 break
             # Crear la pregunta para la sección
-            Choice.objects.create(
-                question=question,
-                choice_text=choice_keys,
+            question = Question.objects.create(
+                section=Section.objects.get(id=section_index),
+                question_text=question_keys[0],
+                type=question_keys[1],
+                language=question_keys[2]
             )
-            choice_index += 1
+
+            create_choices(request, question, section_index = section_index, question_index = question_index) # Creamos las opciones nuevas
+            question_index += 1
     else:
-        for choice_index in list:
-            choice_text_key = f"choices-{section_index}-{question_index}-{choice_index}-text"
-            choice_keys = request.POST.get(choice_text_key, "").strip()
-            # Crear la pregunta para la sección
-            Choice.objects.create(
-                question=question,
-                choice_text=choice_keys,
-            )
+        for question in list_questions: # Comprobamos en preguntas existentes
+            create_choices(request, question, section_index = section_index, question_index = question) # Creamos las opciones nuevas
+
+
+def create_choices(request, question, section_index, question_index):
+    choice_index = 0
+    while True:
+        choice_text_key = f"choices-{choice_index}-{section_index}-{question_index}-choice_text"
+        choice_keys = request.POST.get(choice_text_key, "").strip()
+        if not choice_keys:
+            # No se encontró más preguntas para esta sección
+            break
+        # Crear la pregunta para la sección
+        Choice.objects.create(
+            question=Question.objects.get(id=question),
+            choice_text=choice_keys,
+        )
+        choice_index += 1
 
 def execute_algorithm(code, user, responses):
     environment = {}
