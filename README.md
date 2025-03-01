@@ -57,6 +57,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
   - [ ] Que las preguntas tengan choices si es necesario
   - [ ] El algoritmo usado para el cuestionario
 - [ ] Revisar traducciones de todas las páginas
+- [ ] Ver diferentes accesos
 - [ ] Documentar correctamente el código
 - [ ] Comprobar el error que está ocasionando algunos juegos en la página de preferencias
 - [ ] edad a fecha de nacimiento ???

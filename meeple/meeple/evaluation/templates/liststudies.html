@@ -15,16 +15,13 @@
 <div class="position-relative custom-container">
     <form action="" method="post">
         {% csrf_token %}
-        <div class="container experiment-container d-flex justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-50 start-50 translate-middle border border-dark border-2 custom-width h-75">
-            <div class="row text-center h-100">
-                {% for qelem in questionnaires %}
-                {% if qelem.uploaded %}
+    <div class="container experiment-container d-flex justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-50 start-50 translate-middle border border-dark border-2 custom-width h-75">
+        <div class="row text-center h-100">
+            {% for qelem in questionnaires %}
                 <div class="col-md-6">
-                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75 p-0"  value="recommendations" name="button" data-mdb-ripple-init><h2 class="responsive-title" >{{ qelem.name }}</h2></button>
+                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75 p-0" value="{{ qelem.id }}" name="button" data-mdb-ripple-init><h2 class="responsive-title" >{{ qelem.name }}</h2></button>
                 </div>
-                {% endif %}
                 {% endfor %}
-               
             </div>
         </div>
     </form>

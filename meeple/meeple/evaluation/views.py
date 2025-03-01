@@ -1,6 +1,4 @@
 import asyncio
-import sys
-from urllib import request
 from googletrans import Translator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -17,7 +15,7 @@ from django.utils import translation
 from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnaireForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
 from .models import Preference, User, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction, Section
 import json
-from django.contrib.auth.models import Group
+import random
 
 def home(request):
     """
@@ -176,12 +174,13 @@ def questionnaires(request):
     """
 
     if request.method == "POST":
-        if request.POST.get("button") == "recommendations":
-            return redirect(reverse('questionnaire'))
+        quest_id = request.POST.get("button")
+        if quest_id:
+            return redirect('questionnaire', quest_id)
 
         return redirect(reverse('home'))
     
-    questionnaires = Questionnaire.objects.get_queryset()
+    questionnaires = Questionnaire.objects.filter(uploaded=True)
 
     return render(request, 'liststudies.html', {'questionnaires' : questionnaires})
 
@@ -525,7 +524,7 @@ def questions(request):
     return render(request, 'liststudies.html')
 
 @login_required
-def questionnaire(request):
+def view_questionnaire(request, pk):
     """
         Función que muestra la página del cuestionario
 
@@ -533,23 +532,72 @@ def questionnaire(request):
     """
 
     if request.method == "POST":
-        if request.POST.get("button") == "newrecommendation":
-            selections = json.loads(request.POST.get('selections', '{}'))
+        return redirect('newrecomm')
+        
+    # Obtener el cuestionario
+    questionnaire = get_object_or_404(Questionnaire, id=pk)
 
-            answers = []
-            for question_id, choice_ids in selections.items():
-                # Guardamos las respuestas del participante
-                question = Question.objects.get(id=question_id)
-                for choice in choice_ids:
-                    answer = Answer.objects.create(id_question=question, answer=Choice.objects.get(id=choice), user=User.objects.get(id=request.session.get('userid')), language=settings.LANGUAGE_CODE)
-                    answers.append(answer.answer.choice)
+    # Revisar que el cuestionario está subido/validado
+    if questionnaire.uploaded:
+        # Crear el formulario del cuestionario y deshabilitar los campos
+        questionnaire_form = QuestionnaireForm(instance=questionnaire)
+        for field in questionnaire_form.fields.values():
+            field.widget.attrs['readonly'] = 'readonly'
+            field.widget.attrs['disabled'] = 'disabled'
 
-            request.session['answers'] = answers
-            return redirect('newrecomm')
+        # Crear el diccionario de secciones y preguntas con sus elecciones
+        sections_dict = {}
+        for section in questionnaire.sections.all():
+            question_forms = {}
 
-    questions = get_data_questions()
+            for question in section.questions.all():
+                # Formulario de pregunta y sus opciones de respuesta (si las tiene)
+                choices = question.choices.all()
+                question_form = QuestionForm(instance=question)
+                
+                # Deshabilitar todos los campos de la pregunta
+                for field in question_form.fields.values():
+                    field.widget.attrs['readonly'] = 'readonly'
+                    field.widget.attrs['disabled'] = 'disabled'
+                
+                choice_forms = [ChoiceForm(instance=choice) for choice in choices]
 
-    return render(request, 'questionnaire.html', {'list_questions': questions})
+                question_forms[question_form] = choice_forms
+            
+            section_form = SectionForm(instance=section)
+            for field in section_form.fields.values():
+                field.widget.attrs['readonly'] = 'readonly'
+                field.widget.attrs['disabled'] = 'disabled'
+
+            # Obtener todas las categorías
+            categories_tuples = Preference.objects.values_list('category', flat=True)
+
+            categories_list = []
+            for cat in categories_tuples:
+                cat = cat.strip("()").replace("'", "")
+                categories_list.extend([category.strip() for category in cat.split(',')])
+
+            unique_categories = list(set(cat for cat in categories_list if cat.strip()))
+
+            # Obtener el juego del algoritmo
+            assigned_game = execute_algorithm(code=section.algorithm.code, user=User.objects.get(id=request.session.get('userid')), responses=unique_categories)
+
+            print("-----------> Queee sooooyy", assigned_game)
+
+            sections_dict[section_form] = {
+                'questions': question_forms,
+                'game': assigned_game
+            }
+
+        return render(request, 'viewquestionnaire.html', {
+            'questionnaire_form': questionnaire_form,
+            'sections_dict': sections_dict,
+        })
+    
+    return render(request, 'viewquestionnaire.html', {
+        'questionnaire_form': None,
+        'sections_dict': None,
+    })
 
 
 def get_data_questions():
@@ -658,6 +706,14 @@ def create_questions(request, section_index, list_questions = None):
 
 
 def create_choices(request, question, section_index, question_index):
+    """Función para crear las opciones desde las páginas de creación y edición de estudios
+
+    Args:
+        request (HttpRequest):  instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web.
+        question (Question): Pregunta asociada a las opciones
+        section_index (text): Identificador de la Sección asociada a las opciones
+        question_index (text): Identificador de la Pregunta asociada a las opciones
+    """
     choice_index = 0
     while True:
         choice_text_key = f"choices-{choice_index}-{section_index}-{question_index}-choice_text"
@@ -672,8 +728,27 @@ def create_choices(request, question, section_index, question_index):
         )
         choice_index += 1
 
-def execute_algorithm(code, user, responses):
+def execute_algorithm(code, user, responses = None):
+    """Función para ejecutar los algoritmos de recomendación guardados en la base de datos del proyecto
+
+    Args:
+        code (text): Parámetro con el código en forma de texto
+        user (User): El usuario autenticado
+        responses (List, optional): Las categorías encontradas en las preferencias del usuario. Defaults to None.
+
+    Returns:
+        _type_: Juego recomendado
+    """
     environment = {}
+    print(responses)
+
+    def db_query(sql):
+        """
+        Ejecuta una consulta SQL en la base de datos 'external_db' y retorna los resultados.
+        """
+        with connections['external_db'].cursor() as cursor:
+            cursor.execute(sql)
+            return cursor.fetchall()
     
     # Definir un entorno restringido para evitar ejecuciones peligrosas
     safe_builtins = {
@@ -684,17 +759,17 @@ def execute_algorithm(code, user, responses):
         "float": float,
         "str": str,
         "len": len,
-        "range": range
+        "range": range,
+        "db_query": db_query # Para acceder a la BD desde el algoritmo
     }
 
     try:
-        print(code)
         # Ejecutar el código del usuario en un espacio controlado
-        exec(code, {"__builtins__": safe_builtins}, environment)
+        exec(code, {"__builtins__": safe_builtins, "random": random}, environment)
         
         # Verificar que el código haya definido la función necesaria
-        if "recomendar" in environment:
-            return environment["recomendar"](user, responses)
+        if "recommend" in environment:
+            return environment["recommend"](user, responses)
         else:
             return ["Error: The algorithm must define the function 'recommend(user, responses)'."]
     except Exception as e:
