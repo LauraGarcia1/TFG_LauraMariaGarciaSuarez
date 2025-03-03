@@ -532,6 +532,21 @@ def view_questionnaire(request, pk):
     """
 
     if request.method == "POST":
+        print(request.POST, "el cuestionario tiene pk", pk)
+        selections = json.loads(request.POST.get('selections', '{}'))
+        questionnaire = Questionnaire.objects.get(id=pk)
+        # TODO: validación
+        evaluation = Evaluation()
+
+        answers = []
+        for question_id, choice_ids in selections.items():
+            # Guardamos las respuestas del participante
+            # TODO: language no es correcto
+            question = Question.objects.get(id=question_id)
+            for choice in choice_ids:
+                answer = Answer.objects.create(question=question, choice=Choice.objects.get(id=choice), user=User.objects.get(id=request.session.get('userid')), language=settings.LANGUAGE_CODE)
+                answers.append(answer.choice)
+
         return redirect('newrecomm')
         
     # Obtener el cuestionario
@@ -582,8 +597,6 @@ def view_questionnaire(request, pk):
             # Obtener el juego del algoritmo
             assigned_game = execute_algorithm(code=section.algorithm.code, user=User.objects.get(id=request.session.get('userid')), responses=unique_categories)
 
-            print("-----------> Queee sooooyy", assigned_game)
-
             sections_dict[section_form] = {
                 'questions': question_forms,
                 'game': assigned_game
@@ -592,6 +605,7 @@ def view_questionnaire(request, pk):
         return render(request, 'viewquestionnaire.html', {
             'questionnaire_form': questionnaire_form,
             'sections_dict': sections_dict,
+            'MEDIA_URL': settings.MEDIA_URL
         })
     
     return render(request, 'viewquestionnaire.html', {
@@ -740,14 +754,16 @@ def execute_algorithm(code, user, responses = None):
         _type_: Juego recomendado
     """
     environment = {}
-    print(responses)
 
-    def db_query(sql):
+    def db_query(sql, params=None):
         """
         Ejecuta una consulta SQL en la base de datos 'external_db' y retorna los resultados.
         """
         with connections['external_db'].cursor() as cursor:
-            cursor.execute(sql)
+            if params:
+                cursor.execute(sql, params)
+            else:
+                cursor.execute(sql)
             return cursor.fetchall()
     
     # Definir un entorno restringido para evitar ejecuciones peligrosas

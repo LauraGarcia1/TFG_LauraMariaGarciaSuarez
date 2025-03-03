@@ -45,6 +45,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Cambiar de "questionnaire" a "questionaire" (27/02/2025)
 - [X] Vista de estudio (27/02/2025)
 - [ ] Página de creación de algoritmos. Cómo lo uso?
+- [ ] Arreglar range de las páginas de visualización
 - [ ] edit y create study -> tipos de preguntas
 - [ ] Poner páginas de recomendaciones anteriores hechas
 - [ ] Guardar en cache la informacion de los juegos de preferencias? 
