@@ -48,18 +48,14 @@
 
                 <ul class="list-group list-group-flush pt-5">
                     <h2>{% trans "RecommendationThirdTitle" %}</h2>
-                    {% for gameRow in zacatrus_games %}
+                    {% for eval in user_evaluations %}
                     <li class="list-group-item">
                         <div class="row">
                             <div class="col-3">
-                                <img src="{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg" alt="Image" class="img-fluid">
+                                <img src="{{ MEDIA_URL }}images_zacatrus/{{ eval.recommendation.game.id_BGG }}.jpg" alt="Image" class="img-fluid">
                             </div>
-                            <div class="col-sm-8">
-                                <h4>{{ gameRow.1 }}</h4>
-                                <p>{{ gameRow.3 }} </p>
-                            </div>
-                            <div class="col-1">
-                                <h5>{{ gameRow.5 }}/10<i class="fa-solid fa-star text-warning"></i></h5>
+                            <div class="col-sm-9">
+                                <p>{{ eval.date_created }}</p>
                             </div>
                         </div>
                     </li>

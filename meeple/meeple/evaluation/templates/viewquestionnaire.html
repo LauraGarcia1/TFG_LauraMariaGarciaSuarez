@@ -8,6 +8,54 @@
     {% endblock overflow %}
 
     {% block body %}
+    <div id="infoGame" class="modal information">
+        <div class="d-flex justify-content-center align-items-center" style="height: 100vh; padding-top: 5%;">
+            <div class="position-relative info-content p-5 border-1 m-auto">
+                <span class="close" onclick="closeInformation()">&times;</span>
+    
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="infoImage" src="" class="img-fluid p-3" draggable="false">
+                    </div>
+                    <div class="col-md-8">
+                        <h2 id="infoTitle"></h2>
+                        <p id="infoKeys" style="word-wrap: break-word;">{% trans "Loading" %}...</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p id="infoDescription"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeNotification()">&times;</span>
+            <h5>{% trans "HelpfulInfoStudy" %}</h5>
+        </div>
+    </div>
+    <form action="" method="post">
+    {% csrf_token %}
+    <div id="finish" class="modal">
+        <div class="modal-content info-content">
+            <h2>{% trans "CreatorPtOne" %} &hearts; </h2>
+            <br>
+            <div class="form-control form-rounded">
+                <h5>{% trans "CreatorPtTwo" %}</h5>
+                <br>
+                <div class="d-flex flex-column flex-md-row justify-content-between custom-width mx-auto">
+                    <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 mb-3"
+                        value="moreEvals" name="button">{% trans "CreatorButtonPtOne" %}</button>
+                    <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 mb-3" value="exit"
+                        name="button">{% trans "CreatorButtonPtTwo" %}</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <div class="position-relative custom-container">
         <div class="position-absolute top-0 start-0">
             <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
@@ -24,49 +72,35 @@
             <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme m-auto">
                 <!-- Form de Questionnaire -->
 
-                <div class="row align-items-center">
+                <div class="row align-items-center mb-2">
                     <div class="col-md-10">
-                        <h2>{% trans "Questionnaire" %}</h2>
+                        <h2>{{ questionnaire_name }}</h2>
+                        {{ questionnaire_description }} <i class="bi bi-info-circle" onclick="openNotification()"></i>
                     </div>
                     <div class="col-md-2 d-flex justify-content-end">
-                        <form method="GET" action="{% url 'list-questionnaires' %}" class="d-inline">
-                            {% csrf_token %}
-                            <button class="btn btn-close" aria-label="Close"></button>
-                        </form>
+                        <a href="{% url 'list-questionnaires' %}" class="btn btn-close" aria-label="Close"></a>
+
                     </div>
                 </div>
 
-                <div id="questionnaire-form">
-                    {{ questionnaire.as_p }}
-                </div>
-
-                <h3 class="pt-3">{% trans "Sections" %}</h3>
-                <form action="" method="post">
-                    {% csrf_token %}
                     <div id="sections-container">
                         {% for section, data in sections_dict.items %}
                         <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body m-auto mb-3">
                             <div class="section-form">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
-                                        <h3 class="m-0">{% trans "Section" %}</h3>
-                                    </div>
-                                    <div class="col">
-                                        {{ section.as_p }}
+                                        <h3 class="m-0">{{ section }}</h3>
                                     </div>
                                 </div>
                                 <!-- Contenedor para las preguntas de esta sección -->
                                 <div class="questions-container">
                                     <!-- Se agregarán los formularios de preguntas aquí -->
-                                    <div
-                                        class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme m-auto mt-3">
-                                        <h4>{% trans "Question" %}s</h4>
                                         <div class="question-form">
                                             <div class="container m-auto">
                                                 <div class="row align-items-stretch">
                                                     <!-- Columna 1: Imagen -->
                                                     <div class="col-lg-3 col-md-12 mb-3 text-center d-flex flex-column justify-content-center h-100">
-                                                        <img src="{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg" class="img-fluid rounded shadow-lg" alt="Juego de mesa">
+                                                        <img src="{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg" class="img-fluid rounded shadow-lg" alt="Juego de mesa" onclick="openInformation('{{ data.game }}', '{{ data.game }}', '{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg')">
                                                     </div>
                                             
                                                     <!-- Columna 2: Preguntas y Opciones -->
@@ -74,8 +108,9 @@
                                                         {% for question, choices in data.questions.items %}
                                                         <div class="row mb-3">
                                                             <!-- Pregunta -->
-                                                            <div class="col-lg-4 col-md-12 fw-bold">
+                                                            <div class="col-lg-4 col-md-12 fw-bold mb-3">
                                                                 {{ question.question_text }}
+                                                                <input type="hidden" id="{{ question.instance.id }}" name="{{ question.instance.id }}" value="{{ data.game }}">
                                                             </div>
                                             
                                                             <!-- Opciones -->
@@ -128,7 +163,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -136,14 +170,24 @@
                     </div>
                 
                     <input type="hidden" id="selections" name="selections" value="">
-                    <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50 mt-auto" name="button"
-                        id="button" value="newrecommendation">{% trans "PreferencesSubmitButton" %}</button>
-                </form>
+                    <button type="button" class="btn btn-primary rounded-pill btn-terracota w-50 mt-auto" name="button"
+                        id="button" value="newrecommendation" onclick="sendRecomOpenInfo()">{% trans "PreferencesSubmitButton" %}</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+        </form>
 
     <script>
+        // Función para abrir la ventana de agradecimiento
+        function sendRecomOpenInfo() {
+            document.getElementById("finish").style.display = "block";
+        }
+
+        // Función para cerrar la ventana de agradecimiento
+        function closeInformation() {
+            document.getElementById("finish").style.display = "none";
+        }
+
         function toggleActive(button) {
             // Verificar si el botón ya tiene la clase 'active'
             if (button.classList.contains('active')) {
@@ -309,6 +353,74 @@
             
             // Log the updated hidden input value
             console.log("Hidden input value updated:", document.getElementById('selections').value);
+        }
+
+        // Función para hacer la consulta y obtener la información de los juegos
+        function getDataGame(idGame) {
+            // Validar que el ID sea un número antes de enviarlo al servidor
+            if (!idGame || isNaN(idGame)) {
+                document.getElementById('infoDescription').innerHTML = "There is not information.";
+                return;
+            }
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'get_data_game' %}",
+                data: {id: idGame},
+                headers: {
+                    "X-CSRFToken": document.querySelector("meta[name='csrf-token']").getAttribute("content")
+                },
+                success: function(response) {
+                    if (response.error) {
+                        document.getElementById("infoKeys").textContent = "";
+                        document.getElementById("infoDescription").textContent = "There is not information.";
+                    } else {
+                        document.getElementById("infoKeys").textContent = response.categories + " " + response.types + " " + response.contexts;
+                        document.getElementById("infoDescription").textContent = response.description;
+                    }
+                },
+                error: function() {
+                    document.getElementById("infoKeys").textContent = "Internal error.";
+                }
+            });
+        }
+
+        // Función para abrir la ventana de información del juego
+        function openInformation(id, title, imageUrl) {
+            document.getElementById("infoGame").style.display = "block";
+        
+            document.getElementById("infoTitle").textContent = title;
+            document.getElementById("infoImage").src = imageUrl;
+            getDataGame(id)
+        }
+
+        // Función para abrir el modal
+        function openNotification() {
+            document.getElementById("myModal").style.display = "block";
+        }
+
+        // Función para cerrar la ventana de información del juego
+        function closeInformation() {
+            document.getElementById("infoGame").style.display = "none";
+            document.getElementById("infoKeys").textContent = "{% trans "Loading" %}...";
+            document.getElementById("infoDescription").textContent = "";
+        }
+
+        // Función para cerrar el modal
+        function closeNotification() {
+            document.getElementById("myModal").style.display = "none";
+        }
+
+        // Cerrar el modal si se hace clic fuera de él
+        window.onclick = function (event) {
+            var modal = document.getElementById("myModal");
+            var info = document.getElementById("infoGame");
+            if (event.target == modal) {
+                closeNotification();
+            }
+            if (event.target == info) {
+                closeInformation();
+
+            }
         }
 
     </script>

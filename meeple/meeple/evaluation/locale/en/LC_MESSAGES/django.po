@@ -426,6 +426,10 @@ msgstr "Welcome"
 msgid "Login"
 msgstr "Login"
 
+#: evaluation/templates/mystudies.html:24
+msgid "InformationGameView"
+msgstr "Here goes the information about the game."
+
 #: evaluation/templates/mystudies.html:28
 msgid "StudiesButtom"
 msgstr "Create study"
@@ -433,6 +437,10 @@ msgstr "Create study"
 #: evaluation/templates/mystudies.html:35
 msgid "MyStudies"
 msgstr "My Studies"
+
+#: evaluation/templates/mystudies.html:38
+msgid "HelpfulInfoStudy"
+msgstr "Click on the images to learn more about the board games!"
 
 #: evaluation/templates/mystudies.html:39
 msgid "Study Name"

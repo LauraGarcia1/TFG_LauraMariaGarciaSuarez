@@ -97,7 +97,7 @@ class Interaction(models.Model):
         (5, 'Very likely'),
     ]
     evaluation = models.ForeignKey('Evaluation', on_delete=models.CASCADE, null=False, related_name='answers')
-    gamerecommended = models.ForeignKey('GameRecommended', on_delete=models.CASCADE, null=False)
+    recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False)
     interested = models.IntegerField(choices=INTEREST_CHOICES, default=3)
     buyorrecommend = models.IntegerField(choices=GENERAL_CHOICES, default=3)
     preference = models.BooleanField(default=False)
@@ -106,7 +106,7 @@ class Interaction(models.Model):
     influences = models.JSONField(default=list)
 
     def __str__(self):
-        return f"Evaluation for {self.gamerecommended}"
+        return f"Evaluation for"
     
     def add_influences(self, add_influences):
         INFLUENCE_CHOICES = {
@@ -147,6 +147,7 @@ class Questionnaire(models.Model):
     user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     uploaded = models.BooleanField(default=False)
+    algorithm = models.ForeignKey(Algorithm, related_name='algorithm', on_delete=models.SET_NULL, null=True)
     language = models.CharField(
         max_length = 10,
         choices = [
@@ -162,7 +163,6 @@ class Questionnaire(models.Model):
 
 class Section(models.Model):
     questionnaire = models.ForeignKey(Questionnaire, related_name='sections', on_delete=models.CASCADE)
-    algorithm = models.ForeignKey(Algorithm, related_name='algorithm', on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
@@ -234,7 +234,7 @@ class Answer(models.Model):
 
 class Recommendation(models.Model):
     algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
-    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+    game = models.ForeignKey('Game', on_delete=models.SET_NULL, null=True)
     # TODO: Cambiar parámetros en el diagrama
     metrics = models.JSONField(default=list)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -246,14 +246,7 @@ class Recommendation(models.Model):
         self.metrics.extend(new_metrics)
         self.save()
 
-class GameRecommended(models.Model):
-    recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False, related_name="games")
-    game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
-
-    def __str__(self):
-        return f"{self.recommendation} {self.game}"
-
-class Game(models.Model): # ??
+class Game(models.Model):
     id_BGG = models.IntegerField(default=0)
 
     def __str__(self):
@@ -261,14 +254,10 @@ class Game(models.Model): # ??
 
 class Evaluation(models.Model):
     # INFO: una evaluacion no debería tener recomendaciones que le ha gustado al participante
-    algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
-    #game = models.ForeignKey('Game', on_delete=models.CASCADE, null=False)
     recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
     puntuation = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
-    #results = models.TextField()
-    #metrics = models.JSONField(default=list)
 
     def __str__(self):
         return f"Evaluation by {self.user} from recommendation {self.recommendation}"

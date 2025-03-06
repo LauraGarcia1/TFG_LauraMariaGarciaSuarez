@@ -5,292 +5,273 @@
 {% block overflow %}
 
 <body style="overflow-x: hidden;">
+
     {% endblock overflow %}
 
     {% block body %}
-    <div class="position-relative custom-container">
-        <div class="position-absolute top-0 start-0">
-            <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
-                style="transform: rotate(64deg);">
-        </div>
 
-        <div class="position-absolute bottom-0 end-0">
-            <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
-                style="transform: rotate(31deg);">
-        </div>
+    <form action="" method="post">
+        {% csrf_token %}
 
-        <div class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-            <!-- Form de Questionnaire -->
-            <h1>{% trans "CreateStudyTitle" %}</h1>
-            <form action="" method="post">
-                <div class="row p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
-                    {% csrf_token %}
-                    <div id="questionnaire-form">
-                        {{ questionnaire_form.as_p }}
+        <div id="finish" class="modal">
+            <div class="modal-content info-content">
+                <h2>{% trans "CreatorPtOne" %} &hearts; </h2>
+                <br>
+                <div class="form-control form-rounded">
+                    <h5>{% trans "CreatorPtTwo" %}</h5>
+                    <br>
+                    <div class="d-flex flex-column flex-md-row justify-content-between custom-width mx-auto">
+                        <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 mb-3"
+                            value="moreEvals" name="button">{% trans "CreatorButtonPtOne" %}</button>
+                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 mb-3" value="exit"
+                            name="button">{% trans "CreatorButtonPtTwo" %}</button>
                     </div>
-                    <button id="create-section-btn" class="btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateSection" %}</button>
-                    <button id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
 
-                    <h3 class="pt-3">{% trans "Sections" %}</h3>
-                    {{ section_formset.management_form }}
-                    <div id="sections-container">
-                        <!-- Secciones que se añaden dinámicamente -->
-                        <script type="text/template" id="section-template">
-                            <div class="section-form" data-index="__index__">
-                                <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body mb-3">
-                                <h3>{% trans "Section" %}</h3>
-                                    {% for form in section_formset %}
-                                    <div>
-                                        {{ form.as_p }}
-                                        <p>
-                                            <label for="id_sections-0-DELETE">Eliminar:</label>
-                                            <input type="checkbox" name="sections-0-DELETE" id="id_sections-0-DELETE">
-                                            <input type="hidden" name="sections-0-section" id="id_sections-0-section">
-                                            <input type="hidden" name="sections-0-id" id="id_sections-0-id">
-                                        </p>
-                                    </div>
-                                    <button class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
-                                    <button id="del-questions-0-btn" class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
-                                    {{ question_formset.management_form }}
-                                    <!-- Contenedor para las preguntas de esta sección -->
-                                        <div class="questions-container">
-                                            <!-- Se agregarán los formularios de preguntas aquí -->
-                                            <script type="text/template" id="question-template">
-                                                <div class="question-form" data-index="__qindex__" data-section-index="__section_index__">
-                                                    <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme mt-3">
-                                                    <h4>{% trans "Question" %}</h4>
-                                                    {% for form_q in question_formset %}
-                                                    <div>
-                                                        {{ form_q.as_p }}
-                                                    </div>
-                                                    <button class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
-                                                    <button class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
-                                                    {{ choice_formset.management_form }}
-                                                    <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body mt-3">
-                                                        <h4>{% trans "Choices" %}</h4>
-                                                        <div class="choices-container">
-                                                        <!-- Se agregarán los formularios de preguntas aquí -->
-                                                            <script type="text/template" id="choice-template">
-                                                                {% for form_c in choice_formset %}
-                                                                <div class="choice-form" data-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
-                                                                    {{ form_c.as_p }}
-                                                                </div>
-                                                                {% endfor %}
-                                                            </script>
+                </div>
+            </div>
+        </div>
+
+        <div class="position-relative custom-container">
+            <div class="position-absolute top-0 start-0">
+                <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+                    style="transform: rotate(64deg);">
+            </div>
+
+            <div class="position-absolute bottom-0 end-0">
+                <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
+                    style="transform: rotate(31deg);">
+            </div>
+
+            <div
+                class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+
+                <ul class="list-group list-group-flush">
+                    <h2>{% trans "NewRecommendationTitle" %}</h2>
+                    <h4>{% trans "PreferencesTitle" %}</h4>
+                    <div style="width: 100%; text-align: center;">
+                        {% for preference in preferences_part %}
+                        <span
+                            style="display: inline-block; background-color: #d3d3d3; border: 2px solid #a9a9a9; margin: 5px; padding: 5px;">
+                            {{ preference }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    <hr>
+
+
+                    {% for gameRow in zacatrus_games %}
+                    <li class="list-group-item">
+                        <div class="row w-100">
+                            <div class="col-12 col-sm-3">
+                                <img src="{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg" alt="Image"
+                                    class="img-fluid">
+                            </div>
+                            <div class="col-12 col-sm-1"><br></div>
+                            <div class="col-12 col-sm-8 ">
+                                <div style="max-width: 100%; overflow-x: auto;">
+                                    <div class="d-flex flex-wrap">
+                                        <h4>{{ gameRow.1 }} <i class="bi bi-info-circle"
+                                                onclick="openNotification()"></i></h4>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <p>{% trans "Q1 recomm" %}</p>
+
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <select class="form-control"
+                                                                id="firstquestion-{{ gameRow.0 }}">
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                                <option value="4">4</option>
+                                                                <option value="5">5</option>
+                                                            </select>
                                                         </div>
-                                                    </div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                            </script>
-                                        </div>
-                                    {% endfor %}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>{% trans "Q2 recomm" %}</p>
+
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <select class="form-control"
+                                                                id="secondquestion-{{ gameRow.0 }}">
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                                <option value="4">4</option>
+                                                                <option value="5">5</option>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>{% trans "Q3 recomm" %}</p>
+
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="thirdquestion-{{ gameRow.0 }}" name="boolean">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>{% trans "Q4 recomm" %}</p>
+
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <textarea class="form-control"
+                                                                id="fourthquestion-{{ gameRow.0 }}" rows="4"
+                                                                placeholder="{% trans 'textfield' %}"></textarea>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>{% trans "Q5 recomm" %}</p>
+
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="1">
+                                                            <label class="form-check-label"
+                                                                for="fifthquestion-{{ gameRow.0 }}">
+                                                                {% trans "Q5 choice 1" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="2">
+                                                            <label class="form-check-label"
+                                                                for="fifthquestion-{{ gameRow.0 }}">
+                                                                {% trans "Q5 choice 2" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="3">
+                                                            <label class="form-check-label" for="3">
+                                                                {% trans "Q5 choice 3" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="4">
+                                                            <label class="form-check-label" for="4">
+                                                                {% trans "Q5 choice 4" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="5">
+                                                            <label class="form-check-label" for="5">
+                                                                {% trans "Q5 choice 5" %}
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="fifthquestion-{{ gameRow.0 }}" value="6">
+                                                            <label class="form-check-label" for="6">
+                                                                {% trans "Q5 choice 6" %}
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                        </script>
-                    </div>
-                
-                    <div class="d-flex justify-content-center dflex-custom">
-                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza button-custom">{% trans "StudiesButtom" %}</button>
-                        <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota button-custom ms-2">{% trans "ReturnToStudyList" %}</a>
-                    </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="d-flex justify-content-end">
+                    <input type="hidden" id="selections" name="selections" value="">
+                    <button type="button" class="btn btn-primary rounded-pill btn-terracota w-50 br-0" id="submitButton"
+                        onclick="sendRecomOpenInfo()">{% trans "SendEval" %}</button>
                 </div>
-            </form>
-        </div>
+            </div>
+    </form>
     </div>
-    
 
     <script>
-        $(document).ready(function () {
-            // Función para comprobar que los campos del cuestionario tienen datos
-            function checkQuestionnaireFields() {
-                var name = $("#id_name").val().trim();
-                var lang = $("#id_language").val().trim();
-                if (name !== "" && lang !== "") {
-                    $("#create-section-btn").prop("disabled", false);
-                } else {
-                    $("#create-section-btn").prop("disabled", true);
-                }
+        // Función para abrir la ventana de agradecimiento
+        function sendRecomOpenInfo() {
+            saveAllResponses()
+            document.getElementById("finish").style.display = "block";
+        }
+
+        // Función para cerrar la ventana de agradecimiento
+        function closeInformation() {
+            document.getElementById("finish").style.display = "none";
+        }
+
+        // Cerrar la ventana flotante si se hace clic fuera de él
+        window.onclick = function (event) {
+            var finish = document.getElementById("finish");
+            if (event.target == finish) {
+                closeInformation();
             }
-            // Escuchar cambios en los inputs y textarea del cuestionario
-            $("#questionnaire-form input, #questionnaire-form textarea").on("input", checkQuestionnaireFields);
+        }
 
-            // Variable para llevar el índice de secciones
-            var sectionIndex = 0;
+        function saveAllResponses() {
+            // Selecciona todas las filas del tbody
+            const rows = document.querySelectorAll('tbody tr');
+            const selections = {};
 
-            // Al pulsar "Crear Sección" se añade una nueva sección
-            $("#create-section-btn").click(function (e) {
-                e.preventDefault();
-                var sectionTemplate = $("#section-template").html();
-                var newSectionHtml = sectionTemplate.replace(/__index__/g, sectionIndex);
-                $("#sections-container").append(newSectionHtml);
-                sectionIndex++;
+            rows.forEach(row => {
+                // Obtén todos los inputs/selects/checkboxes en la fila
+                const inputs = row.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    // Obtén el nombre dinámico y su valor
+                    const id_input = input.id;
 
-                var totalFormsInput = $("input[name='sections-TOTAL_FORMS']");
-                totalFormsInput.val(sectionIndex);
+                    // Extrae el ID del elemento (gameRow.0)
+                    const idMatch = id_input.match(/-(.+)/);
+                    if (idMatch) {
+                        const id = idMatch[1];
 
-                var newSection = $("#sections-container .section-form").last();
-                newSection.find("input[id^='id_sections-']").each(function() {
-                    var $input = $(this);
-                    var currentName = $input.attr('name');
-                    var currentId = $input.attr('id');
-                    // Reemplazar el índice de 'sections-0' a 'sections-<sectionIndex>'
-                    var newName = currentName.replace(/sections-\d+/, "sections-" + (sectionIndex - 1));
-                    var newId = currentId.replace(/sections-\d+/, "sections-" + (sectionIndex - 1));
+                        // Si aún no existe el id, inicializa su entrada en el objeto
+                        if (!selections[id]) {
+                            selections[id] = {};
+                        }
 
-                    // Asignar los nuevos name e id al input
-                    $input.attr('name', newName);
-                    $input.attr('id', newId);
+                        // Manejo especial para checkboxes
+                        if (input.type === 'checkbox' && input.name != 'boolean') {
+                            if (!selections[id][id_input.split('-')[0]]) {
+                                selections[id][id_input.split('-')[0]] = [];
+                            }
+                            if (input.checked) {
+                                selections[id][id_input.split('-')[0]].push(input.value);
+                            }
+                        } else {
+                            // Para otros tipos de input (select, textarea, etc.)
+                            selections[id][id_input.split('-')[0]] = input.type === 'checkbox' ? input.checked : input.value;
+                        }
+                    }
                 });
-                newSection.find("button[id^='del-questions-0-btn']").each(function() {
-                    var $button = $(this);
-                    var currentId = $button.attr('id');
-                    // Reemplazar el índice 0 en el ID con el nuevo índice dinámico
-                    var newId = currentId.replace(/del-questions-\d+-btn/, "del-questions-" + (sectionIndex - 1) + "-btn");
-                    $button.attr('id', newId);
-                });
             });
 
-            // Delegar evento: cuando se escriba en el título de la sección, habilitar el botón "Añadir Pregunta" si hay texto.
-            $(document).on("input", ".section-form input[id^='id_sections-']", function () {
-                var $sectionForm = $(this).closest(".section-form");
-                var titleVal = $(this).val().trim();
-                if (titleVal !== "") {
-                    $sectionForm.find(".add-question-btn").prop("disabled", false);
-                } else {
-                    $sectionForm.find(".add-question-btn").prop("disabled", true);
-                }
-            });
+            // Muestra el JSON en consola para verificar
+            // console.log('Respuestas guardadas:', JSON.stringify(responses));
+            document.getElementById('selections').value = JSON.stringify(selections);
+        }
 
-            $(document).on("input", ".section-form input[id$='-DELETE']", function () {
-                var $sectionForm = $(this).closest(".section-form");
-                var titleVal = $(this).val().trim();
-                if (titleVal !== "") {
-                    $sectionForm.find(".add-question-btn").prop("disabled", false);
-                } else {
-                    $sectionForm.find(".add-question-btn").prop("disabled", true);
-                }
-            });
 
-            // Delegar evento: al pulsar "Añadir Pregunta" en una sección, añadir un formulario de pregunta
-            $(document).on("click", ".add-question-btn", function (e) {
-                e.preventDefault();
-                var $sectionForm = $(this).closest(".section-form");
-                // Obtener el índice de la sección desde el atributo data-index
-                var sindex = $sectionForm.attr("data-index");
-                // Contar las preguntas existentes en esa sección para determinar el índice de la nueva pregunta
-                var qCount = $sectionForm.find(".questions-container .question-form").length;
-                // Obtener la plantilla del formulario de pregunta
-                var questionTemplate = $("#question-template").html();
-                var newQuestionHtml = questionTemplate.replace(/__section_index__/g, sindex).replace(/__qindex__/g, qCount).replace(/questions-\d+/g, "questions-" + qCount + "-" + sindex);
+    </script>
 
-                var totalFormsInput = $("input[name='questions-TOTAL_FORMS']");
-                totalFormsInput.val(parseInt(qCount)+1);
-                
-                // Añadir el nuevo formulario al contenedor de preguntas de esa sección
-                $sectionForm.find(".questions-container").append(newQuestionHtml);
-            });
-
-            // Delegar evento: cuando se escriba en el título de la sección, habilitar el botón "Añadir Choice" si hay texto.
-            $(document).on("input", ".question-form input[id^='id_questions-']", function () {
-                var $sectionForm = $(this).closest(".question-form");
-                var titleVal = $(this).val().trim();
-                if (titleVal !== "") {
-                    $sectionForm.find(".add-choice-btn").prop("disabled", false);
-                } else {
-                    $sectionForm.find(".add-choice-btn").prop("disabled", true);
-                }
-            });
-
-            // Delegar evento: al pulsar "Añadir Choice" en una sección, añadir un formulario de pregunta
-            $(document).on("click", ".add-choice-btn", function (e) {
-                e.preventDefault();
-                var $questionForm = $(this).closest(".question-form");
-                // Obtener el índice de la sección desde el atributo data-section-index
-                var sindex = $questionForm.attr("data-section-index");
-                // Obtener el índice de la sección desde el atributo data-index
-                var qindex = $questionForm.attr("data-index");
-                // Contar las opciones existentes en esa sección para determinar el índice de la nueva pregunta
-                var cCount = $questionForm.find(".choices-container .choice-form").length;
-                // Obtener la plantilla del formulario de opción
-                var choiceTemplate = $("#choice-template").html();
-                var newChoiceHtml = choiceTemplate.replace(/__cindex__/g, cCount).replace(/__sindexc__/g, sindex).replace(/__qindexc__/g, qindex).replace(/choices-\d+/g, "choices-" + cCount + "-" + sindex + "-" + qindex);
-
-                var totalFormsInput = $("input[name='choices-TOTAL_FORMS']");
-                totalFormsInput.val(parseInt(cCount)+1);
-
-                // Añadir el nuevo formulario al contenedor de opciones de esa sección
-                $questionForm.find(".choices-container").append(newChoiceHtml);
-            });
-
-            // FUNCIONES DE ELIMINACIÓN DE ELEMENTOS
-            // Función para habilitar o deshabilitar el botón de "Eliminar" según si hay checkboxes seleccionados
-            function toggleDeleteButtonSection() {
-                var deleteButton = $("#delete-sections-btn");
-                // Comprobamos si al menos un checkbox de eliminación está marcado
-                var hasChecked = $("input[id^='id_sections-'][id$='-DELETE']:checked").length > 0;
-                deleteButton.prop("disabled", !hasChecked);
-            }
-
-            // Escuchamos los cambios en los checkboxes de eliminación
-            $(document).on("change", "input[id^='id_sections-'][id$='-DELETE']", function () {
-                toggleDeleteButtonSection(); // Revisa si hay checkboxes seleccionados
-            });
-
-            // Al pulsar el botón de "Eliminar Secciones"
-            $("#delete-sections-btn").click(function (e) {
-                e.preventDefault();
-
-                // Encontramos todas las secciones cuyo checkbox de eliminación está marcado
-                $("input[id^='id_sections-'][id$='-DELETE']:checked").each(function () {
-                    var sectionCheckbox = $(this);
-                    var sectionForm = sectionCheckbox.closest(".section-form");
-                    // Eliminar el formulario de la sección y sus preguntas y opciones
-                    sectionForm.remove();
-                });
-
-                // Después de eliminar las secciones, deshabilitamos el botón de eliminación
-                toggleDeleteButtonSection();
-            });
-
-            // Función para habilitar o deshabilitar el botón de "Eliminar" según si hay checkboxes seleccionados
-            function toggleDeleteButtonQuestion(section) {
-                button = $("button[id^='del-questions-" + section + "-btn']");
-                // Comprobamos si al menos un checkbox de eliminación está marcado en los formularios de preguntas
-                var hasChecked = $("input[id^='id_questions-'][id$='-DELETE']:checked").length > 0;
-                button.prop("disabled", !hasChecked);
-            }
-
-            // Escuchamos los cambios en los checkboxes de eliminación dentro de los formularios de preguntas
-            $(document).on("change", "input[id^='id_questions-'][id$='-DELETE']", function () {
-                var checkboxId = $(this).attr("id");
-                var regex = /^id_questions-(\d+)-(\d+)-DELETE$/;
-                var match = checkboxId.match(regex);
-                toggleDeleteButtonQuestion(match[2]); // Revisa si hay checkboxes seleccionados
-            });
-
-            // Al pulsar el botón de "Eliminar Preguntas"
-            $("#delete-questions-btn").click(function (e) {
-                e.preventDefault();
-
-                // Encontramos todas las preguntas cuyo checkbox de eliminación está marcado
-                $("input[id^='id_questions-'][id$='-DELETE']:checked").each(function () {
-                    var questionCheckbox = $(this);
-                    var questionForm = questionCheckbox.closest(".question-form");
-                    // Eliminar el formulario de la pregunta y sus opciones
-                    questionForm.remove();
-                });
-                
-                var checkboxId = $(this).attr("id");
-                var regex = /^id_questions-(\d+)-(\d+)-DELETE$/;
-                var match = checkboxId.match(regex);
-
-                // Después de eliminar las preguntas, deshabilitamos el botón de eliminación
-                toggleDeleteButtonQuestion(match[2]);
-            });
-
-        });
-
-        </script>
 
     {% endblock body %}

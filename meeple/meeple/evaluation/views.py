@@ -13,7 +13,7 @@ from django.views.generic.list import ListView
 from django.utils.translation import gettext_lazy as _
 from django.utils import translation
 from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnaireForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
-from .models import Preference, User, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation,  GameRecommended, Interaction, Section
+from .models import Preference, User, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation, Interaction, Section
 import json
 import random
 
@@ -296,6 +296,9 @@ def edit_study(request, pk):
         questionnaire.name = request.POST.get('name')
         questionnaire.description = request.POST.get('description')
         questionnaire.language = request.POST.get('language')
+        questionnaire.algorithm = Algorithm.objects.get(id=request.POST.get('algorithm'))
+
+        questionnaire.save()
 
         if questionnaire:
             # Comprobamos si hay objetos a eliminar y de ser así se eliminan
@@ -439,12 +442,6 @@ def upload_study(request, pk):
 def view_study(request, pk):
     # Obtener el cuestionario
     questionnaire = get_object_or_404(Questionnaire, id=pk, user=User.objects.get(id=request.session.get('userid')))
-    
-    # Crear el formulario del cuestionario y deshabilitar los campos
-    questionnaire_form = QuestionnaireForm(instance=questionnaire)
-    for field in questionnaire_form.fields.values():
-        field.widget.attrs['readonly'] = 'readonly'
-        field.widget.attrs['disabled'] = 'disabled'
 
     # Crear el diccionario de secciones y preguntas con sus elecciones
     sections_dict = {}
@@ -469,15 +466,11 @@ def view_study(request, pk):
 
             question_forms[question_form] = choice_forms
         
-        section_form = SectionForm(instance=section)
-        for field in section_form.fields.values():
-            field.widget.attrs['readonly'] = 'readonly'
-            field.widget.attrs['disabled'] = 'disabled'
-
-        sections_dict[section_form] = question_forms
+        sections_dict[section.title] = question_forms
     
     return render(request, 'viewstudy.html', {
-        'questionnaire_form': questionnaire_form,
+        'questionnaire_name': questionnaire.name,
+        'questionnaire_description': questionnaire.description,
         'sections_dict': sections_dict,
     })
 
@@ -493,13 +486,12 @@ def recommendPage(request):
     if request.method == "POST":
         if request.POST.get("button") == "newrecommendation":
             return redirect(reverse('list-questionnaires'))
-            # return redirect(reverse('first'))
 
         return redirect(reverse('home'))
 
-    zacatrus_games = get_preferences_games()
+    user_evaluations = Evaluation.objects.filter(user=request.user)
 
-    return render(request, 'myrecommendations.html', {'zacatrus_games': zacatrus_games, 'MEDIA_URL': settings.MEDIA_URL})
+    return render(request, 'myrecommendations.html', {'user_evaluations': user_evaluations, 'MEDIA_URL': settings.MEDIA_URL})
 
 @login_required
 def questions(request):
@@ -532,11 +524,14 @@ def view_questionnaire(request, pk):
     """
 
     if request.method == "POST":
-        print(request.POST, "el cuestionario tiene pk", pk)
-        selections = json.loads(request.POST.get('selections', '{}'))
+        print(request.POST)
+        try:
+            selections = json.loads(request.POST.get('selections', '{}'))
+        except json.JSONDecodeError:
+            return redirect('list-questionnaires')
         questionnaire = Questionnaire.objects.get(id=pk)
+        user = User.objects.get(id=request.session.get('userid'))
         # TODO: validación
-        evaluation = Evaluation()
 
         answers = []
         for question_id, choice_ids in selections.items():
@@ -544,22 +539,24 @@ def view_questionnaire(request, pk):
             # TODO: language no es correcto
             question = Question.objects.get(id=question_id)
             for choice in choice_ids:
-                answer = Answer.objects.create(question=question, choice=Choice.objects.get(id=choice), user=User.objects.get(id=request.session.get('userid')), language=settings.LANGUAGE_CODE)
+                answer = Answer.objects.create(question=question, choice=Choice.objects.get(id=choice), user=user, language=settings.LANGUAGE_CODE)
                 answers.append(answer.choice)
 
-        return redirect('newrecomm')
+        # Creamos una evaluación por cada sección del cuestionario
+        # TODO: parametros
+        for section in questionnaire.sections.all():
+            # TODO: obtener el id del game de alguna manera
+            recommendation = Recommendation.objects.create(game=request.POST.get(f"game-{section.id}", "").strip() or None, algorithm=None)
+            # TODO: Guardar todas las respuestas del usuario en la evaluación
+            Evaluation.objects.create(recommendation=recommendation, user=user, puntuation=0.0)
+
+        return redirect('list-questionnaires')
         
     # Obtener el cuestionario
     questionnaire = get_object_or_404(Questionnaire, id=pk)
 
     # Revisar que el cuestionario está subido/validado
     if questionnaire.uploaded:
-        # Crear el formulario del cuestionario y deshabilitar los campos
-        questionnaire_form = QuestionnaireForm(instance=questionnaire)
-        for field in questionnaire_form.fields.values():
-            field.widget.attrs['readonly'] = 'readonly'
-            field.widget.attrs['disabled'] = 'disabled'
-
         # Crear el diccionario de secciones y preguntas con sus elecciones
         sections_dict = {}
         for section in questionnaire.sections.all():
@@ -578,11 +575,6 @@ def view_questionnaire(request, pk):
                 choice_forms = [ChoiceForm(instance=choice) for choice in choices]
 
                 question_forms[question_form] = choice_forms
-            
-            section_form = SectionForm(instance=section)
-            for field in section_form.fields.values():
-                field.widget.attrs['readonly'] = 'readonly'
-                field.widget.attrs['disabled'] = 'disabled'
 
             # Obtener todas las categorías
             categories_tuples = Preference.objects.values_list('category', flat=True)
@@ -595,15 +587,16 @@ def view_questionnaire(request, pk):
             unique_categories = list(set(cat for cat in categories_list if cat.strip()))
 
             # Obtener el juego del algoritmo
-            assigned_game = execute_algorithm(code=section.algorithm.code, user=User.objects.get(id=request.session.get('userid')), responses=unique_categories)
+            assigned_game = execute_algorithm(code=questionnaire.algorithm.code, user=User.objects.get(id=request.session.get('userid')), responses=unique_categories)
 
-            sections_dict[section_form] = {
+            sections_dict[section.title] = {
                 'questions': question_forms,
                 'game': assigned_game
             }
 
         return render(request, 'viewquestionnaire.html', {
-            'questionnaire_form': questionnaire_form,
+            'questionnaire_name': questionnaire.name,
+            'questionnaire_description': questionnaire.description,
             'sections_dict': sections_dict,
             'MEDIA_URL': settings.MEDIA_URL
         })
@@ -630,54 +623,6 @@ def get_data_questions():
     }
 
     return questions_and_choices
-
-@login_required
-def newRecomm(request, answers=None):
-    """
-        Función que muestra la página de las recomendaciones
-
-        Autor: Laura Mª García Suárez
-    """
-    
-    answers = request.session.get('answers', [])
-    request.session.pop('answers', None)
-
-    zacatrus_games = get_preferences_games()
-
-    if request.method == "POST":
-        selections = json.loads(request.POST.get('selections', '{}'))
-
-        # TODO: como obtengo la puntuacion
-        puntuation = 5
-        evaluation = Evaluation.objects.create(algorithm=Algorithm.objects.get(id=1), recommendation=Recommendation.objects.get(
-            id=request.session.get('recommendation')), user=User.objects.get(id=request.session.get('userid')), puntuation=puntuation)
-
-        for id_game, list_values in selections.items():
-            interaction = Interaction.objects.create(evaluation=evaluation, gamerecommended=GameRecommended.objects.get(recommendation=request.session['recommendation'], game=Game.objects.get(
-                id_BGG=int(id_game))), interested=list_values["firstquestion"], buyorrecommend=list_values["secondquestion"], text=list_values["thirdquestion"], moreoptions=list_values["fourthquestion"])
-            interaction.add_influences(list_values["fifthquestion"])
-
-        if request.POST.get("button") == "exit":
-            request.session.pop('recommendation', None)
-            return redirect(reverse('list-questionnaires'))
-        elif request.POST.get("button") == "moreEvals":
-            request.session.pop('recommendation', None)
-            # TODO: Guardar zacatrus_games?
-            return render(request, 'newrecommendations.html', {'zacatrus_games': zacatrus_games, 'MEDIA_URL': settings.MEDIA_URL, 'preferences_part': answers})
-
-    recommendation = Recommendation.objects.create(algorithm=Algorithm.objects.first(
-    ), user=User.objects.get(id=request.session['userid']))
-    recommendation.add_metrics(answers)
-
-    request.session['recommendation'] = recommendation.id
-
-    # TODO: Generar los juegos de recomendación desde las respuestas
-    for game in zacatrus_games:
-        GameRecommended.objects.create(recommendation=Recommendation.objects.get(id=request.session.get(
-            'recommendation')), game=Game.objects.get_or_create(id_BGG=int(game[0]))[0])
-    # TODO: Guardar datos del algoritmo
-
-    return render(request, 'newrecommendations.html', {'zacatrus_games': zacatrus_games, 'MEDIA_URL': settings.MEDIA_URL, 'preferences_part': answers})
 
 ###### FUNCIONES GENERALES
 

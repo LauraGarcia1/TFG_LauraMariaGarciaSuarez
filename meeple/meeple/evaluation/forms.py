@@ -24,7 +24,7 @@ class SignUpForm(forms.ModelForm):
 class QuestionnaireForm(forms.ModelForm):
     class Meta:
         model = Questionnaire
-        fields = ['name', 'description', 'language']
+        fields = ['name', 'description', 'language', 'algorithm']
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
@@ -34,7 +34,7 @@ class QuestionnaireForm(forms.ModelForm):
 class SectionForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ['title', 'algorithm']
+        fields = ['title']
     
     def clean_title(self):
         title = self.cleaned_data.get('title', '').strip()

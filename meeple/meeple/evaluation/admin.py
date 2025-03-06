@@ -1,6 +1,6 @@
 from django.contrib import admin
 import nested_admin
-from .models import Choice, User, Interaction, Questionnaire, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, GameRecommended, Section
+from .models import Choice, User, Interaction, Questionnaire, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, Section
 
     # Inline para Choices dentro de Questions
 class ChoiceInline(nested_admin.NestedTabularInline):
@@ -51,7 +51,7 @@ class AnswerAdmin(admin.ModelAdmin):
 # Recommendation model
 @admin.register(Recommendation)
 class RecommendationAdmin(admin.ModelAdmin):
-    list_display = ['algorithm', 'user', 'date_created']
+    list_display = ['algorithm', 'game', 'date_created']
     search_fields = ['algorithm__name', 'game__id_BGG']
     list_filter = ['date_created']
 
@@ -71,8 +71,8 @@ class AlgorithmAdmin(admin.ModelAdmin):
 # Evaluation model
 @admin.register(Evaluation)
 class EvaluationAdmin(admin.ModelAdmin):
-    list_display = ['algorithm', 'user', 'puntuation', 'date_created']
-    search_fields = ['algorithm__name', 'game__id_BGG', 'user__username']
+    list_display = ['user', 'puntuation', 'date_created']
+    search_fields = ['game__id_BGG', 'user__username']
     list_filter = ['puntuation', 'date_created']
 
 # Preference model
@@ -92,11 +92,11 @@ class ChoiceAdmin(admin.ModelAdmin):
 # Interaction model
 @admin.register(Interaction)
 class InteractionAdmin(admin.ModelAdmin):
-    list_display = ('evaluation', 'gamerecommended', 'interested', 'buyorrecommend', 'preference', 'influences', 'moreoptions')
+    list_display = ('evaluation', 'interested', 'buyorrecommend', 'preference', 'influences', 'moreoptions')
     list_filter = ('interested', 'buyorrecommend', 'preference', 'influences')
-    search_fields = ('evaluation__id', 'gamerecommended__id', 'moreoptions')
+    search_fields = ('evaluation__id', 'moreoptions')
     list_per_page = 20
-    raw_fields = ('evaluation', 'gamerecommended')
+    raw_fields = ('evaluation')
 
     def get_interested_display(self, obj):
         return obj.get_interested_display()
@@ -124,17 +124,7 @@ class InteractionAdmin(admin.ModelAdmin):
 
     list_display += ('get_interested_display', 'get_buyorrecommend_display', 'influences_display', 'moreoptions_preview')
 
-# GameRecommended model
-@admin.register(GameRecommended)
-class GameRecommendedAdmin(admin.ModelAdmin):
-    list_display = ('recommendation', 'game')
-    search_fields = ('recommendation__id', 'game__name') 
-    list_filter = ('recommendation',)
-
-    def __str__(self):
-        return f"{self.recommendation} - {self.game}"
-
-# GameRecommended model
+# Section model
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     inlines = [QuestionInline]
