@@ -186,7 +186,7 @@ def questionnaires(request):
 
 class StudiesView(LoginRequiredMixin, ListView):
     """
-        Función que muestra la página principal del usuario con rol Evaluador.
+        Función que muestra la página principal del usuario con rol Creador.
 
         Autor: Laura Mª García Suárez
     """
@@ -444,43 +444,44 @@ def upload_study(request, pk):
     """
     questionnaire = get_object_or_404(Questionnaire, pk=pk)
     if not questionnaire.are_fields_filled():
-        print("No tiene todo completo Qa")
+        messages.error(request, _("UploadME1"))
         return redirect('my-studies')
 
     # Comprobamos que el cuestionario tenga una o varias secciones
     sections = questionnaire.sections.all()
     if not sections:
         # En caso de no existir, no se sube el cuestionario
-        print("No tiene secciones")
+        messages.error(request, _("UploadME2"))
         return redirect('my-studies')
     
     # Comprobamos que cada sección tenga una o varias preguntas
     for section in sections:
         if not section.are_fields_filled():
-            print("No tiene todo completo S")
+            messages.error(request, _("UploadME3"))
             return redirect('my-studies')
         
         questions = section.questions.all()
         if not questions:
             # En caso de no existir, no se sube el cuestionario
-            print("No tiene preguntas")
+            messages.error(request, _("UploadME4"))
             return redirect('my-studies')
         
         # Comprobamos que cada pregunta específica tenga una o varias opciones
         for question in questions:
             if not question.are_fields_filled():
-                print("No tiene todo completo Q")
+                messages.error(request, _("UploadME5"))
                 return redirect('my-studies')
             if question.type == "SCRB" or question.type == "MCRB" or question.type == "SCCB" or question.type == "MCCB":
                 # En el caso de deber tener, comprobamos
                 choices = question.choices.all()
                 if not choices:
                     # En caso de no existir, no se sube el cuestionario
-                    print("No tiene opciones")
+                    messages.error(request, _("UploadME6"))
                     return redirect('my-studies')
                 for choice in choices:
                     if not choice.are_fields_filled():
-                        print("No tiene todo completo C")
+                        messages.error(request, _("UploadME7"))
+                        return redirect('my-studies')
 
     # Dada una validación satisfactoria, subimos el cuestionario
     questionnaire.uploaded = True
@@ -538,28 +539,6 @@ def recommendPage(request):
     user_evaluations = Evaluation.objects.filter(user=request.user)
 
     return render(request, 'myrecommendations.html', {'user_evaluations': user_evaluations, 'MEDIA_URL': settings.MEDIA_URL})
-
-@login_required
-def questions(request):
-    """
-        Función que muestra la página de preguntas
-
-        Autor: Laura Mª García Suárez
-    """
-
-    if request.method == "POST":
-        if request.POST.get("button") == "newrecommendation":
-            return redirect(reverse('newrecomm'))
-
-        if request.path == "/questions/2":
-            return render(request, 'question-two.html')
-        elif request.path == "/questions/3":
-            return render(request, 'question-three.html')
-
-    if request.path == "/questions/1":
-        return render(request, 'question-one.html')
-
-    return render(request, 'liststudies.html')
 
 @login_required
 def view_questionnaire(request, pk):

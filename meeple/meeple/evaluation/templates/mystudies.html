@@ -110,6 +110,30 @@
                 </div>
         </div>
 
+    {% if messages %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Retrasar la alerta para que no bloquee el renderizado
+            setTimeout(function () {
+                // Crear una cadena con todos los mensajes para mostrarlos en el alert()
+                var messageText = "";
+
+                {% for message in messages %}
+                    messageText += "{{ message }}\n";  // Agregar cada mensaje a la cadena con salto de línea
+                {% endfor %}
+
+                // Mostrar la alerta con los mensajes después de que la página haya cargado
+                if (messageText !== "") {
+                    alert(messageText);  // Mostrar los mensajes en un alert()
+                }
+            }, 100);  // 100ms de retraso, puedes ajustarlo si necesitas más tiempo
+        });
+    </script>
+    {% endif %}
+    
+    
+    
+
 
     <script>
         function confirmUpload() {
@@ -120,4 +144,4 @@
         }
     </script>
 
-        {% endblock body %}
+    {% endblock body %}

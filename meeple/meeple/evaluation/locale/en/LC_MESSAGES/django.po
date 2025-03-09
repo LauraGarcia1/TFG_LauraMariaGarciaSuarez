@@ -426,6 +426,34 @@ msgstr "Welcome"
 msgid "Login"
 msgstr "Login"
 
+#: evaluation/views.py:447
+msgid "UploadME1"
+msgstr "Missing data in the questionnaire."
+
+#: evaluation/views.py:454
+msgid "UploadME2"
+msgstr "The questionnaire must have at least one section."
+
+#: evaluation/views.py:460
+msgid "UploadME3"
+msgstr "Missing data in the sections."
+
+#: evaluation/views.py:466
+msgid "UploadME4"
+msgstr "Sections must have at least one question."
+
+#: evaluation/views.py:472
+msgid "UploadME5"
+msgstr "Missing data in the questions."
+
+#: evaluation/views.py:479
+msgid "UploadME6"
+msgstr "There are questions that must have at least one option."
+
+#: evaluation/views.py:483
+msgid "UploadME7"
+msgstr "Missing data in the choices."
+
 #: evaluation/templates/mystudies.html:24
 msgid "InformationGameView"
 msgstr "Here goes the information about the game."
