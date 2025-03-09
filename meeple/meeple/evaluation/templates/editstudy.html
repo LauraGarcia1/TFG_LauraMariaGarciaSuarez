@@ -66,25 +66,27 @@
                                                 <input type="hidden" name="questions-id" id="id_questions-id" value="{{ question.instance.id }}">
                                             </p>
                                         </div>
-                                        <div class="button-container mt-3">
-                                            <button class="add-choice-btn btn btn-primary rounded-pill btn-purple">{% trans "CreateChoice" %}</button>
-                                            <button class="del-choices-btn btn btn-danger rounded-pill" id="del-choices-{{ section.instance.id }}-{{ question.instance.id }}-btn" disabled>{% trans "DelChoices" %}</button>
-                                        </div>
-                                        {{ choice_formset.management_form }}
-                                        <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body m-auto mt-3">
-                                            <h4>{% trans "Choices" %}</h4>
-                                            <div class="choices-container">
-                                            <!-- Se agregarán los formularios de preguntas aquí -->
-                                                {% for choice in choices %}
-                                                <div class="choice-form" id="{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}" data-choice-index="{{ choice.instance.id }}" data-section-index="{{ section.instance.id }}" data-question-index="{{ question.instance.id }}">
-                                                    {{ choice.as_p }}
-                                                    <p>
-                                                        <label for="id_choices-{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}-DELETE">Eliminar:</label>
-                                                        <input type="checkbox" name="choices-{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}-DELETE" id="id_choices-{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}-DELETE">
-                                                        <input type="hidden" name="choices-id" id="id_choices-id" value="{{ choice.instance.id }}">
-                                                    </p>
+                                        <div class="has-choices" style="display: none;">
+                                            <div class="button-container mt-3">
+                                                <button class="add-choice-btn btn btn-primary rounded-pill btn-purple">{% trans "CreateChoice" %}</button>
+                                                <button class="del-choices-btn btn btn-danger rounded-pill" id="del-choices-{{ section.instance.id }}-{{ question.instance.id }}-btn" disabled>{% trans "DelChoices" %}</button>
+                                            </div>
+                                            {{ choice_formset.management_form }}
+                                            <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body m-auto mt-3">
+                                                <h4>{% trans "Choices" %}</h4>
+                                                <div class="choices-container">
+                                                <!-- Se agregarán los formularios de preguntas aquí -->
+                                                    {% for choice in choices %}
+                                                    <div class="choice-form" id="{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}" data-choice-index="{{ choice.instance.id }}" data-section-index="{{ section.instance.id }}" data-question-index="{{ question.instance.id }}">
+                                                        {{ choice.as_p }}
+                                                        <p>
+                                                            <label for="id_choices-{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}-DELETE">Eliminar:</label>
+                                                            <input type="checkbox" name="choices-{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}-DELETE" id="id_choices-{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}-DELETE">
+                                                            <input type="hidden" name="choices-id" id="id_choices-id" value="{{ choice.instance.id }}">
+                                                        </p>
+                                                    </div>
+                                                    {% endfor %}
                                                 </div>
-                                                {% endfor %}
                                             </div>
                                         </div>
                                     </div>
@@ -94,6 +96,7 @@
                     </div>
                 </div>
                 {% endfor %}
+            </div>
                 <div class="row">
                     <div class="col-6 col-md-3 mb-2">
                         <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple">{% trans "CreateSection" %}</button>
@@ -107,7 +110,6 @@
                     <div class="col-6 col-md-3 mb-2">
                         <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "ReturnToStudyList" %}</a>
                     </div>
-                </div>
                 </div>
                 <input type="hidden" name="deleted_section_ids" id="deleted-section-ids">
                 <input type="hidden" name="deleted_question_ids" id="deleted-question-ids">
@@ -145,14 +147,18 @@
                 <div>
                     {{ form_q.as_p }}
                 </div>
-                <div class="button-container mt-3">
-                    <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
-                    <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
-                </div>
-                {{ choice_formset.management_form }}
-                <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
-                    <h4>{% trans "Choices" %}</h4>
-                    <div class="choices-container"></div>
+
+                <div class="has-choices" style="display: none;">
+                    {{ choice_formset.management_form }}
+                    <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
+                        <h4>{% trans "Choices" %}</h4>
+                        <div class="choices-container"></div>
+                    </div>
+                    
+                    <div class="button-container mt-3">
+                        <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
+                        <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
@@ -209,9 +215,30 @@
                 uniqueChoiceIndexes = [...new Set(choiceIndexes)];
                 uniqueQuestionIndexes = [...new Set(questionIndexes)];
 
+                // Llamamos a la función para mostrar/ocultar el div en todos los selects al cargar la página
+                document.querySelectorAll("select[name^='questions-'], select[name='type']").forEach(function(select) {
+                    toggleChoices(select);
+                });
+
             }, 100); // Para aseguramos que el DOM esté completamente cargado
 
         });
+
+        // FUNCIONES PARA LA GESTIÓN DE OPCIONES
+        // Funciones para mostrar u ocultar la creación de las opciones
+        function toggleChoices($selectType) {
+            let $questionForm = $selectType.closest(".question-form");
+            let $choicesContainer = $questionForm.find(".has-choices");
+
+            // Dependiendo del select, ocultamos la creación de opciones o no
+            if ($selectType.val() === "SCRB" || $selectType.val() === "MCRB" || $selectType.val() === "SCCB" || $selectType.val() === "MCCB") {
+                console.log("lo muestro", $choicesContainer);
+                $choicesContainer.show(); // Mostrar el div
+            } else {
+                console.log("lo oculto", $choicesContainer);
+                $choicesContainer.hide(); // Ocultar el div
+            }
+        }
 
         $(document).ready(function () {
             var sectionIndex = 0; // Variable para llevar el índice de secciones
@@ -458,6 +485,12 @@
                 });
 
                 toggleDeleteButtonChoice(match[1], match[2]);
+            });
+
+            // FUNCIÓN PARA LA GESTIÓN DE OPCIONES
+            // Función para mostrar u ocultar la creación de las opciones
+            $(document).on("change", "select[name^='questions-'], select[name='type']", function () {
+                toggleChoices($(this));
             });
         });
     </script>

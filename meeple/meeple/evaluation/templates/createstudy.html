@@ -85,16 +85,19 @@
                     {{ form_q.as_p }}
                 </div>
                 
-                {{ choice_formset.management_form }}
-                <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
-                    <h4>{% trans "Choices" %}</h4>
-                    <div class="choices-container"></div>
+                <div class="has-choices" style="display: none;">
+                    {{ choice_formset.management_form }}
+                    <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
+                        <h4>{% trans "Choices" %}</h4>
+                        <div class="choices-container"></div>
+                    </div>
+                    
+                    <div class="button-container mt-3">
+                        <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
+                        <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
+                    </div>
                 </div>
 
-                <div class="button-container mt-3">
-                    <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
-                    <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
-                </div>
                 {% endfor %}
             </div>
         </div>
@@ -328,6 +331,22 @@
                 // Después de eliminar las opciones, deshabilitamos el botón de eliminación
                 toggleDeleteButtonChoice(match[1], match[2]);
             });
+
+            // FUNCIÓN PARA LA GESTIÓN DE OPCIONES
+            // Función para mostrar u ocultar la creación de las opciones
+            $(document).on("change", "select[name^='questions-']", function () {
+                let $selectType = $(this);
+                let $questionForm = $selectType.closest(".question-form");
+                let $choicesContainer = $questionForm.find(".has-choices");
+
+                // Dependiendo del select, ocultamos la creación de opciones o no
+                if ($selectType.val() === "SCRB" || $selectType.val() === "MCRB" || $selectType.val() === "SCCB" || $selectType.val() === "MCCB") {
+                    $choicesContainer.show(); // Mostrar el div
+                } else {
+                    $choicesContainer.hide(); // Ocultar el div
+                }
+            });
+
         });
 
     </script>

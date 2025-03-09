@@ -182,7 +182,6 @@ class Question(models.Model):
             ('MCCB', 'Multiple choice combo box'),
             ('OAS', 'Open answer short'),
             ('OAL', 'Open answer long'),
-            ('R', 'Range'),
             ('N', 'Number')
         ],
         default='OAS'

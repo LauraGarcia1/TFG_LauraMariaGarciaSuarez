@@ -44,10 +44,13 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Puede haber coincidencias en edit-study!! (23/02/2025) (Comprobar)
 - [X] Cambiar de "questionnaire" a "questionaire" (27/02/2025)
 - [X] Vista de estudio (27/02/2025)
+- [X] Subir a plantilla los análisis de requisitos (06/03/2025)
+- [X] Quitar campo de algoritmo de secciones (06/03/2025)
+- [X] Cambiar algoritmo de seccion a cuestionario (06/03/2025)
+- [ ] Guardar información en caché de preferences y de questionnaries. (09/03/2025)
 - [ ] Poner páginas de recomendaciones anteriores hechas
 - [ ] edit y create study -> tipos de preguntas
 - [ ] Página de creación de algoritmos?
-- [ ] Arreglar range de las páginas de visualización
 - [ ] Guardar en cache la informacion de los juegos de preferencias?
 - [ ] Verificar actualización de choices
 - [ ] Probar cambios questionnaire y language
@@ -141,7 +144,6 @@ Carlos evalúa cada uno de los juegos recomendados respondiendo a las preguntas 
 X. Los Participantes, una vez registrados, deberán introducir una serie de preferencias de juegos que le puedan interesar.
 
 validacion
-
 
 ## Base de Datos
 

@@ -8,6 +8,7 @@
     {% endblock overflow %}
 
     {% block body %}
+    
     <div id="infoGame" class="modal information">
         <div class="d-flex justify-content-center align-items-center" style="height: 100vh; padding-top: 5%;">
             <div class="position-relative info-content p-5 border-1 m-auto">
@@ -18,8 +19,8 @@
                         <img id="infoImage" src="" class="img-fluid p-3" draggable="false">
                     </div>
                     <div class="col-md-8">
-                        <h2 id="infoTitle"></h2>
-                        <p id="infoKeys" style="word-wrap: break-word;">{% trans "Loading" %}...</p>
+                        <h2 id="infoTitle">{% trans "Loading" %}...</h2>
+                        <p id="infoKeys" style="word-wrap: break-word;"></p>
                     </div>
                 </div>
                 <div class="row">
@@ -36,8 +37,6 @@
             <h5>{% trans "HelpfulInfoStudy" %}</h5>
         </div>
     </div>
-    <form action="" method="post">
-    {% csrf_token %}
     <div id="finish" class="modal">
         <div class="modal-content info-content">
             <h2>{% trans "CreatorPtOne" %} &hearts; </h2>
@@ -67,24 +66,26 @@
                 style="transform: rotate(31deg);">
         </div>
 
-        <div
+        <form action="" method="post">
+            {% csrf_token %}
+            <!-- Se guarda el token en esta etiqueta para permitir mandar con ajax la petición -->
+            <meta name="csrf-token" content="{{ csrf_token }}">
+            <div
             class="justify-content-start shadow-lg p-4 p-md-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-            <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme m-auto">
-                <!-- Form de Questionnaire -->
-
-                <div class="row align-items-center mb-2">
-                    <div class="col-md-10">
-                        <h2>{{ questionnaire_name }}</h2>
-                        {{ questionnaire_description }} <i class="bi bi-info-circle" onclick="openNotification()"></i>
+                <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme m-auto">
+                    <!-- Form de Questionnaire -->
+                    <div class="row align-items-center mb-2">
+                        <div class="col-md-10">
+                            <h2>{{ questionnaire_name }}</h2>
+                            {{ questionnaire_description }} <i class="bi bi-info-circle" onclick="openNotification()"></i>
+                        </div>
+                        <div class="col-md-2 d-flex justify-content-end">
+                            <a href="{% url 'list-questionnaires' %}" class="btn btn-close" aria-label="Close"></a>
+                        </div>
                     </div>
-                    <div class="col-md-2 d-flex justify-content-end">
-                        <a href="{% url 'list-questionnaires' %}" class="btn btn-close" aria-label="Close"></a>
-
-                    </div>
-                </div>
 
                     <div id="sections-container">
-                        {% for section, data in sections_dict.items %}
+                    {% for section, data in sections_dict.items %}
                         <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body m-auto mb-3">
                             <div class="section-form">
                                 <div class="row align-items-center">
@@ -94,88 +95,87 @@
                                 </div>
                                 <!-- Contenedor para las preguntas de esta sección -->
                                 <div class="questions-container">
-                                    <!-- Se agregarán los formularios de preguntas aquí -->
-                                        <div class="question-form">
-                                            <div class="container m-auto">
-                                                <div class="row align-items-stretch">
-                                                    <!-- Columna 1: Imagen -->
-                                                    <div class="col-lg-3 col-md-12 mb-3 text-center d-flex flex-column justify-content-center h-100">
-                                                        <img src="{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg" class="img-fluid rounded shadow-lg" alt="Juego de mesa" onclick="openInformation('{{ data.game }}', '{{ data.game }}', '{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg')">
-                                                    </div>
-                                            
-                                                    <!-- Columna 2: Preguntas y Opciones -->
-                                                    <div class="col-lg-9 col-md-12 h-100">
-                                                        {% for question, choices in data.questions.items %}
-                                                        <div class="row mb-3">
-                                                            <!-- Pregunta -->
-                                                            <div class="col-lg-4 col-md-12 fw-bold mb-3">
-                                                                {{ question.question_text }}
-                                                                <input type="hidden" id="{{ question.instance.id }}" name="{{ question.instance.id }}" value="{{ data.game }}">
-                                                            </div>
-                                            
-                                                            <!-- Opciones -->
-                                                            <div class="col-lg-8 col-md-12">
-                                                                {% if question.type.value == "OAS" %}
-                                                                <input type="text" class="form-control" id="choice-{{ choice.instance.id }}">
-                                            
-                                                                {% elif question.type.value == "OAL" %}
-                                                                <input type="text" class="form-control" id="choice-{{ choice.instance.id }}">
-                                            
-                                                                {% elif question.type.value == "R" %}
-                                                                <input type="range" class="form-range" id="choice-{{ choice.instance.id }}" min="0" max="{{ choice.choice_text.value }}">
-                                            
-                                                                {% elif question.type.value == "N" %}
-                                                                <input type="number" class="form-control" id="choice-{{ choice.instance.id }}" min="0" max="{{ choice.choice_text.value }}">
-                                            
-                                                                {% else %}
-                                                                <div class="d-flex flex-wrap gap-2">
-                                                                    {% for choice in choices %}
-                                                                    {% if question.type.value == "MCCB" %}
-                                                                    <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold" name="question-{{ question.instance.id }}" value="{{ choice.instance.id }}" onclick="pressedButton(this)">{{ choice.choice_text.value }}</button>
-                                            
-                                                                    {% elif question.type.value == "SCCB" %}
-                                                                    <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold" name="question-{{ question.instance.id }}" value="{{ choice.instance.id }}" onclick="pressedButtonSingle(this)">{{ choice.choice_text.value }}</button>
-                                            
-                                                                    {% elif question.type.value == "SCRB" %}
-                                                                    <div>
-                                                                        <span class="tab"></span>
-                                                                        <input type="radio" name="questionsingle-{{ question.instance.id }}" id="choice-{{ choice.instance.id }}" value="{{ choice.instance.id }}" onclick="pressedRadio(this)">
-                                                                        <label for="choice-{{ choice.instance.id }}">{{ choice.choice_text.value }}</label>
-                                                                    </div>
-                                            
-                                                                    {% elif question.type.value == "MCRB" %}
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" name="question-{{ question.instance.id }}" id="choice-{{ choice.instance.id }}"
-                                                                        value="{{ choice.instance.id }}" onclick="pressedCheckbox(this)">
-                                                                        <label class="form-check-label" for="choice-{{ choice.instance.id }}">
-                                                                            {{ choice.choice_text.value }}
-                                                                        </label>
-                                                                    </div>
-                                            
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                                </div>
-                                                                {% endif %}
-                                                            </div>
+                                <!-- Se agregarán los formularios de preguntas aquí -->
+                                    <div class="question-form">
+                                        <div class="container m-auto">
+                                            <div class="row align-items-stretch">
+                                                <!-- Columna 1: Imagen -->
+                                                <div class="col-lg-3 col-md-12 mb-3 text-center d-flex flex-column justify-content-center h-100">
+                                                    <img src="{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg" class="img-fluid rounded shadow-lg" alt="Juego de mesa" onclick="openInformation('{{ data.game }}', '{{ data.game }}', '{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg')" draggable="false">
+                                                </div>
+                                        
+                                                <!-- Columna 2: Preguntas y Opciones -->
+                                                <div class="col-lg-9 col-md-12 h-100">
+                                                    {% for question, choices in data.questions.items %}
+                                                    <div class="row mb-3">
+                                                        <!-- Pregunta -->
+                                                        <div class="col-lg-4 col-md-12 fw-bold mb-3">
+                                                            {{ question }}
+                                                            <input type="hidden" id="{{ question.instance.id }}" name="{{ question.instance.id }}" value="{{ data.game }}">
                                                         </div>
-                                                        {% endfor %}
+                                        
+                                                        <!-- Opciones -->
+                                                        <div class="col-lg-8 col-md-12">
+                                                            {% if question.type.value == "OAS" %}
+                                                            <input type="text" class="form-control" id="choice-{{ choice.instance.id }}">
+                                        
+                                                            {% elif question.type.value == "OAL" %}
+                                                            <input type="text" class="form-control" id="choice-{{ choice.instance.id }}">
+                                        
+                                                            {% elif question.type.value == "N" %}
+                                                            <input type="number" class="form-control" id="choice-{{ choice.instance.id }}" min="0" max="10">
+                                        
+                                                            {% else %}
+                                                            <div class="d-flex flex-wrap gap-2">
+                                                                {% for choice in choices %}
+                                                                {% if question.type.value == "MCCB" %}
+                                                                <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold" name="question-{{ question.instance.id }}" value="{{ choice.instance.id }}" onclick="pressedButton(this)">{{ choice.choice_text.value }}</button>
+                                        
+                                                                {% elif question.type.value == "SCCB" %}
+                                                                <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold" name="question-{{ question.instance.id }}" value="{{ choice.instance.id }}" onclick="pressedButtonSingle(this)">{{ choice.choice_text.value }}</button>
+                                        
+                                                                {% elif question.type.value == "SCRB" %}
+                                                                <div>
+                                                                    <span class="tab"></span>
+                                                                    <input type="radio" name="questionsingle-{{ question.instance.id }}" id="choice-{{ choice.instance.id }}" value="{{ choice.instance.id }}" onclick="pressedRadio(this)">
+                                                                    <label for="choice-{{ choice.instance.id }}">{{ choice.choice_text.value }}</label>
+                                                                </div>
+                                        
+                                                                {% elif question.type.value == "MCRB" %}
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="question-{{ question.instance.id }}" id="choice-{{ choice.instance.id }}"
+                                                                    value="{{ choice.instance.id }}" onclick="pressedCheckbox(this)">
+                                                                    <label class="form-check-label" for="choice-{{ choice.instance.id }}">
+                                                                        {{ choice.choice_text.value }}
+                                                                    </label>
+                                                                </div>
+                                        
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
                                                     </div>
+                                                    {% endfor %}
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        {% endfor %}
+                    {% endfor %}
                     </div>
-                
+            
                     <input type="hidden" id="selections" name="selections" value="">
                     <button type="button" class="btn btn-primary rounded-pill btn-terracota w-50 mt-auto" name="button"
                         id="button" value="newrecommendation" onclick="sendRecomOpenInfo()">{% trans "PreferencesSubmitButton" %}</button>
-                    </div>
                 </div>
             </div>
         </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         // Función para abrir la ventana de agradecimiento
@@ -275,12 +275,6 @@
             updateselections();
         }
 
-        // Función de manejo cuando una opción de tipo range es pulsada
-        function pressedRange(range) {
-            range.classList.toggle('checked-range');
-            updateselections();
-        }
-
         // Función de manejo cuando una opción de tipo text es pulsada
         function pressedText(text) {
             text.classList.toggle('checked-text');
@@ -292,7 +286,6 @@
             const buttons = document.querySelectorAll('form button[type="button"]');
             const checkboxes = document.querySelectorAll('form input[type="checkbox"]:checked');
             const numbers = document.querySelectorAll('form input[type="number"]');
-            const ranges = document.querySelectorAll('form input[type="range"]');
             const texts = document.querySelectorAll('form input[type="text"]');
             const radios = document.querySelectorAll('form input[type="radio"]:checked');
             const selections = {};
@@ -330,24 +323,6 @@
                 console.log("4Question ID:", questionId, "Choice ID:", number.value);
             });
 
-            // Guardar ranges seleccionados
-            ranges.forEach((range) => {
-                const questionId = range.name.split('-')[1];
-                if (!selections[questionId]) selections[questionId] = [];
-                selections[questionId].push(range.value);
-                console.log("5Question ID:", questionId, "Choice ID:", range.value);
-            });
-
-            // Guardar texts seleccionados TODO:
-            /*
-            texts.forEach((text) => {
-                const questionId = text.name.split('-')[1];
-                if (!selections[questionId]) selections[questionId] = [];
-                selections[questionId].push(text.value);
-                console.log("6Question ID:", questionId, "Choice ID:", text.value);
-            });*/
-
-            
             // Actualizar campo oculto
             document.getElementById('selections').value = JSON.stringify(selections);
             
@@ -355,13 +330,24 @@
             console.log("Hidden input value updated:", document.getElementById('selections').value);
         }
 
-        // Función para hacer la consulta y obtener la información de los juegos
+        // Variable para almacenar los datos en caché
+        let cacheData = {};
+
         function getDataGame(idGame) {
             // Validar que el ID sea un número antes de enviarlo al servidor
             if (!idGame || isNaN(idGame)) {
                 document.getElementById('infoDescription').innerHTML = "There is not information.";
                 return;
             }
+
+            // Comprobar si la información ya está en caché
+            if (cacheData[idGame]) {
+                // Si ya está en caché, usamos la información directamente
+                displayGameData(cacheData[idGame]);
+                return;
+            }
+
+            // Si no está en caché, hacer la consulta AJAX
             $.ajax({
                 type: 'POST',
                 url: "{% url 'get_data_game' %}",
@@ -372,10 +358,12 @@
                 success: function(response) {
                     if (response.error) {
                         document.getElementById("infoKeys").textContent = "";
-                        document.getElementById("infoDescription").textContent = "There is not information.";
+                        document.getElementById("infoDescription").textContent = "";
+                        document.getElementById("infoTitle").textContent = "There is not information.";
                     } else {
-                        document.getElementById("infoKeys").textContent = response.categories + " " + response.types + " " + response.contexts;
-                        document.getElementById("infoDescription").textContent = response.description;
+                        // Como no está en caché, guardamos la información
+                        cacheData[idGame] = response;
+                        displayGameData(response);
                     }
                 },
                 error: function() {
@@ -384,13 +372,18 @@
             });
         }
 
+        function displayGameData(response) {
+            document.getElementById("infoKeys").textContent = response.categories + " " + response.types + " " + response.contexts;
+            document.getElementById("infoDescription").textContent = response.description;
+            document.getElementById("infoTitle").textContent = response.name;
+        }
+
         // Función para abrir la ventana de información del juego
         function openInformation(id, title, imageUrl) {
             document.getElementById("infoGame").style.display = "block";
         
-            document.getElementById("infoTitle").textContent = title;
             document.getElementById("infoImage").src = imageUrl;
-            getDataGame(id)
+            getDataGame(id);
         }
 
         // Función para abrir el modal

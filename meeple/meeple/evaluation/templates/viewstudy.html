@@ -92,7 +92,7 @@
                                                     <div class="row mb-3">
                                                         <!-- Pregunta -->
                                                         <div class="col-lg-4 col-md-12 fw-bold mb-3">
-                                                            {{ question.question_text }}
+                                                            {{ question }}
                                                         </div>
                                         
                                                         <!-- Opciones -->
@@ -103,11 +103,8 @@
                                                             {% elif question.type.value == "OAL" %}
                                                             <input type="text" class="form-control" id="choice-{{ choice.id.value }}">
                                         
-                                                            {% elif question.type.value == "R" %}
-                                                            <input type="range" class="form-range" id="choice-{{ choice.id.value }}" min="0" max="{{ choice.choice_text.value }}">
-                                        
                                                             {% elif question.type.value == "N" %}
-                                                            <input type="number" class="form-control" id="choice-{{ choice.id.value }}" min="0" max="{{ choice.choice_text.value }}">
+                                                            <input type="number" class="form-control" id="choice-{{ choice.id.value }}" min="0" max="10">
                                         
                                                             {% else %}
                                                             <div class="d-flex flex-wrap gap-2">

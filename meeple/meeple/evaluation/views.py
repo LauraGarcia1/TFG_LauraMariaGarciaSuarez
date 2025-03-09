@@ -217,7 +217,6 @@ def create_study(request):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
-        print(request.POST)
         questionnaire_form = QuestionnaireForm(request.POST)
 
         if questionnaire_form.is_valid():
@@ -291,7 +290,6 @@ def edit_study(request, pk):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
-        print(request.POST, pk)
         questionnaire = Questionnaire.objects.get(id=pk)
         questionnaire.name = request.POST.get('name')
         questionnaire.description = request.POST.get('description')
@@ -446,17 +444,11 @@ def view_study(request, pk):
     # Crear el diccionario de secciones y preguntas con sus elecciones
     sections_dict = {}
     for section in questionnaire.sections.all():
-        question_forms = {}
+        questions_dict = {}
 
         for question in section.questions.all():
             # Formulario de pregunta y sus opciones de respuesta (si las tiene)
             choices = question.choices.all()
-            question_form = QuestionForm(instance=question)
-            
-            # Deshabilitar todos los campos de la pregunta
-            for field in question_form.fields.values():
-                field.widget.attrs['readonly'] = 'readonly'
-                field.widget.attrs['disabled'] = 'disabled'
 
             choice_forms = [ChoiceForm(instance=choice) for choice in choices]
             for choice_form in choice_forms:
@@ -464,9 +456,9 @@ def view_study(request, pk):
                     field.widget.attrs['readonly'] = 'readonly'
                     field.widget.attrs['disabled'] = 'disabled'
 
-            question_forms[question_form] = choice_forms
+            questions_dict[question.question_text] = choice_forms
         
-        sections_dict[section.title] = question_forms
+        sections_dict[section.title] = questions_dict
     
     return render(request, 'viewstudy.html', {
         'questionnaire_name': questionnaire.name,
@@ -524,7 +516,6 @@ def view_questionnaire(request, pk):
     """
 
     if request.method == "POST":
-        print(request.POST)
         try:
             selections = json.loads(request.POST.get('selections', '{}'))
         except json.JSONDecodeError:
@@ -560,21 +551,15 @@ def view_questionnaire(request, pk):
         # Crear el diccionario de secciones y preguntas con sus elecciones
         sections_dict = {}
         for section in questionnaire.sections.all():
-            question_forms = {}
+            questions_dict = {}
 
             for question in section.questions.all():
                 # Formulario de pregunta y sus opciones de respuesta (si las tiene)
                 choices = question.choices.all()
-                question_form = QuestionForm(instance=question)
-                
-                # Deshabilitar todos los campos de la pregunta
-                for field in question_form.fields.values():
-                    field.widget.attrs['readonly'] = 'readonly'
-                    field.widget.attrs['disabled'] = 'disabled'
                 
                 choice_forms = [ChoiceForm(instance=choice) for choice in choices]
 
-                question_forms[question_form] = choice_forms
+                questions_dict[question.question_text] = choice_forms
 
             # Obtener todas las categorías
             categories_tuples = Preference.objects.values_list('category', flat=True)
@@ -590,7 +575,7 @@ def view_questionnaire(request, pk):
             assigned_game = execute_algorithm(code=questionnaire.algorithm.code, user=User.objects.get(id=request.session.get('userid')), responses=unique_categories)
 
             sections_dict[section.title] = {
-                'questions': question_forms,
+                'questions': questions_dict,
                 'game': assigned_game
             }
 

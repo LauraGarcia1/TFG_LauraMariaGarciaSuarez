@@ -108,13 +108,24 @@
         document.getElementById("myModal").style.display = "block";
     }
 
-    // Función para hacer la consulta y obtener la información de los juegos
+    // Variable para almacenar los datos en caché
+    let cacheData = {};
+
     function getDataGame(idGame) {
         // Validar que el ID sea un número antes de enviarlo al servidor
         if (!idGame || isNaN(idGame)) {
             document.getElementById('infoDescription').innerHTML = "There is not information.";
             return;
         }
+
+        // Comprobar si la información ya está en caché
+        if (cacheData[idGame]) {
+            // Si ya está en caché, usamos la información directamente
+            displayGameData(cacheData[idGame]);
+            return;
+        }
+
+        // Si no está en caché, hacer la consulta AJAX
         $.ajax({
             type: 'POST',
             url: "{% url 'get_data_game' %}",
@@ -125,16 +136,24 @@
             success: function(response) {
                 if (response.error) {
                     document.getElementById("infoKeys").textContent = "";
-                    document.getElementById("infoDescription").textContent = "There is not information.";
+                    document.getElementById("infoDescription").textContent = "";
+                    document.getElementById("infoTitle").textContent = "There is not information.";
                 } else {
-                    document.getElementById("infoKeys").textContent = response.categories + " " + response.types + " " + response.contexts;
-                    document.getElementById("infoDescription").textContent = response.description;
+                    // Como no está en caché, guardamos la información
+                    cacheData[idGame] = response;
+                    displayGameData(response);
                 }
             },
             error: function() {
                 document.getElementById("infoKeys").textContent = "Internal error.";
             }
         });
+    }
+
+    function displayGameData(response) {
+        document.getElementById("infoKeys").textContent = response.categories + " " + response.types + " " + response.contexts;
+        document.getElementById("infoDescription").textContent = response.description;
+        document.getElementById("infoTitle").textContent = response.name;
     }
 
     // Función para abrir la ventana de información del juego
