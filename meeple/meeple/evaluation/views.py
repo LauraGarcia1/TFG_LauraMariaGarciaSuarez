@@ -290,11 +290,14 @@ def edit_study(request, pk):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
+        print(request.POST)
         questionnaire = Questionnaire.objects.get(id=pk)
         questionnaire.name = request.POST.get('name')
         questionnaire.description = request.POST.get('description')
         questionnaire.language = request.POST.get('language')
-        questionnaire.algorithm = Algorithm.objects.get(id=request.POST.get('algorithm'))
+        algorithm = request.POST.get('algorithm')
+        if (algorithm != ''):
+            questionnaire.algorithm = Algorithm.objects.get(id=algorithm)
 
         questionnaire.save()
 
@@ -364,8 +367,9 @@ def edit_study(request, pk):
 
             # Comprobamos si hay objetos nuevos, si es así los creamos
             for section in section_ids: # Comprobamos en secciones existentes
-                create_questions(request, section_index=section, list_questions=question_ids)
-                create_questions(request, section_index=section)
+                print(section)
+                create_questions(request, section_index=section, list_questions=question_ids, language=questionnaire.language)
+                create_questions(request, section_index=section, language=questionnaire.language)
 
             section_index = 0
             while True: # Creamos las secciones nuevas y comprobamos su contenido
@@ -380,8 +384,8 @@ def edit_study(request, pk):
                     title=section_title
                 )
                 # Procesar las preguntas de esta sección
-                create_questions(request, section_index=section, list_questions=question_ids)
-                create_questions(request, section_index=section)
+                create_questions(request, section_index=section, list_questions=question_ids, language=questionnaire.language)
+                create_questions(request, section_index=section, language=questionnaire.language)
 
                 # Incrementamos el índice de sección y seguimos con la siguiente
                 section_index += 1
@@ -429,8 +433,56 @@ def delete_study(request, pk):
 
 @login_required
 def upload_study(request, pk):
-    # Obtén el cuestionario por su ID
+    """Función para subir los cuestionarios
+
+    Args:
+        request (HttpRequest): instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web.
+        pk (str): variable con la clave pública del objeto cuestionario
+
+    Returns:
+        _type_: redirección a página
+    """
     questionnaire = get_object_or_404(Questionnaire, pk=pk)
+    if not questionnaire.are_fields_filled():
+        print("No tiene todo completo Qa")
+        return redirect('my-studies')
+
+    # Comprobamos que el cuestionario tenga una o varias secciones
+    sections = questionnaire.sections.all()
+    if not sections:
+        # En caso de no existir, no se sube el cuestionario
+        print("No tiene secciones")
+        return redirect('my-studies')
+    
+    # Comprobamos que cada sección tenga una o varias preguntas
+    for section in sections:
+        if not section.are_fields_filled():
+            print("No tiene todo completo S")
+            return redirect('my-studies')
+        
+        questions = section.questions.all()
+        if not questions:
+            # En caso de no existir, no se sube el cuestionario
+            print("No tiene preguntas")
+            return redirect('my-studies')
+        
+        # Comprobamos que cada pregunta específica tenga una o varias opciones
+        for question in questions:
+            if not question.are_fields_filled():
+                print("No tiene todo completo Q")
+                return redirect('my-studies')
+            if question.type == "SCRB" or question.type == "MCRB" or question.type == "SCCB" or question.type == "MCCB":
+                # En el caso de deber tener, comprobamos
+                choices = question.choices.all()
+                if not choices:
+                    # En caso de no existir, no se sube el cuestionario
+                    print("No tiene opciones")
+                    return redirect('my-studies')
+                for choice in choices:
+                    if not choice.are_fields_filled():
+                        print("No tiene todo completo C")
+
+    # Dada una validación satisfactoria, subimos el cuestionario
     questionnaire.uploaded = True
     questionnaire.save()
 
@@ -449,6 +501,8 @@ def view_study(request, pk):
         for question in section.questions.all():
             # Formulario de pregunta y sus opciones de respuesta (si las tiene)
             choices = question.choices.all()
+            print("la pregunta es ", (question.question_text, question.type))
+            print("los choices son ", choices)
 
             choice_forms = [ChoiceForm(instance=choice) for choice in choices]
             for choice_form in choice_forms:
@@ -456,7 +510,7 @@ def view_study(request, pk):
                     field.widget.attrs['readonly'] = 'readonly'
                     field.widget.attrs['disabled'] = 'disabled'
 
-            questions_dict[question.question_text] = choice_forms
+            questions_dict[(question.question_text, question.type)] = choice_forms
         
         sections_dict[section.title] = questions_dict
     
@@ -559,7 +613,7 @@ def view_questionnaire(request, pk):
                 
                 choice_forms = [ChoiceForm(instance=choice) for choice in choices]
 
-                questions_dict[question.question_text] = choice_forms
+                questions_dict[(question.question_text, question.type)] = choice_forms
 
             # Obtener todas las categorías
             categories_tuples = Preference.objects.values_list('category', flat=True)
@@ -625,11 +679,11 @@ async def translate_text(text, target_language):
     
     return translated.text  # Devolver el texto traducido
 
-def create_questions(request, section_index, list_questions = None):
+def create_questions(request, section_index, language, list_questions = None):
     if list_questions is None:
         question_index = 0
         while True: # Creamos las preguntas nuevas y comprobamos su contenido
-            question_key_prefix = f"questions-{section_index}-{question_index}"
+            question_key_prefix = f"questions-{question_index}-{section_index}"
             question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
             if not question_keys:
                 # No se encontró más preguntas para esta sección
@@ -639,7 +693,7 @@ def create_questions(request, section_index, list_questions = None):
                 section=Section.objects.get(id=section_index),
                 question_text=question_keys[0],
                 type=question_keys[1],
-                language=question_keys[2]
+                language=language
             )
 
             create_choices(request, question, section_index = section_index, question_index = question_index) # Creamos las opciones nuevas

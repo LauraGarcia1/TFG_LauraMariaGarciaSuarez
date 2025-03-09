@@ -92,37 +92,37 @@
                                                     <div class="row mb-3">
                                                         <!-- Pregunta -->
                                                         <div class="col-lg-4 col-md-12 fw-bold mb-3">
-                                                            {{ question }}
+                                                            {{ question.0 }}
                                                         </div>
                                         
                                                         <!-- Opciones -->
                                                         <div class="col-lg-8 col-md-12">
-                                                            {% if question.type.value == "OAS" %}
+                                                            {% if question.1 == "OAS" %}
                                                             <input type="text" class="form-control" id="choice-{{ choice.id.value }}">
                                         
-                                                            {% elif question.type.value == "OAL" %}
+                                                            {% elif question.1 == "OAL" %}
                                                             <input type="text" class="form-control" id="choice-{{ choice.id.value }}">
                                         
-                                                            {% elif question.type.value == "N" %}
+                                                            {% elif question.1 == "N" %}
                                                             <input type="number" class="form-control" id="choice-{{ choice.id.value }}" min="0" max="10">
                                         
                                                             {% else %}
                                                             <div class="d-flex flex-wrap gap-2">
                                                                 {% for choice in choices %}
-                                                                {% if question.type.value == "MCCB" %}
+                                                                {% if question.1 == "MCCB" %}
                                                                 <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold" name="question-{{ choice.id.value }}-{{ question.id.value }}" value="{{ choice.id.value }}" onclick="toggleActive(this)">{{ choice.choice_text.value }}</button>
                                         
-                                                                {% elif question.type.value == "SCCB" %}
+                                                                {% elif question.1 == "SCCB" %}
                                                                 <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold" value="{{ choice.id.value }}" onclick="toggleActiveOnlyOne(event)">{{ choice.choice_text.value }}</button>
                                         
-                                                                {% elif question.type.value == "SCRB" %}
+                                                                {% elif question.1 == "SCRB" %}
                                                                 <div>
                                                                     <span class="tab"></span>
                                                                     <input type="radio" id="choice-{{ choice.id.value }}" name="question-{{ question.id.value }}" value="{{ choice.id.value }}">
                                                                     <label for="choice-{{ choice.id.value }}">{{ choice.choice_text.value }}</label>
                                                                 </div>
                                         
-                                                                {% elif question.type.value == "MCRB" %}
+                                                                {% elif question.1 == "MCRB" %}
                                                                 <div class="form-check">
                                                                     <input class="form-check-input" type="checkbox" id="choice-{{ choice.id.value }}">
                                                                     <label class="form-check-label" for="choice-{{ choice.id.value }}">

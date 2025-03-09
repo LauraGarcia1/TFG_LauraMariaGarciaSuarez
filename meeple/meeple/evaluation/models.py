@@ -79,7 +79,7 @@ class User(AbstractUser):
         return email
     
     def __str__(self):
-        return self.username
+        return f"Username: {self.username}"
 
 class Interaction(models.Model):
     INTEREST_CHOICES = [
@@ -140,7 +140,7 @@ class Algorithm(models.Model):
     ) # TODO: No sé de qué tipos pueden ser los algoritmos
 
     def __str__(self):
-        return self.name
+        return f"Algorithm name: {self.name}"
 
 class Questionnaire(models.Model):
     name = models.CharField(max_length=150, blank=False, null=False)
@@ -158,15 +158,23 @@ class Questionnaire(models.Model):
     )
     date_created = models.DateTimeField(auto_now_add=True)
 
+    # Método para comprobar si los campos están rellenos
+    def are_fields_filled(self):
+        return bool(self.description and self.name and self.algorithm and self.language)
+
     def __str__(self):
-        return self.name
+        return f"Questionnaire name: {self.name}\nQuestionnaire id: {self.id}"
 
 class Section(models.Model):
     questionnaire = models.ForeignKey(Questionnaire, related_name='sections', on_delete=models.CASCADE)
     title = models.CharField(max_length=255, null=True, blank=True)
 
+    # Método para comprobar si los campos están rellenos
+    def are_fields_filled(self):
+        return bool(self.title)
+
     def __str__(self):
-        return self.title
+        return f"Section title: {self.title}\nSection id: {self.id}"
 
 class Question(models.Model):
     section = models.ForeignKey('Section', on_delete=models.CASCADE, null=False, related_name='questions')
@@ -197,9 +205,13 @@ class Question(models.Model):
 
     class Meta:
         ordering = ['date_created']
+
+    # Método para comprobar si los campos están rellenos
+    def are_fields_filled(self):
+        return bool(self.type and self.language and self.question_text)
     
     def __str__(self):
-        return f"{self.id} - {self.text}"
+        return f"Question text: {self.question_text}\nQuestion id: {self.id}"
     
     
 
@@ -207,14 +219,19 @@ class Choice(models.Model):
     question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True, related_name='choices')
     choice_text = models.CharField(max_length=50, blank=True, null=True)
 
+    # Método para comprobar si los campos están rellenos
+    def are_fields_filled(self):
+        return bool(self.choice_text)
+
     def __str__(self):
-        return f"{self.text}"
+        return f"Choice text: {self.choice_text}"
     
 
 class Answer(models.Model):
     question = models.ForeignKey('Question', on_delete=models.CASCADE, null=False)
     user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
+    text = models.CharField(max_length=250, blank=True, null=True)
     choice = models.ForeignKey('Choice', on_delete=models.SET_NULL, null=True)
     language = models.CharField(
         max_length = 10,
@@ -229,7 +246,7 @@ class Answer(models.Model):
         ordering = ['date_created']
 
     def __str__(self):
-        return f"{self.id} - {self.choice}"
+        return f"Answer choice: {self.choice}\nAnswer text: {self.text}\nAnswer id: {self.id}"
 
 class Recommendation(models.Model):
     algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
@@ -239,7 +256,7 @@ class Recommendation(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.algorithm}"
+        return f"Recommendation algorithm: {self.algorithm}\nRecommendation game: {self.game}\nRecommendation metrics: {self.metrics}\nRecommendation id: {self.id}"
     
     def add_metrics(self, new_metrics):
         self.metrics.extend(new_metrics)
@@ -249,7 +266,7 @@ class Game(models.Model):
     id_BGG = models.IntegerField(default=0)
 
     def __str__(self):
-        return str(self.id_BGG)
+        return f"Game id: {self.id}\nBGG id: {self.id_BGG}"
 
 class Evaluation(models.Model):
     # INFO: una evaluacion no debería tener recomendaciones que le ha gustado al participante
@@ -259,7 +276,7 @@ class Evaluation(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Evaluation by {self.user} from recommendation {self.recommendation}"
+        return f"Evaluation user: {self.user}\nEvaluation recommendation: {self.recommendation}\nEvaluation id: {self.id}"
 
 class Preference(models.Model):
     text = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
@@ -268,5 +285,5 @@ class Preference(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f"{self.user} - {self.category}"
+        return f"Preference user: {self.user}\nPreference categories: {self.category}\nPreference id: {self.id}"
 
