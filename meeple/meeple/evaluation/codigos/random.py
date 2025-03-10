@@ -1,79 +1,29 @@
-def recommend(user, responses):
+def recommend(user, responses, number_sections=1):
     """
-    Algoritmo de recomendación que devuelve el id de un solo juego basado en las categorías preferidas del usuario.
+    Función que recomienda juegos de mesa de forma aleatoria basada en las respuestas del usuario.
+    
+    Args:
+        user (User): El usuario autenticado.
+        responses (list): Las preferencias o categorías que el usuario tiene para los juegos.
+        number_sections (int, optional): Número de juegos a recomendar. Default es 1.
 
-    :param user: Objeto del usuario (puede no ser necesario en este caso).
-    :param responses: Diccionario con las categorías preferidas, por ejemplo:
-                      {"categories": ['Economic', 'Negotiation', 'Political']}
-    :return: El id del juego recomendado, o None si no se encuentra coincidencia.
+    Returns:
+        list: Lista de juegos recomendados.
     """
-    # Extraer la lista de categorías desde el diccionario
-    categories = responses.get("categories", [])
-
-    if not isinstance(categories, list):
-        return None  # Validación de seguridad: si no es una lista, salir.
-
-    # Caso 1: Si no hay categorías, seleccionar un juego aleatorio
-    if not categories:
-        sql = """
-        SELECT id 
-        FROM zacatrus_games
-        ORDER BY RANDOM()
-        LIMIT 1;
-        """
-        result = db_query(sql, [])
-        return result[0][0] if result else None
-
-    # Construir condiciones dinámicas para la consulta SQL.
-    # Por cada categoría, creamos una condición: "categories LIKE %s"
-    category_conditions = " OR ".join(["categories LIKE %s" for _ in categories])
-    # Y definimos los parámetros: para cada categoría, se envuelve en %...%
-    params = ["%" + cat + "%" for cat in categories]
-
     # Construir la consulta SQL usando las condiciones dinámicas.
-    sql = f"""
-    SELECT zg.id, zg.name, GROUP_CONCAT(DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories
-    FROM (
-        SELECT id, name, url
-        FROM zacatrus_games
-        LIMIT 10
-    ) zg
-    LEFT JOIN (
-        SELECT DISTINCT gameid, name
-        FROM zacatrus_game_categories
-    ) zgc ON zg.id = zgc.gameid
-    GROUP BY zg.id, zg.name
-    HAVING {category_conditions};
+    sql = """
+    SELECT id
+    FROM zacatrus_games
+    ORDER BY RAND()
+    LIMIT %s
     """
-
+    
     # Ejecutar la consulta y obtener los resultados
-    result = db_query(sql, params)
-    print(result)  # Para debug; quitar en producción
+    games = db_query(sql, [number_sections])
+    
+    recommended_games = []
 
-    # Filtrar los juegos que coincidan con alguna de las categorías del usuario
-    matching_games = []
-    for row in result:
-        game_id, game_name, game_categories = row
-        if not game_categories:
-            continue  # Si no hay categorías, saltar este juego
-        # Separar las categorías concatenadas y limpiar espacios
-        game_categories_list = [cat.strip() for cat in game_categories.split(',')]
-        
-        # Verificar si alguna de las categorías del juego coincide exactamente con alguna categoría preferida
-        match_found = False
-        for cat in game_categories_list:
-            for pref in categories:
-                if cat == pref:
-                    match_found = True
-                    break
-            if match_found:
-                break
-
-        if match_found:
-            matching_games.append(game_id)
-
-    # Si hay juegos coincidentes, seleccionar uno al azar y devolver su ID
-    if matching_games:
-        return random.choice(matching_games)
-    else:
-        return None  # Si no hay coincidencias, se devuelve None
+    for game in games:
+        recommended_games.append(game[0])
+    
+    return recommended_games

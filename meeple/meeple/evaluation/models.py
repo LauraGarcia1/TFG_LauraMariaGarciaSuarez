@@ -134,6 +134,7 @@ class Algorithm(models.Model):
             ('hybrid', 'Hybrid'),
             ('rules', 'Rule-Based'),
             ('contextual', 'Contextual'),
+            ('random', 'Random'),
             ('deep_learning', 'Deep learning')
         ],
         default='hybrid'
@@ -281,7 +282,7 @@ class Evaluation(models.Model):
 class Preference(models.Model):
     text = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
     category = models.CharField(max_length=100, blank=True, null=True)
-    value = models.FloatField(default=0.0) 
+    value = models.FloatField(default=0.0) # TODO: Es necesario?
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):

@@ -437,10 +437,10 @@ def upload_study(request, pk):
 
     Args:
         request (HttpRequest): instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web.
-        pk (str): variable con la clave pública del objeto cuestionario
+        pk (text): variable con la clave pública del objeto cuestionario
 
     Returns:
-        _type_: redirección a página
+        _type_: redirección a la página de todos los estudios del usuario
     """
     questionnaire = get_object_or_404(Questionnaire, pk=pk)
     if not questionnaire.are_fields_filled():
@@ -542,11 +542,17 @@ def recommendPage(request):
 
 @login_required
 def view_questionnaire(request, pk):
-    """
-        Función que muestra la página del cuestionario
+    """Función que muestra la página del cuestionario
 
-        Autor: Laura Mª García Suárez
+    Args:
+        request (HttpRequest): instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web
+        pk (text): variable con la clave pública del objeto cuestionario
+
+    Returns:
+        _type_: renderización de la página de visualización del cuestionario
     """
+
+    user = User.objects.get(id=request.session.get('userid'))
 
     if request.method == "POST":
         try:
@@ -554,13 +560,11 @@ def view_questionnaire(request, pk):
         except json.JSONDecodeError:
             return redirect('list-questionnaires')
         questionnaire = Questionnaire.objects.get(id=pk)
-        user = User.objects.get(id=request.session.get('userid'))
-        # TODO: validación
 
+        # TODO: Comprobación de guardado de datos de answer (debería tener game?)
         answers = []
         for question_id, choice_ids in selections.items():
             # Guardamos las respuestas del participante
-            # TODO: language no es correcto
             question = Question.objects.get(id=question_id)
             for choice in choice_ids:
                 answer = Answer.objects.create(question=question, choice=Choice.objects.get(id=choice), user=user, language=settings.LANGUAGE_CODE)
@@ -569,8 +573,11 @@ def view_questionnaire(request, pk):
         # Creamos una evaluación por cada sección del cuestionario
         # TODO: parametros
         for section in questionnaire.sections.all():
+            recommendation_game = request.POST.get(f"game-{section.id}")
+            print("-----\n ", request.POST, "\n------")
+            print(f"_--Z Esto me da game-{section.id} ", recommendation_game, type(recommendation_game))
             # TODO: obtener el id del game de alguna manera
-            recommendation = Recommendation.objects.create(game=request.POST.get(f"game-{section.id}", "").strip() or None, algorithm=None)
+            recommendation = Recommendation.objects.create(game=Game.objects.get_or_create(id_BGG=int(recommendation_game))[0], algorithm=questionnaire.algorithm)
             # TODO: Guardar todas las respuestas del usuario en la evaluación
             Evaluation.objects.create(recommendation=recommendation, user=user, puntuation=0.0)
 
@@ -581,9 +588,15 @@ def view_questionnaire(request, pk):
 
     # Revisar que el cuestionario está subido/validado
     if questionnaire.uploaded:
+        # TODO: que necesita el código?
+        responses = get_responses_for_code(user)
+        
+        # Obtener el juego del algoritmo
+        assigned_games = execute_algorithm(code=questionnaire.algorithm.code, user=user, responses=responses, number_sections=len(questionnaire.sections.all()))
+
         # Crear el diccionario de secciones y preguntas con sus elecciones
         sections_dict = {}
-        for section in questionnaire.sections.all():
+        for section, game in zip(questionnaire.sections.all(), assigned_games):
             questions_dict = {}
 
             for question in section.questions.all():
@@ -592,24 +605,12 @@ def view_questionnaire(request, pk):
                 
                 choice_forms = [ChoiceForm(instance=choice) for choice in choices]
 
-                questions_dict[(question.question_text, question.type)] = choice_forms
-
-            # Obtener todas las categorías
-            categories_tuples = Preference.objects.values_list('category', flat=True)
-
-            categories_list = []
-            for cat in categories_tuples:
-                cat = cat.strip("()").replace("'", "")
-                categories_list.extend([category.strip() for category in cat.split(',')])
-
-            unique_categories = list(set(cat for cat in categories_list if cat.strip()))
-
-            # Obtener el juego del algoritmo
-            assigned_game = execute_algorithm(code=questionnaire.algorithm.code, user=User.objects.get(id=request.session.get('userid')), responses=unique_categories)
+                print("esto que eeee", question.id)
+                questions_dict[(question.question_text, question.type, question.id)] = choice_forms
 
             sections_dict[section.title] = {
                 'questions': questions_dict,
-                'game': assigned_game
+                'game': game
             }
 
         return render(request, 'viewquestionnaire.html', {
@@ -619,12 +620,11 @@ def view_questionnaire(request, pk):
             'MEDIA_URL': settings.MEDIA_URL
         })
     
-    return render(request, 'viewquestionnaire.html', {
-        'questionnaire_form': None,
-        'sections_dict': None,
-    })
+    return redirect('list-questionnaires')
 
 
+
+###### FUNCIONES GENERALES
 def get_data_questions():
     """
         Función que obtiene las opciones de las preguntas
@@ -642,8 +642,6 @@ def get_data_questions():
 
     return questions_and_choices
 
-###### FUNCIONES GENERALES
-
 async def translate_text(text, target_language):
     # Crear un objeto de traductor
     translator = Translator()
@@ -659,6 +657,14 @@ async def translate_text(text, target_language):
     return translated.text  # Devolver el texto traducido
 
 def create_questions(request, section_index, language, list_questions = None):
+    """Función para crear las preguntas desde las páginas de creación y edición de estudios
+
+    Args:
+        request (HttpRequest): instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web
+        section_index (text): Identificador de la Sección asociada a las opciones
+        language (text): Idioma del cuestionario
+        list_questions (List, optional): Lista de preguntas existentes. Defaults to None.
+    """
     if list_questions is None:
         question_index = 0
         while True: # Creamos las preguntas nuevas y comprobamos su contenido
@@ -686,7 +692,7 @@ def create_choices(request, question, section_index, question_index):
     """Función para crear las opciones desde las páginas de creación y edición de estudios
 
     Args:
-        request (HttpRequest):  instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web.
+        request (HttpRequest): instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web
         question (Question): Pregunta asociada a las opciones
         section_index (text): Identificador de la Sección asociada a las opciones
         question_index (text): Identificador de la Pregunta asociada a las opciones
@@ -705,7 +711,30 @@ def create_choices(request, question, section_index, question_index):
         )
         choice_index += 1
 
-def execute_algorithm(code, user, responses = None):
+def get_responses_for_code(user):
+    """Función para obtener los datos del usuario que usaremos para los algoritmos de recomendación
+
+    Args:
+        user (User): Objeto tipo User que hace referencia al usuario actual
+
+    Returns:
+        _type_: parámetros del usuario contenido en un diccionario
+    """
+    responses = {}
+    # Obtener todas las categorías
+    categories_tuples = Preference.objects.filter(user=user).values_list('category', flat=True)
+
+    categories_list = []
+    for cat in categories_tuples:
+        cat = cat.strip("()").replace("'", "")
+        categories_list.extend([category.strip() for category in cat.split(',')])
+
+    responses['categories'] = list(set(cat for cat in categories_list if cat.strip()))
+
+    return responses
+
+
+def execute_algorithm(code, user, responses, number_sections = 1):
     """Función para ejecutar los algoritmos de recomendación guardados en la base de datos del proyecto
 
     Args:
@@ -748,7 +777,7 @@ def execute_algorithm(code, user, responses = None):
         
         # Verificar que el código haya definido la función necesaria
         if "recommend" in environment:
-            return environment["recommend"](user, responses)
+            return environment["recommend"](user, responses, number_sections)
         else:
             return ["Error: The algorithm must define the function 'recommend(user, responses)'."]
     except Exception as e:

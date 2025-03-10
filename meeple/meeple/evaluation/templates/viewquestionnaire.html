@@ -43,14 +43,16 @@
             <br>
             <div class="form-control form-rounded">
                 <h5>{% trans "CreatorPtTwo" %}</h5>
-                <br>
-                <div class="d-flex flex-column flex-md-row justify-content-between custom-width mx-auto">
-                    <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 mb-3"
-                        value="moreEvals" name="button">{% trans "CreatorButtonPtOne" %}</button>
-                    <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 mb-3" value="exit"
-                        name="button">{% trans "CreatorButtonPtTwo" %}</button>
-                </div>
-
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <br>
+                    <div class="d-flex flex-column flex-md-row justify-content-between custom-width mx-auto">
+                        <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 mb-3"
+                            value="moreEvals" name="button">{% trans "CreatorButtonPtOne" %}</button>
+                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 mb-3" value="exit"
+                            name="button">{% trans "CreatorButtonPtTwo" %}</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -111,7 +113,7 @@
                                                         <!-- Pregunta -->
                                                         <div class="col-lg-4 col-md-12 fw-bold mb-3">
                                                             {{ question.0 }}
-                                                            <input type="hidden" id="{{ question.instance.id }}" name="{{ question.instance.id }}" value="{{ data.game }}">
+                                                            <input type="hidden" id="game-{{ question.2 }}" name="game-{{ question.2 }}" value="{{ data.game }}">
                                                         </div>
                                         
                                                         <!-- Opciones -->
