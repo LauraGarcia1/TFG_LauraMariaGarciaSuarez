@@ -96,7 +96,7 @@ class Interaction(models.Model):
         (4, 'Likely'),
         (5, 'Very likely'),
     ]
-    evaluation = models.ForeignKey('Evaluation', on_delete=models.CASCADE, null=False, related_name='answers')
+    evaluation = models.ForeignKey('Evaluation', on_delete=models.CASCADE, null=False, related_name='interactions')
     recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=False)
     interested = models.IntegerField(choices=INTEREST_CHOICES, default=3)
     buyorrecommend = models.IntegerField(choices=GENERAL_CHOICES, default=3)
@@ -138,7 +138,7 @@ class Algorithm(models.Model):
             ('deep_learning', 'Deep learning')
         ],
         default='hybrid'
-    ) # TODO: No sé de qué tipos pueden ser los algoritmos
+    )
 
     def __str__(self):
         return f"Algorithm name: {self.name}"
@@ -252,7 +252,6 @@ class Answer(models.Model):
 class Recommendation(models.Model):
     algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
     game = models.ForeignKey('Game', on_delete=models.SET_NULL, null=True)
-    # TODO: Cambiar parámetros en el diagrama
     metrics = models.JSONField(default=list)
     date_created = models.DateTimeField(auto_now_add=True)
 
@@ -270,10 +269,9 @@ class Game(models.Model):
         return f"Game id: {self.id}\nBGG id: {self.id_BGG}"
 
 class Evaluation(models.Model):
-    # INFO: una evaluacion no debería tener recomendaciones que le ha gustado al participante
     recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
-    puntuation = models.FloatField()
+    answers = models.JSONField(default=list)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

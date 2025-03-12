@@ -56,6 +56,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
   - [X] El algoritmo usado para el cuestionario
 - [X] Guardar en cache la informacion de los juegos de preferencias (09/03/2025)
 - [X] Cambio de ids en la memoria (10/03/2025)
+- [ ] Cambiar parámetros en el diagrama
 - [ ] Arreglar guardado de metrics
 - [ ] Ordenar de mayor a menor por fecha las evaluaciones hechas
 - [ ] Poner páginas de recomendaciones anteriores hechas

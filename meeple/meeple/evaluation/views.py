@@ -502,8 +502,6 @@ def view_study(request, pk):
         for question in section.questions.all():
             # Formulario de pregunta y sus opciones de respuesta (si las tiene)
             choices = question.choices.all()
-            print("la pregunta es ", (question.question_text, question.type))
-            print("los choices son ", choices)
 
             choice_forms = [ChoiceForm(instance=choice) for choice in choices]
             for choice_form in choice_forms:
@@ -524,10 +522,13 @@ def view_study(request, pk):
 
 @login_required
 def recommendPage(request):
-    """
-        Función que muestra la página de recomendaciones
+    """Función que muestra la página principal del usuario Participante
 
-        Autor: Laura Mª García Suárez
+    Args:
+        request (HttpRequest): instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web
+
+    Returns:
+        _type_: renderización de la página de inicio del Participante
     """
 
     if request.method == "POST":
@@ -536,7 +537,7 @@ def recommendPage(request):
 
         return redirect(reverse('home'))
 
-    user_evaluations = Evaluation.objects.filter(user=request.user)
+    user_evaluations = Evaluation.objects.filter(user=request.user).order_by('-date_created')
 
     return render(request, 'myrecommendations.html', {'user_evaluations': user_evaluations, 'MEDIA_URL': settings.MEDIA_URL})
 
@@ -555,31 +556,42 @@ def view_questionnaire(request, pk):
     user = User.objects.get(id=request.session.get('userid'))
 
     if request.method == "POST":
+        print("-----\n ", request.POST, "\n------")
         try:
             selections = json.loads(request.POST.get('selections', '{}'))
         except json.JSONDecodeError:
             return redirect('list-questionnaires')
         questionnaire = Questionnaire.objects.get(id=pk)
 
-        # TODO: Comprobación de guardado de datos de answer (debería tener game?)
+        # TODO: Comprobación de guardado de datos de answer (debería tener game? No porque para eso lo guardamos en recomendacion y todo en evaluación)
+        # Obtenemos todas las respuestas y las guardamos. Primero las respuestas a las 
+        # preguntas con opciones, y luego las preguntas con respuesta de otro tipo.
         answers = []
         for question_id, choice_ids in selections.items():
             # Guardamos las respuestas del participante
             question = Question.objects.get(id=question_id)
             for choice in choice_ids:
                 answer = Answer.objects.create(question=question, choice=Choice.objects.get(id=choice), user=user, language=settings.LANGUAGE_CODE)
-                answers.append(answer.choice)
+                answers.append(answer.id)
+        
+        question_keys = [(key.split('-')[1], value) for key, value in request.POST.items() if key.startswith("choice-")]
+        for key, answer_text in question_keys:
+            question = Question.objects.get(id=int(key))
+            if answer_text != "":
+                answer = Answer.objects.create(question=question, text=answer_text, choice=None, user=user, language=settings.LANGUAGE_CODE)
+                answers.append(answer.id)
+            
 
         # Creamos una evaluación por cada sección del cuestionario
-        # TODO: parametros
         for section in questionnaire.sections.all():
             recommendation_game = request.POST.get(f"game-{section.id}")
-            print("-----\n ", request.POST, "\n------")
-            print(f"_--Z Esto me da game-{section.id} ", recommendation_game, type(recommendation_game))
-            # TODO: obtener el id del game de alguna manera
+
+            # Guardamos la recomendación dada al usuario
+            # TODO: metrics
             recommendation = Recommendation.objects.create(game=Game.objects.get_or_create(id_BGG=int(recommendation_game))[0], algorithm=questionnaire.algorithm)
+
             # TODO: Guardar todas las respuestas del usuario en la evaluación
-            Evaluation.objects.create(recommendation=recommendation, user=user, puntuation=0.0)
+            Evaluation.objects.create(recommendation=recommendation, user=user, answers=answers)
 
         return redirect('list-questionnaires')
         
@@ -605,10 +617,9 @@ def view_questionnaire(request, pk):
                 
                 choice_forms = [ChoiceForm(instance=choice) for choice in choices]
 
-                print("esto que eeee", question.id)
                 questions_dict[(question.question_text, question.type, question.id)] = choice_forms
 
-            sections_dict[section.title] = {
+            sections_dict[(section.title, section.id)] = {
                 'questions': questions_dict,
                 'game': game
             }

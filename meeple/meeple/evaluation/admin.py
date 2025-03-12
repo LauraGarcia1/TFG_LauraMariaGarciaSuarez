@@ -71,9 +71,9 @@ class AlgorithmAdmin(admin.ModelAdmin):
 # Evaluation model
 @admin.register(Evaluation)
 class EvaluationAdmin(admin.ModelAdmin):
-    list_display = ['user', 'puntuation', 'date_created']
+    list_display = ['user', 'answers', 'date_created']
     search_fields = ['game__id_BGG', 'user__username']
-    list_filter = ['puntuation', 'date_created']
+    list_filter = ['answers', 'date_created']
 
 # Preference model
 @admin.register(Preference)
