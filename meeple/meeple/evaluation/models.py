@@ -252,7 +252,7 @@ class Answer(models.Model):
 class Recommendation(models.Model):
     algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=False)
     game = models.ForeignKey('Game', on_delete=models.SET_NULL, null=True)
-    metrics = models.JSONField(default=list)
+    metrics = models.JSONField(default=dict)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

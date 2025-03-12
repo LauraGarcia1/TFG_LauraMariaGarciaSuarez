@@ -48,6 +48,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Quitar campo de algoritmo de secciones (06/03/2025)
 - [X] Cambiar algoritmo de seccion a cuestionario (06/03/2025)
 - [X] Guardar información en caché de preferences y de questionnaries. (09/03/2025)
+- [X] Verificar actualización de choices (09/03/2025)
 - [X] Hacer validación de la página de creación de questionarios (09/03/2025)
   - [X] Que haya datos en el cuestionario, secciones, preguntas y choices (este último si fuese necesario)
   - [X] Que tenga secciones
@@ -56,13 +57,12 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
   - [X] El algoritmo usado para el cuestionario
 - [X] Guardar en cache la informacion de los juegos de preferencias (09/03/2025)
 - [X] Cambio de ids en la memoria (10/03/2025)
+- [X] Arreglar guardado de metrics (12/03/2025)
+- [X] Ordenar de mayor a menor por fecha las evaluaciones hechas (12/03/2025)
+- [X] Poner páginas de recomendaciones anteriores hechas (*/03/2025)
+- [X] edit y create study -> tipos de preguntas (*/03/2025)
 - [ ] Cambiar parámetros en el diagrama
-- [ ] Arreglar guardado de metrics
-- [ ] Ordenar de mayor a menor por fecha las evaluaciones hechas
-- [ ] Poner páginas de recomendaciones anteriores hechas
-- [ ] edit y create study -> tipos de preguntas
 - [ ] Página de visualización de algoritmos
-- [ ] Verificar actualización de choices
 - [ ] Probar cambios questionnaire y language
 - [ ] Revisar traducciones de todas las páginas
 - [ ] Ver diferentes accesos

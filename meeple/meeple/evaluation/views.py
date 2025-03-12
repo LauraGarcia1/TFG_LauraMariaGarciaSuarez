@@ -556,30 +556,32 @@ def view_questionnaire(request, pk):
     user = User.objects.get(id=request.session.get('userid'))
 
     if request.method == "POST":
-        print("-----\n ", request.POST, "\n------")
         try:
             selections = json.loads(request.POST.get('selections', '{}'))
         except json.JSONDecodeError:
             return redirect('list-questionnaires')
         questionnaire = Questionnaire.objects.get(id=pk)
 
-        # TODO: Comprobación de guardado de datos de answer (debería tener game? No porque para eso lo guardamos en recomendacion y todo en evaluación)
         # Obtenemos todas las respuestas y las guardamos. Primero las respuestas a las 
         # preguntas con opciones, y luego las preguntas con respuesta de otro tipo.
-        answers = []
+        answers = {}
         for question_id, choice_ids in selections.items():
             # Guardamos las respuestas del participante
             question = Question.objects.get(id=question_id)
             for choice in choice_ids:
                 answer = Answer.objects.create(question=question, choice=Choice.objects.get(id=choice), user=user, language=settings.LANGUAGE_CODE)
-                answers.append(answer.id)
+                if question.section.id not in answers:
+                    answers[question.section.id] = []
+                answers[question.section.id].append(answer.id)
         
         question_keys = [(key.split('-')[1], value) for key, value in request.POST.items() if key.startswith("choice-")]
         for key, answer_text in question_keys:
             question = Question.objects.get(id=int(key))
             if answer_text != "":
                 answer = Answer.objects.create(question=question, text=answer_text, choice=None, user=user, language=settings.LANGUAGE_CODE)
-                answers.append(answer.id)
+                if question.section.id not in answers:
+                    answers[question.section.id] = []
+                answers[question.section.id].append(answer.id)
             
 
         # Creamos una evaluación por cada sección del cuestionario
@@ -588,10 +590,9 @@ def view_questionnaire(request, pk):
 
             # Guardamos la recomendación dada al usuario
             # TODO: metrics
-            recommendation = Recommendation.objects.create(game=Game.objects.get_or_create(id_BGG=int(recommendation_game))[0], algorithm=questionnaire.algorithm)
+            recommendation = Recommendation.objects.create(game=Game.objects.get_or_create(id_BGG=int(recommendation_game))[0], algorithm=questionnaire.algorithm, metrics=get_responses_for_code(user=user))
 
-            # TODO: Guardar todas las respuestas del usuario en la evaluación
-            Evaluation.objects.create(recommendation=recommendation, user=user, answers=answers)
+            Evaluation.objects.create(recommendation=recommendation, user=user, answers=answers[section.id])
 
         return redirect('list-questionnaires')
         
