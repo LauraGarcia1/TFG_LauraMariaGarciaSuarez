@@ -61,15 +61,16 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Ordenar de mayor a menor por fecha las evaluaciones hechas (12/03/2025)
 - [X] Poner páginas de recomendaciones anteriores hechas (*/03/2025)
 - [X] edit y create study -> tipos de preguntas (*/03/2025)
+- [X] Página de visualización de algoritmos (13/03/2025)
+- [ ] Ver los juegos que poner en preferences
+- [ ] Al crear cuestionarios no debería obligar meter algoritmo
 - [ ] Cambiar parámetros en el diagrama
-- [ ] Página de visualización de algoritmos
 - [ ] Probar cambios questionnaire y language
 - [ ] Revisar traducciones de todas las páginas
 - [ ] Ver diferentes accesos
 - [ ] Documentar correctamente el código
 - [ ] Comprobar el error que está ocasionando algunos juegos en la página de preferencias
 - [ ] edad a fecha de nacimiento ???
-- [ ] Violacion de segmento?
 - [ ] Mostrar mensaje de error de que no existe el usuario (pag. inicial)
 - [ ] Comprimir HTML
 - [ ] Limpiar código que no se use

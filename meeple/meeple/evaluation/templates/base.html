@@ -74,14 +74,31 @@
                         {% endblock navig %}
 
                         <li class="nav-item ps-5">
-                            <form class="form-inline" action="{% url 'set_language' %}" method="post">
+                            <form method="post" action="{% url 'set_language' %}">
                                 {% csrf_token %}
-                                <input class="mr-sm-2 rounded" name="next" type="hidden" value="{{ redirect_to }}" />
-                                <select name="language">
-                                    <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
-                                    <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Español</option>
-                                </select>
-                                <input class="btn btn-success my-2 my-sm-0" type="submit" value="{% trans 'ChangeLanguage' %}">
+                                <!-- Indica a qué página redirigir después de cambiar idioma -->
+                                <input type="hidden" name="next" value="{{ request.path }}" />
+                                
+                                <!-- Campo oculto donde guardamos el idioma seleccionado -->
+                                <input type="hidden" name="language" id="languageInput">
+                              
+                                <div class="dropdown">
+                                  <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-language"></i>
+                                  </button>
+                                  <ul class="dropdown-menu">
+                                    <li>
+                                      <a class="dropdown-item {% if LANGUAGE_CODE == 'en' %}active{% endif %}" href="#" onclick="setLanguage('en')">
+                                        English
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a class="dropdown-item {% if LANGUAGE_CODE == 'es' %}active{% endif %}" href="#" onclick="setLanguage('es')">
+                                        Español
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
                             </form>
                         </li>
                     </ul>
@@ -93,5 +110,15 @@
     {% block body %}
     {% endblock body %}
 </body>
+
+<script>
+    function setLanguage(lang) {
+        // Asigna el idioma seleccionado al input oculto
+        document.getElementById('languageInput').value = lang;
+        // Envía el formulario con el POST a set_language
+        document.querySelector('form').submit();
+    }
+
+</script>
 
 </html>

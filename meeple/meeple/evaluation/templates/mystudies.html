@@ -18,13 +18,16 @@
                     style="transform: rotate(31deg);">
             </div>
 
-                {% csrf_token %}
-                <div
-                    class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-
+            <div
+            class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+            
                     <form action="" method="post">
+                    {% csrf_token %}
                     <div class="m-auto text-end">
-                        <a href="{% url 'create-questionnaire' %}" class="btn btn-primary rounded-pill btn-mostaza w-50 mt-auto">
+                        <a href="{% url 'list-algorithms' %}" class="btn btn-primary rounded-pill btn-terracota w-25 mt-auto">
+                            {% trans "AlgorithmsButtom" %}
+                        </a>
+                        <a href="{% url 'create-questionnaire' %}" class="btn btn-primary rounded-pill btn-mostaza w-25 mt-auto">
                             {% trans "StudiesButtom" %}
                         </a>
                     </div>
@@ -104,6 +107,7 @@
                         </table>
                         
                     </ul>
+                    
                     {% else %}
                     <p class="text-muted mt-5">{% trans "liststudies" %}</p>
                     {% endif %}

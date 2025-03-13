@@ -280,9 +280,10 @@ class Evaluation(models.Model):
 class Preference(models.Model):
     text = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
     category = models.CharField(max_length=100, blank=True, null=True)
+    context = models.CharField(max_length=100, blank=True, null=True)
     value = models.FloatField(default=0.0) # TODO: Es necesario?
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f"Preference user: {self.user}\nPreference categories: {self.category}\nPreference id: {self.id}"
+        return f"Preference user: {self.user}\nPreference categories: {self.category}\nPreference categories: {self.context}\nPreference id: {self.id}"
 

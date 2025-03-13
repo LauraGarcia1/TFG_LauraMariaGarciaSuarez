@@ -1,6 +1,6 @@
 def recommend(user, responses, number_sections=1):
     """
-    Función que recomienda juegos de mesa de forma aleatoria.
+    Función que recomienda los juegos de mesa más populares.
     
     Args:
         user (User): El usuario autenticado.
@@ -12,9 +12,10 @@ def recommend(user, responses, number_sections=1):
     """
     # Construir la consulta SQL usando las condiciones dinámicas.
     sql = """
-    SELECT id
-    FROM zacatrus_games
-    ORDER BY RAND()
+    SELECT gameId, AVG(rating) as average_rating
+    FROM zacatrus_ratings
+    GROUP BY gameId
+    ORDER BY average_rating DESC
     LIMIT %s
     """
     

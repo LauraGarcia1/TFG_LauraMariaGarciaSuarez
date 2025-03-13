@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import (
-    home, signup, logout, preferences, recommendPage, StudiesView, create_study, edit_study, delete_section, questionnaires, view_questionnaire, get_data_game, prueba, create_section_ajax, delete_study, upload_study, view_study
+    home, signup, logout, preferences, recommendPage, StudiesView, create_study, edit_study, delete_section, questionnaires, view_questionnaire, get_data_game, prueba, create_section_ajax, delete_study, upload_study, view_study, algorithms
 )
 
 urlpatterns = [
@@ -11,6 +11,7 @@ urlpatterns = [
     path('signup/preferences/', preferences, name='preferences'),
     path('my-recommendations/', recommendPage, name='my-recommendations'),
     path('my-studies/', StudiesView.as_view(), name='my-studies'),
+    path('my-studies/algorithms/', algorithms, name='list-algorithms'), 
     path('my-studies/create/', create_study, name='create-questionnaire'), 
     path('my-studies/<int:pk>/edit/', edit_study, name='edit-questionnaire'),
     path('my-studies/<int:pk>/view/', view_study, name='view-questionnaire'),

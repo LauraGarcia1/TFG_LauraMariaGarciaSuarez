@@ -459,6 +459,10 @@ msgid "InformationGameView"
 msgstr "Here goes the information about the game."
 
 #: evaluation/templates/mystudies.html:28
+msgid "AlgorithmsButtom"
+msgstr "Visualize algorithms"
+
+#: evaluation/templates/mystudies.html:31
 msgid "StudiesButtom"
 msgstr "Create study"
 
@@ -507,8 +511,8 @@ msgid "CreateStudyTitle"
 msgstr "Create a New Study"
 
 #: evaluation/templates/createstudy.html:38
-msgid "ReturnToStudyList"
-msgstr "Cancel"
+msgid "Return"
+msgstr "Return"
 
 #: evaluation/templates/createstudy.html:
 msgid "CreateSection"

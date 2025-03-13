@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.http import JsonResponse
 from django.conf import settings
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import connections
 from django.views.generic.list import ListView
 from django.utils.translation import gettext_lazy as _
@@ -121,8 +122,12 @@ def preferences(request):
                     "SELECT GROUP_CONCAT(DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories FROM (SELECT DISTINCT gameid, name FROM zacatrus_game_categories) zgc WHERE zgc.gameid = %s;", [pref])
                 categories = cursor.fetchone()
 
+                cursor.execute(
+                    "SELECT GROUP_CONCAT(DISTINCT zgc.name ORDER BY zgc.name ASC) AS contexts FROM (SELECT DISTINCT gameid, name FROM zacatrus_game_contexts) zgc WHERE zgc.gameid = %s;", [pref])
+                contexts = cursor.fetchone()
+
             Preference.objects.create(text=Game.objects.get_or_create(id_BGG=int(pref))[0], category=str(
-                categories), value=0, user=User.objects.get(id=request.session.get('userid')))
+                categories), context=str(contexts),value=0, user=User.objects.get(id=request.session.get('userid')))
 
         if request.session.get('rol') == "CR":
             return redirect(reverse('my-studies'))
@@ -167,10 +172,13 @@ def get_data_game(request):
 
 @login_required
 def questionnaires(request):
-    """
-        Función que muestra la página principal del usuario
+    """Función que muestra la página principal del usuario
 
-        Autor: Laura Mª García Suárez
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+
+    Returns:
+        HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
 
     if request.method == "POST":
@@ -184,11 +192,32 @@ def questionnaires(request):
 
     return render(request, 'liststudies.html', {'questionnaires' : questionnaires})
 
-class StudiesView(LoginRequiredMixin, ListView):
-    """
-        Función que muestra la página principal del usuario con rol Creador.
+@login_required
+def algorithms(request):
+    """Función para mostrar los algoritmos existentes al usuario Creador.
 
-        Autor: Laura Mª García Suárez
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+
+    Returns:
+        HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
+    """
+    algorithms = [(asyncio.run(translate_text(algorithm.name, translation.get_language())), asyncio.run(translate_text(algorithm.description, translation.get_language()))) for algorithm in Algorithm.objects.all()]
+
+    #for algorithm in Algorithm.objects.all():
+    #    asyncio.run(translate_text(algorithm.name, translation.get_language()))
+
+    return render(request, 'listalgorithms.html', {'algorithms' : algorithms})
+
+class StudiesView(LoginRequiredMixin, ListView):
+    """Función para eliminar secciones de cuestionarios/estudios.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+        pk (text): variable con la clave pública del objeto sección
+
+    Returns:
+        HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     model = Questionnaire
     template_name = 'mystudies.html'
@@ -198,6 +227,15 @@ class StudiesView(LoginRequiredMixin, ListView):
         return Questionnaire.objects.filter(user=self.request.user)
     
 def delete_section(request, pk):
+    """Función para eliminar secciones de cuestionarios/estudios.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+        pk (text): variable con la clave pública del objeto sección
+
+    Returns:
+        HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
+    """
     try:
         section = Section.objects.get(id=pk)
     except Section.DoesNotExist:
@@ -424,6 +462,16 @@ def edit_study(request, pk):
 
 @login_required
 def delete_study(request, pk):
+    """Función para eliminar cuestionarios/estudios.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+        pk (text): variable con la clave pública del objeto cuestionario
+
+    Returns:
+        HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
+    """
+
     # Obtenemos el cuestionario por su ID
     questionnaire = get_object_or_404(Questionnaire, pk=pk)
 
@@ -539,7 +587,23 @@ def recommendPage(request):
 
     user_evaluations = Evaluation.objects.filter(user=request.user).order_by('-date_created')
 
-    return render(request, 'myrecommendations.html', {'user_evaluations': user_evaluations, 'MEDIA_URL': settings.MEDIA_URL})
+    # Uso de páginas para poder visualizar las evaluaciones mejor
+    paginator = Paginator(user_evaluations, 5)
+
+    # Obtener el número de página de la URL
+    page_number = request.GET.get('page')
+    #user_evaluations_page = paginator.get_page(page_number)
+    try:
+        # Obtener la página actual
+        user_evaluations_page = paginator.page(page_number)
+    except PageNotAnInteger:
+        # Si el número de página no es un entero, mostrar la primera página
+        user_evaluations_page = paginator.page(1)
+    except EmptyPage:
+        # Si el número de página está fuera de rango, mostrar la última página
+        user_evaluations_page = paginator.page(paginator.num_pages)
+
+    return render(request, 'myrecommendations.html', {'user_evaluations_page': user_evaluations_page, 'MEDIA_URL': settings.MEDIA_URL})
 
 @login_required
 def view_questionnaire(request, pk):
@@ -594,7 +658,11 @@ def view_questionnaire(request, pk):
 
             Evaluation.objects.create(recommendation=recommendation, user=user, answers=answers[section.id])
 
-        return redirect('list-questionnaires')
+        redirection = request.POST.get("button")
+        if redirection == "moreEvals":
+            return redirect('list-questionnaires')
+        
+        return redirect('my-recommendations')
         
     # Obtener el cuestionario
     questionnaire = get_object_or_404(Questionnaire, id=pk)
@@ -734,7 +802,8 @@ def get_responses_for_code(user):
     """
     responses = {}
     # Obtener todas las categorías
-    categories_tuples = Preference.objects.filter(user=user).values_list('category', flat=True)
+    preferences = Preference.objects.filter(user=user)
+    categories_tuples = preferences.values_list('category', flat=True)
 
     categories_list = []
     for cat in categories_tuples:
@@ -742,6 +811,18 @@ def get_responses_for_code(user):
         categories_list.extend([category.strip() for category in cat.split(',')])
 
     responses['categories'] = list(set(cat for cat in categories_list if cat.strip()))
+
+    # Obtener todas las contexts
+    contexts_tuples = preferences.values_list('context', flat=True)
+
+    contexts_list = []
+    for ctx in contexts_tuples:
+        ctx = ctx.strip("()").replace("'", "")
+        contexts_list.extend([context.strip() for context in ctx.split(',')])
+
+    responses['contexts'] = list(set(ctx for ctx in contexts_list if ctx.strip()))
+
+    print(responses)
 
     return responses
 

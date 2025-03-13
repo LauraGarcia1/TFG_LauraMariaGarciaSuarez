@@ -44,9 +44,8 @@
                 <div id="results"></div>
             </div>
             <div class="mb-4">
-                <label for="age" class="form-label fw-bold required">{% trans "Age" %}:</label>
-                <input type="number" id="age" name="age" class="form-control rounded-pill" min="15" max="120"
-                    required>
+                <label for="birthdate" class="form-label fw-bold required">{% trans "Date of Birth" %}:</label>
+                <input type="date" id="birthdate" name="birthdate" class="form-control rounded-pill" max="{{ today }}" required>
             </div>
             <div class="mb-4">
                 <label class="form-label fw-bold required" id="rolLabel">{% trans "Rol" %}:</label>
@@ -115,104 +114,6 @@
                 <div>
                     <span class="tab"></span><input type="radio" id="advanced" name="expertiseGame" value="A">
                     <label for="advanced">{% trans "Advanced" %}</label>
-                </div>
-
-            </div>
-            <div class="mb-4">
-                <label class="form-label fw-bold required" id="time">{% trans "Time" %}:</label>
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="very-long" name="time" value="VL">
-                    <label for="very-long">{% trans "VeryLong" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="short" name="time" value="S">
-                    <label for="short">{% trans "Short" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="quick" name="time" value="Q">
-                    <label for="quick">{% trans "Quick" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="moderate" name="time" value="M">
-                    <label for="moderate">{% trans "Moderate" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="long" name="time" value="L">
-                    <label for="long">{% trans "Long" %}</label>
-                </div>
-            </div>
-            <div class="mb-4">
-                <label class="form-label fw-bold required" id="social">{% trans "Social" %}:</label>
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="toddlers" name="social" value="T">
-                    <label for="toddlers">{% trans "Toddlers" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="preschoolers" name="social" value="P">
-                    <label for="preschoolers">{% trans "Preschoolers" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="family" name="social" value="F">
-                    <label for="family">{% trans "Family" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="children" name="social" value="C">
-                    <label for="children">{% trans "Children" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="two-player" name="social" value="TP">
-                    <label for="two-player">{% trans "TwoPlayers" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="one-player" name="social" value="OP">
-                    <label for="one-player">{% trans "OnePlayer" %}</label>
-                </div>
-
-            </div>
-            <div class="mb-4">
-                <label class="form-label fw-bold required" id="mood">{% trans "Mood" %}:</label>
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="thematic" name="mood" value="T">
-                    <label for="thematic">{% trans "Thematic" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="strategic" name="mood" value="S">
-                    <label for="strategic">{% trans "Strategic" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="story-based" name="mood" value="SB">
-                    <label for="story-based">{% trans "StoryBased" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="party" name="mood" value="P">
-                    <label for="party">{% trans "Party" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="expert" name="mood" value="E">
-                    <label for="expert">{% trans "Expert" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="easy-to-play" name="mood" value="EP">
-                    <label for="easy-to-play">{% trans "EasyToPlay" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="checkbox" id="cooperative" name="mood" value="C">
-                    <label for="cooperative">{% trans "Cooperative" %}</label>
                 </div>
 
             </div>

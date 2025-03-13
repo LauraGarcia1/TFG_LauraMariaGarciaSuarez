@@ -47,20 +47,68 @@
 
 
                 <ul class="list-group list-group-flush pt-5">
-                    <h2>{% trans "RecommendationThirdTitle" %}</h2>
-                    {% for eval in user_evaluations %}
-                    <li class="list-group-item">
+                    {% for eval in user_evaluations_page %}
+                      <li class="list-group-item">
                         <div class="row">
-                            <div class="col-3">
-                                <img src="{{ MEDIA_URL }}images_zacatrus/{{ eval.recommendation.game.id_BGG }}.jpg" alt="Image" class="img-fluid">
-                            </div>
-                            <div class="col-sm-9">
-                                <p>{{ eval.date_created }}</p>
-                            </div>
+                          <div class="col-3">
+                            <img src="{{ MEDIA_URL }}images_zacatrus/{{ eval.recommendation.game.id_BGG }}.jpg" alt="Image" class="img-fluid">
+                          </div>
+                          <div class="col-9">
+                            <p>{{ eval.date_created }}</p>
+                          </div>
                         </div>
-                    </li>
+                      </li>
+                    {% empty %}
+                      <li class="list-group-item">
+                        {% trans "No evaluations found." %}
+                      </li>
                     {% endfor %}
-                </ul>
+                  </ul>
+                
+                  <!-- Controles de paginación -->
+                  <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                      {% if user_evaluations_page.has_previous %}
+                        <li class="page-item">
+                          <a class="page-link" href="?page={{ user_evaluations_page.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                          </a>
+                        </li>
+                      {% else %}
+                        <li class="page-item disabled">
+                          <span class="page-link" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                          </span>
+                        </li>
+                      {% endif %}
+                
+                      {% for num in user_evaluations_page.paginator.page_range %}
+                        {% if user_evaluations_page.number == num %}
+                          <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                          </li>
+                        {% else %}
+                          <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                          </li>
+                        {% endif %}
+                      {% endfor %}
+                
+                      {% if user_evaluations_page.has_next %}
+                        <li class="page-item">
+                          <a class="page-link" href="?page={{ user_evaluations_page.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                          </a>
+                        </li>
+                      {% else %}
+                        <li class="page-item disabled">
+                          <span class="page-link" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                          </span>
+                        </li>
+                      {% endif %}
+                    </ul>
+                  </nav>
             </div>
         </form>
     </div>

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block overflow %}
+    {% if algorithms %}
+    <body style="overflow-x: hidden;">
+    {% else %}
+    <body style="overflow-x: hidden; overflow-y: hidden;">
+    {% endif %}
+{% endblock overflow %}
+
+{% block body %}
+
+{% if not algorithms %}
+<div id="finish" class="modal">
+    <div class="modal-content info-content">
+        <h2>{% trans "NoExperiments" %} &hearts; </h2>
+    </div>
+</div>
+{% endif %}
+
+<div class="position-relative custom-container">
+    <div class="position-absolute bottom-0 end-0">
+        <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+            style="transform: rotate(31deg);">
+    </div>
+    <div class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+            
+        <div class="row align-items-center mb-3">
+            <div class="col-md-10">
+                <h2>{% trans "Algorithms" %}</h2>
+            </div>
+            <div class="col-md-2 justify-content-end">
+                <form method="GET" action="{% url 'my-studies' %}" class="d-inline">
+                    {% csrf_token %}
+                    <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "Return" %}</a>
+                </form>
+            </div>
+        </div>
+        <div class="row text-center h-100">
+            {% for aelem in algorithms %}
+                <div class="col-md-6">
+                    <div class="btn btn-primary btn-mostaza btn-large w-100 h-75 p-3" value="{{ qelem.id }}" name="button" data-mdb-ripple-init>
+                        <h3 class="responsive-title" >{{ aelem.0 }}</h3>
+                        <p>{{ aelem.1 }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+</div>
+
+
+{% endblock body %}

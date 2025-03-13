@@ -61,7 +61,7 @@
                     <div class="col-md-2 justify-content-end">
                         <form method="GET" action="{% url 'my-studies' %}" class="d-inline">
                             {% csrf_token %}
-                            <button class="btn btn-close" aria-label="Close"></button>
+                            <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "Return" %}</a>
                         </form>
                     </div>
                 </div>
