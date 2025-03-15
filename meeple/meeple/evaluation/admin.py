@@ -1,132 +1,158 @@
+"""
+Author: Laura Mª García Suárez
+Date: 2024-10-15
+Description: Este archivo contiene los forms del administrador del proyecto evaluation
+"""
 from django.contrib import admin
 import nested_admin
-from .models import Choice, User, Interaction, Questionnaire, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, Section
+from .models import Choice, User , Questionnaire, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, Section
 
-    # Inline para Choices dentro de Questions
 class ChoiceInline(nested_admin.NestedTabularInline):
+    """Clase para manejar la visualización anidada de opciones en el panel de administración.
+
+    Args:
+        nested_admin (NestedTabularInline): permite crear inlines anidados en la administración de Django con un diseño tabular.
+    """
     model = Choice
     extra = 1  # Número de opciones adicionales por defecto
 
-# Inline para Questions dentro de Sections
 class QuestionInline(nested_admin.NestedTabularInline):
+    """Clase para manejar la visualización anidada de preguntas en el panel de administración.
+
+    Args:
+        nested_admin (NestedTabularInline): permite crear inlines anidados en la administración de Django con un diseño tabular.
+    """
     model = Question
     inlines = [ChoiceInline]
     extra = 1
 
-# Inline para Sections dentro de Questionnaire
 class SectionInline(nested_admin.NestedStackedInline):
+    """Clase para manejar la visualización anidada de secciones en el panel de administración.
+
+    Args:
+        nested_admin (NestedTabularInline): permite crear inlines anidados en la administración de Django con un diseño tabular.
+    """
     model = Section
     inlines = [QuestionInline]
-    extra = 1
+    extra = 1 # Número de secciones adicionales por defecto
 
-# User model
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
+    """Administra la interfaz de usuario en el panel de administración de Django.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
     list_display = ['username', 'email', 'rol', 'location', 'age', 'frequencyGame', 'expertiseGame', 'gender', 'date_created']
     search_fields = ['username', 'email']
     list_filter = ['gender', 'frequencyGame', 'expertiseGame', 'date_created']
 
-# Questionnaire model
 @admin.register(Questionnaire)
 class QuestionnaireAdmin(nested_admin.NestedModelAdmin):
+    """Clase para gestionar el modelo Questionnaire en el panel de administración.
+
+    Args:
+        nested_admin (NestedTabularInline): permite crear inlines anidados en la administración de Django con un diseño tabular.
+    """
     inlines = [SectionInline]
     list_display = ['name', 'language', 'date_created']
     search_fields = ['name']
     list_filter = ['language', 'date_created']
 
-# Question model
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
+    """Clase para gestionar el modelo Question en el panel de administración.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
     list_display = ['section', 'question_text', 'type', 'language', 'date_created']
     search_fields = ['question_text', 'type']
     list_filter = ['type', 'language', 'date_created']
 
-# Answer model
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
+    """Clase para gestionar el modelo Answer en el panel de administración.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
     list_display = ['question', 'choice', 'language', 'date_created']
     search_fields = ['answer']
     list_filter = ['language', 'date_created']
 
-# Recommendation model
 @admin.register(Recommendation)
 class RecommendationAdmin(admin.ModelAdmin):
+    """Clase para gestionar el modelo Recommendation en el panel de administración.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
     list_display = ['algorithm', 'game', 'date_created']
     search_fields = ['algorithm__name', 'game__id_BGG']
     list_filter = ['date_created']
 
-# Game model
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
+    """Clase para gestionar el modelo Game en el panel de administración.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
     list_display = ['id_BGG']
     search_fields = ['id_BGG']
 
-# Algorithm model
 @admin.register(Algorithm)
 class AlgorithmAdmin(admin.ModelAdmin):
+    """Clase para gestionar el modelo Algorithm en el panel de administración.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
     list_display = ['name', 'version', 'type', 'description']
     search_fields = ['name', 'type']
     list_filter = ['type']
 
-# Evaluation model
 @admin.register(Evaluation)
 class EvaluationAdmin(admin.ModelAdmin):
+    """Clase para gestionar el modelo Evaluation en el panel de administración.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
     list_display = ['user', 'answers', 'date_created']
     search_fields = ['game__id_BGG', 'user__username']
     list_filter = ['answers', 'date_created']
 
-# Preference model
 @admin.register(Preference)
 class PreferenceAdmin(admin.ModelAdmin):
+    """Clase para gestionar el modelo Preference en el panel de administración.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
     list_display = ['text', 'category', 'value', 'user']
     search_fields = ['category']
     list_filter = ['value', 'user']
 
-# Choice model
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
+    """Clase para gestionar el modelo Choice en el panel de administración.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
     list_display = ['question', 'choice_text']
     search_fields = ['choice_text']
     list_filter = ['question', 'choice_text']
 
-# Interaction model
-@admin.register(Interaction)
-class InteractionAdmin(admin.ModelAdmin):
-    list_display = ('evaluation', 'interested', 'buyorrecommend', 'preference', 'influences', 'moreoptions')
-    list_filter = ('interested', 'buyorrecommend', 'preference', 'influences')
-    search_fields = ('evaluation__id', 'moreoptions')
-    list_per_page = 20
-    raw_fields = ('evaluation')
-
-    def get_interested_display(self, obj):
-        return obj.get_interested_display()
-    get_interested_display.short_description = 'Interest Level'
-
-    def get_buyorrecommend_display(self, obj):
-        return obj.get_buyorrecommend_display()
-    get_buyorrecommend_display.short_description = 'Buy or Recommend Probability'
-
-    def influences_display(self, obj):
-        INFLUENCE_CHOICES = {
-            '1': 'Price',
-            '2': 'Quality',
-            '3': 'Features',
-            '4': 'Popularity',
-            '5': 'Recommendations from other users',
-            '6': 'Other'
-        }
-        return [INFLUENCE_CHOICES.get(i, 'Unknown') for i in obj.influences]
-
-    def moreoptions_preview(self, obj):
-        return obj.moreoptions[:100]
-    
-    moreoptions_preview.short_description = 'More Options (Preview)'
-
-    list_display += ('get_interested_display', 'get_buyorrecommend_display', 'influences_display', 'moreoptions_preview')
-
-# Section model
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
+    """Clase para gestionar el modelo Section en el panel de administración.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
     inlines = [QuestionInline]
     list_display = ('title', 'questionnaire')
     search_fields = ('title', 'questionnaire')

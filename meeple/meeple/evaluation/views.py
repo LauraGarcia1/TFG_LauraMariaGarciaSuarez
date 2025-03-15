@@ -14,7 +14,7 @@ from django.views.generic.list import ListView
 from django.utils.translation import gettext_lazy as _
 from django.utils import translation
 from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnaireForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
-from .models import Preference, User, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation, Interaction, Section
+from .models import Preference, User, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation, Section
 import json
 import random
 
