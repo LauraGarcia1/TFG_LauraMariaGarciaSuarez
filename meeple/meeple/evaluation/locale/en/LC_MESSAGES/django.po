@@ -573,3 +573,7 @@ msgstr "Save Changes"
 #: evaluation/templates/editstudy.html:37
 msgid "Cancel"
 msgstr "Cancel"
+
+#: evaluation/templates/myrecommendations.html:63
+msgid "NoEval"
+msgstr "No evaluations found."

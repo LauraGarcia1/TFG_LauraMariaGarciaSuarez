@@ -577,3 +577,7 @@ msgstr "Guardar cambios"
 #: evaluation/templates/editstudy.html:37
 msgid "Cancel"
 msgstr "Cancelar"
+
+#: evaluation/templates/myrecommendations.html:63
+msgid "NoEval"
+msgstr "No tienes evaluaciones."

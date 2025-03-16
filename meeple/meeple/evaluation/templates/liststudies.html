@@ -2,6 +2,14 @@
 {% load static %}
 {% load i18n %}
 
+{% block overflow %}
+    {% if questionnaires %}
+    <body style="overflow-x: hidden;">
+    {% else %}
+    <body style="overflow-x: hidden; overflow-y: hidden;">
+    {% endif %}
+{% endblock overflow %}
+
 {% block body %}
 
 {% if not questionnaires %}
@@ -15,12 +23,15 @@
 <div class="position-relative custom-container">
     <form action="" method="post">
         {% csrf_token %}
-    <div class="container experiment-container d-flex justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-50 start-50 translate-middle border border-dark border-2 custom-width h-75">
-        <div class="row text-center h-100">
-            {% for qelem in questionnaires %}
-                <div class="col-md-6">
-                    <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-75 p-0" value="{{ qelem.id }}" name="button" data-mdb-ripple-init><h2 class="responsive-title" >{{ qelem.name }}</h2></button>
-                </div>
+        <div class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+            <div class="row text-center g-3">
+                {% for qelem in questionnaires %}
+                    <div class="col-12 col-md-6">
+                        <button class="btn btn-primary rounded-pill btn-terracota btn-large w-100 h-auto p-3 d-flex flex-column" value="{{ qelem.id }}" name="button">
+                            <h3 class="responsive-title text-wrap">{{ qelem.name }}</h3>
+                            <p class="text-wrap mb-0">{{ qelem.description }}</p>
+                        </button>
+                    </div>
                 {% endfor %}
             </div>
         </div>

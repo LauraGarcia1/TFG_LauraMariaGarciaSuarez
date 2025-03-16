@@ -21,7 +21,7 @@ class SignUpForm(forms.ModelForm):
         """Configura el modelo, los campos y opciones del formulario en un ModelForm de Django.
         """
         model = User
-        fields = ['username', 'password', 'email', 'location', 'age', 'rol', 'frequencyGame', 'expertiseGame']
+        fields = ['username', 'password', 'email', 'location', 'birthdate', 'rol', 'frequencyGame', 'expertiseGame']
 
     def save(self, commit=True):
         """Sobrescribe el método save de un ModelForm en Django para establecer la contraseña de un usuario de forma segura antes de guardarlo en la base de datos.

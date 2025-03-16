@@ -43,7 +43,7 @@ class UserAdmin(admin.ModelAdmin):
     Args:
         admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
     """
-    list_display = ['username', 'email', 'rol', 'location', 'age', 'frequencyGame', 'expertiseGame', 'gender', 'date_created']
+    list_display = ['username', 'email', 'rol', 'location', 'birthdate', 'frequencyGame', 'expertiseGame', 'gender', 'date_created']
     search_fields = ['username', 'email']
     list_filter = ['gender', 'frequencyGame', 'expertiseGame', 'date_created']
 

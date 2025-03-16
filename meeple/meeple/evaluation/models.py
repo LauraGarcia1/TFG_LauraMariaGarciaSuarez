@@ -26,7 +26,7 @@ class User(AbstractUser):
     """
     email = models.EmailField(unique=True)
     location = models.CharField(max_length=200, blank=True, null=True)
-    age = models.PositiveIntegerField()
+    birthdate = models.DateField(null=True)
     rol = models.CharField(
         max_length = 5,
         choices = [
@@ -66,7 +66,7 @@ class User(AbstractUser):
     date_created = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['password', 'email', 'location', 'age', 'frequencyGame', 'expertiseGame']
+    REQUIRED_FIELDS = ['password', 'email', 'location', 'birthdate', 'frequencyGame', 'expertiseGame']
 
     def __str__(self):
         """Devuelve el nombre de usuario como representación del objeto.

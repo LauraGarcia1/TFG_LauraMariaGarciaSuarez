@@ -84,7 +84,7 @@ def signup(request):
         password = request.POST.get("password")
         email = request.POST.get("email")
         location = request.POST.get("location")
-        age = request.POST.get("age")
+        birthdate = request.POST.get("birthdate")
         gender = request.POST.get("gender")
         rol = request.POST.get("rol")
         frequencyGame = request.POST.get("frequencyGame")
@@ -99,7 +99,7 @@ def signup(request):
             password = form.cleaned_data.get('password')
 
             user = authenticate(username=username, password=password, email=email, location=location,
-                                age=age, rol=rol, frequencyGame=frequencyGame, expertiseGame=expertiseGame, gender=gender)
+                                birthdate=birthdate, rol=rol, frequencyGame=frequencyGame, expertiseGame=expertiseGame, gender=gender)
 
             request.session['userid'] = user.id
             request.session['rol'] = user.rol
