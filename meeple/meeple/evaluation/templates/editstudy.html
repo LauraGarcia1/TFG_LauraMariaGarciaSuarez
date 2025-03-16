@@ -22,7 +22,7 @@
         <div
             class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
             <div class="row p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
-                <!-- Form de Questionnaire -->
+                <!-- Form del cuestionario -->
                 <h1>{% trans "EditStudy" %}</h1>
                 <form action="" method="post" id="formSubmit">
                     {% csrf_token %}
@@ -33,6 +33,7 @@
                 <h3 class="pt-3">{% trans "Sections" %}</h3>
                 {{ section_formset.management_form }}
                 <div id="sections-container">
+                    <!-- Forms de las secciones que forman parte del cuestionario -->
                 {% for section, questions in sections_dict.items %}
                 <div class="section-form" id="{{ section.instance.id }}" data-section-index="{{ section.instance.id }}">
                     <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body m-auto mb-3">
@@ -46,14 +47,14 @@
                                 <input type="hidden" name="sections-id" id="id_sections-id" value="{{ section.instance.id }}">
                             </p>
                         </div>
+                        <!-- Botones para tomar acciones en las preguntas -->
                         <div class="button-container mt-3">
                             <button class="add-question-btn btn btn-primary rounded-pill btn-purple">{% trans "CreateQuestion" %}</button>
                             <button class="del-questions-btn btn btn-danger rounded-pill" id="del-questions-{{ section.instance.id }}-btn" disabled>{% trans "DelQuestions" %}</button>
                         </div>
                         {{ question_formset.management_form }}
-                          <!-- Contenedor para las preguntas de esta sección -->
                             <div class="questions-container">
-                                <!-- Se agregarán los formularios de preguntas aquí -->
+                                <!-- Forms de las preguntas que forman parte de la sección -->
                                 {% for question, choices in questions.items %}
                                 <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}" data-question-index="{{ question.instance.id }}" data-section-index="{{ section.instance.id }}">
                                         <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme m-auto mt-3">
@@ -67,6 +68,7 @@
                                             </p>
                                         </div>
                                         <div class="has-choices" style="display: none;">
+                                            <!-- Botones para tomar acciones en las opciones -->
                                             <div class="button-container mt-3">
                                                 <button class="add-choice-btn btn btn-primary rounded-pill btn-purple">{% trans "CreateChoice" %}</button>
                                                 <button class="del-choices-btn btn btn-danger rounded-pill" id="del-choices-{{ section.instance.id }}-{{ question.instance.id }}-btn" disabled>{% trans "DelChoices" %}</button>
@@ -75,7 +77,7 @@
                                             <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body m-auto mt-3">
                                                 <h4>{% trans "Choices" %}</h4>
                                                 <div class="choices-container">
-                                                <!-- Se agregarán los formularios de preguntas aquí -->
+                                                <!-- Forms de las opciones que forman parte de la pregunta -->
                                                     {% for choice in choices %}
                                                     <div class="choice-form" id="{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}" data-choice-index="{{ choice.instance.id }}" data-section-index="{{ section.instance.id }}" data-question-index="{{ question.instance.id }}">
                                                         {{ choice.as_p }}
@@ -97,6 +99,7 @@
                 </div>
                 {% endfor %}
             </div>
+                <!-- Botones para tomar acciones en las secciones, cancelar la creación o guardar el cuestionario y los cambios -->
                 <div class="row">
                     <div class="col-6 col-md-3 mb-2">
                         <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple">{% trans "CreateSection" %}</button>
@@ -119,6 +122,7 @@
         </div>
     </div>
 
+    <!-- Form de la sección -->
     <script type="text/template" id="section-template">
         <div class="section-form" data-section-index="__index__">
             <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body mb-3">
@@ -127,18 +131,22 @@
                 <div>
                     {{ form.as_p }}
                 </div>
+
+                <div class="questions-container">
+                    {{ question_formset.management_form }}
+                    <!-- Forms de las preguntas. Se generan aquí dinámicamente. -->
+                </div>
+                <!-- Botones para tomar acciones en las preguntas -->
                 <div class="button-container mt-3">
                     <button type="button" class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
                     <button type="button" id="del-questions-btn" class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
-                </div>
-                <div class="questions-container">
-                    {{ question_formset.management_form }}
                 </div>
                 {% endfor %}
             </div>
         </div>
     </script>
     
+    <!-- Form de la pregunta -->
     <script type="text/template" id="question-template">
         <div class="question-form" data-question-index="__qindex__" data-section-index="__section_index__">
             <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme mt-3">
@@ -152,9 +160,11 @@
                     {{ choice_formset.management_form }}
                     <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
                         <h4>{% trans "Choices" %}</h4>
-                        <div class="choices-container"></div>
+                        <div class="choices-container">
+                            <!-- Forms de las opciones. Se generan aquí dinámicamente. -->
+                        </div>
                     </div>
-                    
+                    <!-- Botones para tomar acciones en las opciones -->
                     <div class="button-container mt-3">
                         <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
                         <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
@@ -165,6 +175,7 @@
         </div>
     </script>
     
+    <!-- Form de la opción -->
     <script type="text/template" id="choice-template">
         {% for form_c in choice_formset %}
         <div class="choice-form" data-choice-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
@@ -390,6 +401,7 @@
                 deleteButton.prop("disabled", !hasChecked);
             }
 
+            // Encontramos todas las secciones cuyo checkbox de eliminación está marcado
             $(document).on("change", "input[id^='id_sections-'][id$='-DELETE']", function () {
                 toggleDeleteButtonSection();
             });
@@ -400,7 +412,8 @@
                 var hasChecked = $("input[id^='id_questions-'][id$='" + section + "-DELETE']:checked").length > 0;
                 button.prop("disabled", !hasChecked);
             }
-
+            
+            // Escuchamos los cambios en los checkboxes de eliminación dentro de los formularios de preguntas
             $(document).on("change", "input[id^='id_questions-'][id$='-DELETE']", function () {
                 var checkboxId = $(this).attr("id");
                 var regex = /^id_questions-(\d+)-(\d+)-DELETE$/;
@@ -414,7 +427,8 @@
                 var hasChecked = $("input[id^='id_choices-'][id$='-" + section + "-" + question + "-DELETE']:checked").length > 0;
                 button.prop("disabled", !hasChecked);
             }
-
+            
+            // Escuchamos los cambios en los checkboxes de eliminación dentro de los formularios de opciones
             $(document).on("change", "input[id^='id_choices-'][id$='-DELETE']", function () {
                 var checkboxId = $(this).attr("id");
                 var regex = /^id_choices-(\d+)-(\d+)-(\d+)-DELETE$/;

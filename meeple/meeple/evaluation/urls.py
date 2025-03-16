@@ -1,6 +1,11 @@
+"""
+Author: Laura Mª García Suárez
+Date: 2024-10-15
+Description: Este archivo contiene las rutas disponibles del proyecto evaluation
+"""
 from django.urls import path, include
 from .views import (
-    home, signup, logout, preferences, recommendPage, StudiesView, create_study, edit_study, delete_section, questionnaires, view_questionnaire, get_data_game, prueba, create_section_ajax, delete_study, upload_study, view_study, algorithms
+    home, signup, logout, preferences, recommendPage, StudiesView, create_study, edit_study, questionnaires, view_questionnaire, get_data_game, delete_study, upload_study, view_study, algorithms
 )
 
 urlpatterns = [
@@ -17,13 +22,8 @@ urlpatterns = [
     path('my-studies/<int:pk>/view/', view_study, name='view-questionnaire'),
     path('my-studies/<int:pk>/delete/', delete_study, name='delete-questionnaire'),
     path('my-studies/<int:pk>/upload/', upload_study, name='upload-questionnaire'),
-    path("create-section/", create_section_ajax, name="create_section_ajax"),
-    path('delete-section/<int:pk>/', delete_section, name='delete-section'),
     path('questionnaires/', questionnaires, name='list-questionnaires'),
     path('questions/<int:pk>/', view_questionnaire, name='questionnaire'),
     path('i18n/', include('django.conf.urls.i18n')),
     path('get_data_game/', get_data_game, name='get_data_game'),
-
-
-    path('prueba/', prueba, name='prueba'),
 ]

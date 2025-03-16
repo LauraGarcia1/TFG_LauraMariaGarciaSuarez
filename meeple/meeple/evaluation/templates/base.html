@@ -6,6 +6,7 @@
 {% endblock overflow-html %}
 
 <head>
+    <!-- Metadatos del documento -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -31,7 +32,7 @@
 
 <body class="overflow-hidden h-100">
     {% endblock overflow %}
-
+    <!-- Menú de navegación -->
     <nav class="navbar navbar-expand-lg front zindex-4">
         <div class="container-fluid">
             <a class="navbar-brand ms-3" href="{% url 'home' %}">
@@ -40,14 +41,14 @@
             </a>
 
             
-                <!-- Button that collapse the navigation bar -->
+                <!-- Botón para colapsar la navegación -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Menu that can collapse -->
+                <!-- Menú que colapsa -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="nav navbar-nav navbar-right">
                         {% block navig %}
@@ -112,13 +113,13 @@
 </body>
 
 <script>
+    // Función para cambiar el idioma de la aplicación
     function setLanguage(lang) {
         // Asigna el idioma seleccionado al input oculto
         document.getElementById('languageInput').value = lang;
         // Envía el formulario con el POST a set_language
         document.querySelector('form').submit();
     }
-
 </script>
 
 </html>

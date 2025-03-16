@@ -1,3 +1,8 @@
+"""
+Author: Laura Mª García Suárez
+Date: 2024-10-15
+Description: Este archivo contiene funciones o clases del proyecto evaluation que controlan la lógica de negocio y gestionan las peticiones HTTP, manejan datos de los modelos, renderizan plantillas o devuelven respuestas JSON para la API
+"""
 import asyncio
 from googletrans import Translator
 from django.shortcuts import render, redirect, get_object_or_404
@@ -19,10 +24,13 @@ import json
 import random
 
 def home(request):
-    """
-        Función que muestra la página de inicio
+    """Gestiona la página de inicio de Meeple
 
-        Autor: Laura Mª García Suárez
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+
+    Returns:
+        HttpResponse: Respuesta HTTP con la página de registro o redirección.
     """
     title_home = _("Welcome")
     username_home = _("Username")
@@ -61,10 +69,13 @@ def home(request):
 
 
 def signup(request):
-    """
-        Función que muestra la página de registro
+    """Gestiona el registro de usuarios.
 
-        Autor: Laura Mª García Suárez
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+
+    Returns:
+        HttpResponse: Respuesta HTTP con la página de registro o redirección.
     """
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -106,13 +117,28 @@ def signup(request):
     return render(request, 'register.html', {'username': request.session['username'], 'password': request.session['password'], 'form': form})
 
 def logout(request):
+    """Cierra la sesión del usuario.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+
+    Returns:
+        HttpResponseRedirect: Redirige a la página de inicio.
+    """
     request.session.flush()
     return redirect('home')
     
 
 @login_required
 def preferences(request):
-    # TODO: solo podrá entrar en caso de que sea su primera vez escogiendo
+    """Gestiona la vista de preferencias del usuario.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+
+    Returns:
+        HttpResponse: Respuesta HTTP con la página de preferencias.
+    """
     if request.method == "POST":
         preferences = request.POST.getlist('likedPreferences')
 
@@ -139,10 +165,12 @@ def preferences(request):
 
 
 def get_preferences_games():
+    """Obtiene las preferencias de juegos del usuario.
+
+    Returns:
+        list: Lista de juegos basada en las preferencias del usuario.
+    """
     with connections['external_db'].cursor() as cursor:
-        ''' TODO: eliminar esta consulta
-        SELECT zg.id, zg.name, zg.url, zgd.description, GROUP_CONCAT( DISTINCT zgc.name ORDER BY zgc.name ASC) AS categories, TRUNCATE(AVG(zr.rating), 1) AS ratings, GROUP_CONCAT( DISTINCT zgt.name ORDER BY zgt.name ASC) AS types, GROUP_CONCAT( DISTINCT zgct.name ORDER BY zgct.name ASC) AS contexts FROM (SELECT id, name, url FROM zacatrus_games LIMIT 10) zg LEFT JOIN zacatrus_game_descriptions zgd ON zg.id = zgd.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_categories) zgc ON zg.id = zgc.gameid LEFT JOIN (SELECT DISTINCT gameid, rating FROM zacatrus_ratings) zr ON zg.id = zr.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_types) zgt ON zg.id = zgt.gameid LEFT JOIN (SELECT DISTINCT gameid, name FROM zacatrus_game_contexts) zgct ON zg.id = zgct.gameid GROUP BY zg.id, zg.name, zg.url, zgd.description;
-        '''
         cursor.execute("SELECT id, name FROM zacatrus_games LIMIT 5;")
         zacatrus_games = cursor.fetchall()
 
@@ -150,6 +178,14 @@ def get_preferences_games():
 
 
 def get_data_game(request):
+    """Obtiene los datos de un juego específico.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
+
+    Returns:
+        JsonResponse: Respuesta con los datos del juego en formato JSON.
+    """
     if request.method == 'POST':
         id = request.POST.get('id')
         with connections['external_db'].cursor() as cursor:
@@ -225,24 +261,6 @@ class StudiesView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Questionnaire.objects.filter(user=self.request.user)
-    
-def delete_section(request, pk):
-    """Función para eliminar secciones de cuestionarios/estudios.
-
-    Args:
-        request (HttpRequest): Objeto de solicitud HTTP de Django que contiene los datos enviados por el usuario.
-        pk (text): variable con la clave pública del objeto sección
-
-    Returns:
-        HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
-    """
-    try:
-        section = Section.objects.get(id=pk)
-    except Section.DoesNotExist:
-        messages.success(
-            request, 'Object Does not exist'
-        )
-        return redirect('edit-questionnaire', pk=section.questionnaire.id)
 
 @login_required
 def create_study(request):
@@ -310,12 +328,6 @@ def create_study(request):
         'question_formset': question_formset,
         'choice_formset': choice_formset,
     })
-
-def create_section_ajax(request):
-    if request.method == "POST":
-        title = request.POST.get("title", "")
-        section = Section.objects.create(title=title)
-        return JsonResponse({"id": section.id})
     
 @login_required
 def edit_study(request, pk):
@@ -875,8 +887,3 @@ def execute_algorithm(code, user, responses, number_sections = 1):
             return ["Error: The algorithm must define the function 'recommend(user, responses)'."]
     except Exception as e:
         return [f"Algorithm execution error: {str(e)}"]
-
-# TODO: quitar esto
-
-def prueba(request):
-    return render(request, 'prueba.html')

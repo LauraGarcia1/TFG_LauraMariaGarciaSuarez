@@ -21,7 +21,7 @@
 
         <div
             class="justify-content-start shadow-lg p-4 p-md-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-            <!-- Form de Questionnaire -->
+            <!-- Form del cuestionario -->
             <h1>{% trans "CreateStudyTitle" %}</h1>
             <form action="" method="post">
                 <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme">
@@ -33,9 +33,9 @@
                     <h3 class="pt-3">{% trans "Sections" %}</h3>
                     {{ section_formset.management_form }}
                     <div id="sections-container">
-                        <!-- Secciones que se añaden dinámicamente -->
+                        <!-- Forms de las secciones. Se generan aquí dinámicamente. -->
                     </div>
-
+                    <!-- Botones para tomar acciones en las secciones, cancelar la creación o guardar el cuestionario y los cambios -->
                     <div class="row">
                         <div class="col-6 col-md-3 mb-2">
                             <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateSection" %}</button>
@@ -55,6 +55,7 @@
         </div>
     </div>
 
+    <!-- Form de la sección -->
     <script type="text/template" id="section-template">
         <div class="section-form" data-section-index="__index__">
             <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body mb-3">
@@ -64,9 +65,11 @@
                     {{ form.as_p }}
                 </div>
                 
-                {{ question_formset.management_form }}
-                <div class="questions-container"></div>
-
+                <div class="questions-container">
+                    {{ question_formset.management_form }}
+                    <!-- Forms de las preguntas. Se generan aquí dinámicamente. -->
+                </div>
+                <!-- Botones para tomar acciones en las preguntas -->
                 <div class="button-container mt-3">
                     <button type="button" class="add-question-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateQuestion" %}</button>
                     <button type="button" id="del-questions-btn" class="del-questions-btn btn btn-danger rounded-pill" disabled>{% trans "DelQuestions" %}</button>
@@ -76,6 +79,7 @@
         </div>
     </script>
     
+    <!-- Form de la pregunta -->
     <script type="text/template" id="question-template">
         <div class="question-form" data-question-index="__qindex__" data-section-index="__section_index__">
             <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme mt-3">
@@ -89,20 +93,22 @@
                     {{ choice_formset.management_form }}
                     <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
                         <h4>{% trans "Choices" %}</h4>
-                        <div class="choices-container"></div>
+                        <div class="choices-container">
+                            <!-- Forms de las opciones. Se generan aquí dinámicamente. -->
+                        </div>
                     </div>
-                    
+                    <!-- Botones para tomar acciones en las opciones -->
                     <div class="button-container mt-3">
                         <button type="button" class="add-choice-btn btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateChoice" %}</button>
                         <button type="button" id="del-choices-btn" class="del-choices-btn btn btn-danger rounded-pill" disabled>{% trans "DelChoices" %}</button>
                     </div>
                 </div>
-
                 {% endfor %}
             </div>
         </div>
     </script>
     
+    <!-- Form de la opción -->
     <script type="text/template" id="choice-template">
         {% for form_c in choice_formset %}
         <div class="choice-form" data-choice-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
@@ -113,7 +119,7 @@
 
     <script>
         $(document).ready(function () {
-            // Función para comprobar que los campos del cuestionario tienen datos
+            // Funciones para habilitar la creación de secciones en caso de haber datos en los campos del cuestionario
             function checkQuestionnaireFields() {
                 var name = $("#id_name").val().trim();
                 var lang = $("#id_language").val().trim();
@@ -123,7 +129,7 @@
                     $("#create-section-btn").prop("disabled", true);
                 }
             }
-            // Escuchar cambios en los inputs y textarea del cuestionario
+            // Para escuchar cambios en los inputs y textarea del cuestionario
             $("#questionnaire-form input, #questionnaire-form textarea").on("input", checkQuestionnaireFields);
 
             // Variable para llevar el índice de secciones
@@ -162,7 +168,7 @@
                 });
             });
 
-            // Delegar evento: cuando se escriba en el título de la sección, habilitar el botón "Añadir Pregunta" si hay texto.
+            // Función para habilitar el botón para añadir preguntas en caso de haber datos en el campo de sección
             $(document).on("input", ".section-form input[id^='id_sections-']", function () {
                 var $sectionForm = $(this).closest(".section-form");
                 var titleVal = $(this).val().trim();
@@ -173,6 +179,7 @@
                 }
             });
 
+            // Función para habilitar el botón para eliminar preguntas en caso de haber forms de preguntas
             $(document).on("input", ".section-form input[id$='-DELETE']", function () {
                 var $sectionForm = $(this).closest(".section-form");
                 var titleVal = $(this).val().trim();
@@ -183,7 +190,7 @@
                 }
             });
 
-            // Delegar evento: al pulsar "Añadir Pregunta" en una sección, añadir un formulario de pregunta
+            // Función con acciones al añadir una nueva pregunta
             $(document).on("click", ".add-question-btn", function (e) {
                 e.preventDefault();
                 var $sectionForm = $(this).closest(".section-form");
@@ -211,7 +218,7 @@
                 }
             });
 
-            // Delegar evento: al pulsar "Añadir Choice" en una sección, añadir un formulario de pregunta
+            // Función con acciones al añadir una nueva opción
             $(document).on("click", ".add-choice-btn", function (e) {
                 e.preventDefault();
                 var $questionForm = $(this).closest(".question-form");
@@ -232,8 +239,8 @@
                 $questionForm.find(".choices-container").append(newChoiceHtml);
             });
 
-            // FUNCIONES DE ELIMINACIÓN DE ELEMENTOS
-            // Función para habilitar o deshabilitar el botón de "Eliminar" según si hay checkboxes seleccionados
+            //////////////////////// FUNCIONES DE ELIMINACIÓN DE ELEMENTOS
+            // Función para habilitar o deshabilitar el botón para eliminar secciones según si hay checkboxes seleccionados
             function toggleDeleteButtonSection() {
                 var deleteButton = $("#delete-sections-btn");
                 // Comprobamos si al menos un checkbox de eliminación está marcado
@@ -246,7 +253,7 @@
                 toggleDeleteButtonSection(); // Revisa si hay checkboxes seleccionados
             });
 
-            // Al pulsar el botón de "Eliminar Secciones"
+            // Función para eliminar el form de la sección
             $("#delete-sections-btn").click(function (e) {
                 e.preventDefault();
 
@@ -262,7 +269,7 @@
                 toggleDeleteButtonSection();
             });
 
-            // Función para habilitar o deshabilitar el botón de "Eliminar" según si hay checkboxes seleccionados
+            // Función para habilitar o deshabilitar el botón para eliminar preguntas según si hay checkboxes seleccionados
             function toggleDeleteButtonQuestion(section) {
                 button = $("button[id='del-questions-" + section + "-btn']");
                 // Comprobamos si al menos un checkbox de eliminación está marcado en los formularios de preguntas
@@ -278,7 +285,7 @@
                 toggleDeleteButtonQuestion(match[2]); // Revisa si hay checkboxes seleccionados
             });
 
-            // Al pulsar el botón de "Eliminar Preguntas"
+            // Función para realizar las acciones para eliminar las preguntas dentro de la misma sección
             $(document).on("click", ".del-questions-btn", function (e) {
                 e.preventDefault();
 
@@ -297,7 +304,7 @@
                 toggleDeleteButtonQuestion(match[1]);
             });
 
-            // Función para habilitar o deshabilitar el botón de "Eliminar" según si hay checkboxes seleccionados
+            // Función para habilitar o deshabilitar el botón para eliminar opciones según si hay checkboxes seleccionados
             function toggleDeleteButtonChoice(section, question) {
                 button = $("button[id='del-choices-" + section + "-" + question + "-btn']");
                 // Comprobamos si al menos un checkbox de eliminación está marcado en los formularios de opciones
@@ -313,7 +320,7 @@
                 toggleDeleteButtonChoice(match[2], match[3]); // Revisa si hay checkboxes seleccionados
             });
 
-            // Al pulsar el botón de "Eliminar Opciones"
+            // Función para realizar las acciones para eliminar las opciones dentro de la misma pregunta
             $(document).on("click", ".del-choices-btn", function (e) {
                 e.preventDefault();
 

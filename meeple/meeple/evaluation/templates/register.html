@@ -412,5 +412,27 @@
 
 </script>
 
+<script type="text/javascript">
+    window.onload = function() {
+      {% if form.errors %}
+        // Crear un array para almacenar los errores
+        let errors = [];
+        
+        // Iterar sobre los errores del formulario
+        {% for field, errors_list in form.errors.items %}
+          {% for error in errors_list %}
+            errors.push("Campo {{ field.label }}: " + "{{ error }}");
+          {% endfor %}
+        {% endfor %}
+    
+        // Mostrar alerta si hay errores
+        if (errors.length > 0) {
+          alert(errors.join("\n"));
+        }
+      {% endif %}
+    }
+  </script>
+  
+
 
 {% endblock body %}
