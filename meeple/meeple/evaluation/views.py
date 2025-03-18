@@ -92,8 +92,6 @@ def signup(request):
         frequencyGame = request.POST.get("frequencyGame")
         expertiseGame = request.POST.get("expertiseGame")
 
-        print(form.errors)
-
         if form.is_valid():
             form.save()
 
@@ -342,7 +340,6 @@ def edit_study(request, pk):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
-        print(request.POST)
         questionnaire = Questionnaire.objects.get(id=pk)
         questionnaire.name = request.POST.get('name')
         questionnaire.description = request.POST.get('description')
@@ -419,7 +416,6 @@ def edit_study(request, pk):
 
             # Comprobamos si hay objetos nuevos, si es así los creamos
             for section in section_ids: # Comprobamos en secciones existentes
-                print(section)
                 create_questions(request, section_index=section, list_questions=question_ids, language=questionnaire.language)
                 create_questions(request, section_index=section, language=questionnaire.language)
 
@@ -835,8 +831,6 @@ def get_responses_for_code(user):
         contexts_list.extend([context.strip() for context in ctx.split(',')])
 
     responses['contexts'] = list(set(ctx for ctx in contexts_list if ctx.strip()))
-
-    print(responses)
 
     return responses
 

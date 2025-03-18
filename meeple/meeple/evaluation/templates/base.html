@@ -74,7 +74,7 @@
                         {% endif %}
                         {% endblock navig %}
 
-                        <li class="nav-item ps-5">
+                        <li class="nav-item ps-5 m-auto">
                             <form method="post" action="{% url 'set_language' %}">
                                 {% csrf_token %}
                                 <!-- Indica a qué página redirigir después de cambiar idioma -->

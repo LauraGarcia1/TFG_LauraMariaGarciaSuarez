@@ -64,7 +64,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Página de visualización de algoritmos (13/03/2025)
 - [ ] Ver los juegos que poner en preferences
 - [ ] En caso de ser Creador, no pedir ciertos parámetros
-- [ ] Al crear cuestionarios no debería obligar meter algoritmo
+- [X] Al crear cuestionarios no debería obligar meter algoritmo (18/03/2025)
 - [ ] Cambiar parámetros en el diagrama
 - [ ] Probar cambios questionnaire y language
 - [ ] Revisar traducciones de todas las páginas
