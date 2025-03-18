@@ -57,6 +57,8 @@ def home(request):
                 return redirect(reverse('my-recommendations'))
             
             if User.objects.filter(username=username).exists():
+                # TODO: Mensaje de que la contrasñea es errónea
+                message_error = ""
                 return render(request, 'home.html', {'title': title_home, 'username': username_home, 'password': password_home, 'login': login_home, 'signup': signup_home, 'redirect_to': request.path})
 
         request.session['username'] = username
@@ -205,7 +207,7 @@ def get_data_game(request):
                 return JsonResponse({'name': name, 'description': description, 'categories': categories, 'ratings': ratings, 'types': types, 'contexts': contexts})
             else:
                 return JsonResponse({'error': 'No se encontraron datos'})
-
+            
 @login_required
 def questionnaires(request):
     """Función que muestra la página principal del usuario

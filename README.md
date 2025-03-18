@@ -63,6 +63,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] edit y create study -> tipos de preguntas (*/03/2025)
 - [X] Página de visualización de algoritmos (13/03/2025)
 - [ ] Ver los juegos que poner en preferences
+- [ ] En caso de ser Creador, no pedir ciertos parámetros
 - [ ] Al crear cuestionarios no debería obligar meter algoritmo
 - [ ] Cambiar parámetros en el diagrama
 - [ ] Probar cambios questionnaire y language
@@ -255,4 +256,6 @@ Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especia
    https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools
    Dbeaver
 
--> Traducción dinámica -> API Libretranslate
+-> Traducción dinámica -> Librería googletrans
+
+-> Localización -> API Nominatim para la localización

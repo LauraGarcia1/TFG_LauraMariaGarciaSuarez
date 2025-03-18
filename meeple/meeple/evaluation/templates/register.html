@@ -13,130 +13,134 @@
     <div class="shadow-lg p-4 bg-body rounded rounded-5 position-absolute top-50 start-50 translate-middle border border-dark border-2 custom-width m-auto"
         style="max-height: 80vh; max-width: 720px;">
         <h2 class="pb-4 text-center fw-bold">Sign up</h2>
-        <form action="" method="post" class="d-flex flex-column justify-content-center align-items-center w-100 h-100" style="max-height: 50%;">
-        {% csrf_token %}
-        <div class="scroll-hover w-100">
-            <div class="mb-4 w-100">
-                <label for="username" class="form-label fw-bold required">{% trans "Username" %}:</label>
-                <input type="text" id="username" name="username" class="form-control rounded-pill w-100"
-                    value="{{ username }}" required>
+        <form action="" method="post" class="d-flex flex-column justify-content-center align-items-center w-100 h-100"
+            style="max-height: 50%;">
+            {% csrf_token %}
+            <div class="scroll-hover w-100">
+                <!-- Campos de registro necesarios para crear usuarios -->
+                <div class="mb-4 w-100">
+                    <label for="username" class="form-label fw-bold required">{% trans "Username" %}:</label>
+                    <input type="text" id="username" name="username" class="form-control rounded-pill w-100"
+                        value="{{ username }}" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-bold required">{% trans "Password" %}:</label>
+
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" class="form-control rounded-pill"
+                            value="{{ password }}" required>
+                        <span class="input-group-text bg-white border-0" id="togglePassword" style="cursor: pointer;">
+                            <i class="bi bi-eye-slash" id="icono"></i>
+                        </span>
+                    </div>
+                    <div id="password-error-message" class="text-danger"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="form-label fw-bold required">{% trans "Email" %}:</label>
+                    <input type="email" id="email" name="email" class="form-control rounded-pill" required>
+                    <div id="email-error-message" class="text-danger"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="location" class="form-label fw-bold required">{% trans "Location" %}:</label>
+                    <input type="text" id="location" name="location" class="form-control rounded-pill" required>
+                    <div id="results"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="birthdate" class="form-label fw-bold required">{% trans "Date of Birth" %}:</label>
+                    <input type="date" id="birthdate" name="birthdate" class="form-control rounded-pill"
+                        max="{{ today }}" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold required" id="rolLabel">{% trans "Rol" %}:</label>
+                    <div>
+                        <span class="tab"></span><input type="radio" id="creator" name="rol" value="CR">
+                        <label for="creator">{% trans "Creator" %}</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="participant" name="rol" value="PT">
+                        <label for="participant">{% trans "Participant" %}</label>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold required" id="genderLabel">{% trans "Gender" %}:</label>
+                    <div>
+                        <span class="tab"></span><input type="radio" id="male" name="gender" value="M">
+                        <label for="male">{% trans "Male" %}</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="female" name="gender" value="F">
+                        <label for="female">{% trans "Female" %}</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="other" name="gender" value="O">
+                        <label for="other">{% trans "Other" %}</label>
+                    </div>
+
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold required" id="frequencyLabel">{% trans "Frequency" %}</label>
+                    <div>
+                        <span class="tab"></span><input type="radio" id="morethan" name="frequencyGame" value="MW">
+                        <label for="morethan">{% trans "More than" %}</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="week" name="frequencyGame" value="W">
+                        <label for="week">{% trans "Week" %}</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="lifetime" name="frequencyGame" value="L">
+                        <label for="lifetime">{% trans "Lifetime" %}</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="never" name="frequencyGame" value="N">
+                        <label for="never">{% trans "Never" %}</label>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold required" id="expertiseLabel">{% trans "Expertise" %}:</label>
+                    <div>
+                        <span class="tab"></span><input type="radio" id="beginner" name="expertiseGame" value="B">
+                        <label for="beginner">{% trans "Beginner" %}</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="intermediate" name="expertiseGame" value="I">
+                        <label for="intermediate">{% trans "Intermediate" %}</label>
+                    </div>
+
+                    <div>
+                        <span class="tab"></span><input type="radio" id="advanced" name="expertiseGame" value="A">
+                        <label for="advanced">{% trans "Advanced" %}</label>
+                    </div>
+
+                </div>
+
             </div>
-            <div class="mb-4">
-                <label for="password" class="form-label fw-bold required">{% trans "Password" %}:</label>
-                
-                <div class="input-group">
-                    <input type="password" id="password" name="password" class="form-control rounded-pill" value="{{ password }}" required>
-                    <span class="input-group-text bg-white border-0" id="togglePassword"
-                        style="cursor: pointer;">
-                    <i class="bi bi-eye-slash" id="icono"></i>
-                    </span>
-                </div>
-                <div id="password-error-message" class="text-danger"></div>
-            </div>
-            <div class="mb-4">
-                <label for="email" class="form-label fw-bold required">{% trans "Email" %}:</label>
-                <input type="email" id="email" name="email" class="form-control rounded-pill" required>
-                <div id="email-error-message" class="text-danger"></div>
-            </div>
-            <div class="mb-4">
-                <label for="location" class="form-label fw-bold required">{% trans "Location" %}:</label>
-                <input type="text" id="location" name="location" class="form-control rounded-pill" required>
-                <div id="results"></div>
-            </div>
-            <div class="mb-4">
-                <label for="birthdate" class="form-label fw-bold required">{% trans "Date of Birth" %}:</label>
-                <input type="date" id="birthdate" name="birthdate" class="form-control rounded-pill" max="{{ today }}" required>
-            </div>
-            <div class="mb-4">
-                <label class="form-label fw-bold required" id="rolLabel">{% trans "Rol" %}:</label>
-                <div>
-                    <span class="tab"></span><input type="radio" id="creator" name="rol" value="CR">
-                    <label for="creator">{% trans "Creator" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="radio" id="participant" name="rol" value="PT">
-                    <label for="participant">{% trans "Participant" %}</label>
-                </div>
-            </div>
-            <div class="mb-4">
-                <label class="form-label fw-bold required" id="genderLabel">{% trans "Gender" %}:</label>
-                <div>
-                    <span class="tab"></span><input type="radio" id="male" name="gender" value="M">
-                    <label for="male">{% trans "Male" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="radio" id="female" name="gender" value="F">
-                    <label for="female">{% trans "Female" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="radio" id="other" name="gender" value="O">
-                    <label for="other">{% trans "Other" %}</label>
-                </div>
-
-            </div>
-            <div class="mb-4">
-                <label class="form-label fw-bold required" id="frequencyLabel">{% trans "Frequency" %}</label>
-                <div>
-                    <span class="tab"></span><input type="radio" id="morethan" name="frequencyGame" value="MW">
-                    <label for="morethan">{% trans "More than" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="radio" id="week" name="frequencyGame" value="W">
-                    <label for="week">{% trans "Week" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="radio" id="lifetime" name="frequencyGame" value="L">
-                    <label for="lifetime">{% trans "Lifetime" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="radio" id="never" name="frequencyGame" value="N">
-                    <label for="never">{% trans "Never" %}</label>
-                </div>
-            </div>
-            <div class="mb-4">
-                <label class="form-label fw-bold required" id="expertiseLabel">{% trans "Expertise" %}:</label>
-                <div>
-                    <span class="tab"></span><input type="radio" id="beginner" name="expertiseGame" value="B">
-                    <label for="beginner">{% trans "Beginner" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="radio" id="intermediate" name="expertiseGame" value="I">
-                    <label for="intermediate">{% trans "Intermediate" %}</label>
-                </div>
-
-                <div>
-                    <span class="tab"></span><input type="radio" id="advanced" name="expertiseGame" value="A">
-                    <label for="advanced">{% trans "Advanced" %}</label>
-                </div>
-
-            </div>
-
-        </div>
-        <br>
-        <br>
-        <br>
-        <footer class="footer fixed-bottom text-center">
-            <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50 m-auto" id="submitButton"
+            <br>
+            <br>
+            <br>
+            <!-- Botones para enviar los formularios -->
+            <footer class="footer fixed-bottom text-center">
+                <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50 m-auto" id="submitButton"
                     disabled>{% trans "Sign up" %}</button>
-            <br><span class="text-muted" id="infoMessage">{% trans "RequiredFields" %}</span>
-        </footer>
-        
+                <br><span class="text-muted" id="infoMessage">{% trans "RequiredFields" %}</span>
+            </footer>
+
     </div>
 </div>
 
 
 <script>
-    /* SCRIPT THAT MANAGES THE LOCATION FIELD */
+    /* FUNCIONES PARA MANEJAR EL CAMPO DE LOCALIZACIÓN */
     const input = document.getElementById('location');
     const resultsContainer = document.getElementById('results');
-    let locationSelected = false;  // Flag to check if a location was selected
+    let locationSelected = false;
 
     input.addEventListener('input', function () {
         const query = this.value;
@@ -148,21 +152,20 @@
             return; // If the location has 3 or less characters, don't search
         }
 
-        // MAke a query to the API of Nominatim
+        // Consulta para usar el API Nominatim para la localización
         fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(data => {
-                resultsContainer.innerHTML = ''; // Clean previews results
+                resultsContainer.innerHTML = '';
                 if (data.length > 0) {
                     data.forEach(item => {
                         const div = document.createElement('div');
                         div.textContent = item.display_name;
                         div.className = 'result-item';
-                        div.onclick = () => selectLocation(item);  // Select the location when is clicked
+                        div.onclick = () => selectLocation(item);
                         resultsContainer.appendChild(div);
                     });
                 } else {
-                    // If there are none results, marked as invalid the field
                     input.classList.add('is-invalid');
                 }
             })
@@ -172,55 +175,45 @@
     });
 
     function selectLocation(item) {
-        // Establish the input value with the selected location name
         input.value = item.display_name;
 
-        // Clean results
         resultsContainer.innerHTML = '';
 
-        // Marked the field as valid
         input.classList.add('is-valid');
         input.classList.remove('is-invalid');
 
-        // Activate the selected location flag
         locationSelected = true;
 
-        // Check again the form
         checkForm();
     }
 
-    // Function that returns the locationSelected which specifies if it's valid
     function isLocationValid() {
         return locationSelected;
     }
 
-    /* SCRIPT THAT MANAGES THE SUBMIT BUTTON */
-    // Function to check all the fields
+    /* FUNCIONES PARA GESTIONAR EL RESTO DE CAMPOS */
+    // Función que gestiona todos los campos
     function checkForm() {
-        // Select all the inputs required
         const inputs = document.querySelectorAll('input[required]');
         let allFilled = true;
 
-        // Validate all the fields, except password field, email field and location field.
+        // Validación de todos los campos, excepto los campos de contraseá, correo y localización
         inputs.forEach(input => {
             if (input.id === 'email' || input.id === 'password' || input.id === 'location') {
                 return;
             }
 
-            // Verify if the field is filled
             if (input.value.trim() !== '') {
-                // Add valid class
                 input.classList.add('is-valid');
                 input.classList.remove('is-invalid');
             } else {
-                // Add invalid class
                 input.classList.add('is-invalid');
                 input.classList.remove('is-valid');
                 allFilled = false;
             }
         });
 
-        // Section to validate radio fields
+        // Gestión de inputs de tipo radio
         const radios = document.getElementsByName('frequencyGame');
         const radiosSecond = document.getElementsByName('expertiseGame');
         const radiosThird = document.getElementsByName('gender');
@@ -282,7 +275,7 @@
             allFilled = false;
         }
 
-        // Validate password, email and location
+        // Validación de contraseña, correo y localización
         if (!validatePassword()) {
             allFilled = false;
         }
@@ -295,12 +288,12 @@
             allFilled = false;
         }
 
-        // Able or disable the submit button if everything is filled and validated
+        // Habilitar/deshabilitar dependiendo del resultado de la validación anterior
         document.getElementById('submitButton').disabled = !allFilled;
         document.getElementById('infoMessage').style.display = submitButton.disabled ? 'block' : 'none';
     }
 
-    // Establish listeners for every field
+    // Listeners para gestionar la validación de forma dinámica de cada campo
     document.addEventListener('DOMContentLoaded', () => {
         const inputs = document.querySelectorAll('input[required]');
         inputs.forEach(input => input.addEventListener('input', checkForm));
@@ -315,7 +308,7 @@
         radiosThird.forEach(radio => radio.addEventListener('change', checkForm));
     });
 
-    // Validate password
+    // Función para validar la contraseña
     function validatePassword() {
         const passwordInput = document.getElementById('password');
         const password = passwordInput.value;
@@ -357,7 +350,7 @@
         }
     }
 
-    // Validate email
+    // Función para validar el correo
     function validateEmail() {
         const emailInput = document.getElementById('email');
         const email = emailInput.value;
@@ -366,12 +359,12 @@
 
         let errorMessage = '';
 
-        // Is the format right?
+        // Comprobación del formato
         if (!emailRegex.test(email)) {
             errorMessage += '{% trans "EmailReqOne" %}';
         }
 
-        // Is the domain right?
+        // Comprobación del dominio
         const domain = email.split('@')[1];
         if (domain && !allowedDomains.includes(domain)) {
             errorMessage += `{% trans "EmailReqTwo" %} ${allowedDomains.join(', ')} {% trans "EmailReqThree" %}`;
@@ -391,10 +384,6 @@
         }
     }
 
-    $(document).ready(function () {
-        checkForm();
-    });
-
     // Función para manejar la visibilidad de la contraseña
     const togglePassword = document.querySelector('#togglePassword');
     const passwordInput = document.querySelector('#password');
@@ -410,29 +399,35 @@
         icono.classList.toggle('bi-eye-slash');
     });
 
+    // Función para validar los campos al cargar la página
+    $(document).ready(function () {
+        checkForm();
+    });
+
 </script>
 
+<!-- Script para mostrar los mensajes de error mediante una alerta -->
 <script type="text/javascript">
-    window.onload = function() {
-      {% if form.errors %}
+    window.onload = function () {
+        {% if form.errors %}
         // Crear un array para almacenar los errores
         let errors = [];
-        
+
         // Iterar sobre los errores del formulario
         {% for field, errors_list in form.errors.items %}
-          {% for error in errors_list %}
-            errors.push("Campo {{ field.label }}: " + "{{ error }}");
-          {% endfor %}
+        {% for error in errors_list %}
+        errors.push("Campo {{ field.label }}: " + "{{ error }}");
         {% endfor %}
-    
+        {% endfor %}
+
         // Mostrar alerta si hay errores
         if (errors.length > 0) {
-          alert(errors.join("\n"));
+            alert(errors.join("\n"));
         }
-      {% endif %}
+        {% endif %}
     }
-  </script>
-  
+</script>
+
 
 
 {% endblock body %}

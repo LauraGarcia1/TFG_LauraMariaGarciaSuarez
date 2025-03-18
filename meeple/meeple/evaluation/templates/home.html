@@ -17,6 +17,7 @@
             <h2 class="">{{ title }}!</h2>
             <br>
             <div class="form-control form-rounded mb-4">
+                <!-- Campos de inicio de sesión para entrar a la aplicación -->
                 <label for="username" class="form-label">{{ username }}:</label>
                 <input type="username" id="username" name="username" class="form-control rounded-pill">
                 <br>
@@ -29,6 +30,7 @@
                     </span>
                 </div>
             </div>
+            <!-- Botones para iniciar sesión o registrarse -->
             <div class="d-flex flex-column flex-md-row justify-content-around w-100 mx-auto">
                 <button type="submit" class="btn btn-primary rounded-pill btn-terracota mb-3" value="signin"
                     name="button">{{ login }}</button>
@@ -47,12 +49,13 @@
     const passwordInput = document.querySelector('#password');
     const icono = document.querySelector('#icono');
 
+    // Función para habilitar/deshabilitar la visibilidad de la contraseña
     togglePassword.addEventListener('click', function () {
-        // Change the password input to text and vice versa
+        // Cambia la contraseña a texto o vice versa
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
 
-        // Change the icon
+        // Cambia el icono
         icono.classList.toggle('bi-eye');
         icono.classList.toggle('bi-eye-slash');
     });

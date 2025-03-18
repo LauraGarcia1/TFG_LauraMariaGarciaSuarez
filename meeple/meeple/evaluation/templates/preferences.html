@@ -4,6 +4,7 @@
 
 {% block body %}
 
+<!-- Ventana con la información del juego de mesa -->
 <div id="infoGame" class="modal information">
     <div class="d-flex justify-content-center align-items-center" style="height: 100vh; padding-top: 5%;">
         <div class="position-relative info-content p-5 border-1 m-auto">
@@ -27,6 +28,7 @@
     </div>
 </div>
 
+<!-- Ventana de ayuda para el usuario -->
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeNotification()">&times;</span>
@@ -45,7 +47,6 @@
         style="max-height: 80vh;">
         <h2 class="pb-4 fw-bold">{% trans "PreferencesTitle" %}
             <i class="bi bi-info-circle" onclick="openNotification()"></i>
-            <!-- Icono de información con función de notificación -->
         </h2>
         <h5>{% trans "PreferencesInfo" %}</h5>
         <div class="scroll-hover-pref w-100 flex-grow-1 overflow-auto">
@@ -55,11 +56,11 @@
                 <meta name="csrf-token" content="{{ csrf_token }}">
 
                 <div class="row w-100 h-100">
+                    <!-- Listado de juegos propuestos para escoger como preferencias -->
                     {% for gameRow in zacatrus_games %}
                     <div class="col-xl-4 p-3">
                         <div class="rounded-div d-flex flex-column h-100">
                             <img src="{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg" class="img-fluid rounded sm-maxwidth mx-auto d-block" draggable="false">
-                            <!-- Show the names of the tablegames -->
                             <div class="mt-auto text-center">
                                 <h4> {{ gameRow.1 }} <i class="bi bi-info-circle" onclick="openInformation('{{ gameRow.0 }}', '{{ gameRow.1 }}', '{{ MEDIA_URL }}images_zacatrus/{{ gameRow.0 }}.jpg')"></i></h4>
                                 <input type="checkbox" class="changeColorCheckbox" name="likedPreferences" value={{ gameRow.0 }}>
@@ -69,6 +70,7 @@
                     {% endfor %}
                 </div>
 
+                <!-- Botón para aceptar las preferencias escogidas -->
                 <button type="submit" class="btn btn-primary rounded-pill btn-terracota w-50" id="submitButton" style="position: sticky; bottom: 5px;"
                     disabled>{% trans "PreferencesSubmitButton" %}</button>
             </form>
@@ -83,18 +85,17 @@
     const checkboxes = document.querySelectorAll('.changeColorCheckbox');
     let minimumFour = 0;
 
-    // Recorrer cada checkbox y agregarle un evento de escucha
+    // Función para habilitar/deshabilitar el botón de submit
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function () {
-            // Obtener el contenedor padre del checkbox
             const container = this.closest('.rounded-div');
 
-            // Verificar si el checkbox está marcado o desmarcado
+            // Recogemos los checkbox que han sido seleccionados
             if (this.checked) {
-                container.classList.add('checked');  // Añadir la clase 'checked' si está marcado
+                container.classList.add('checked');
                 minimumFour += 1;
             } else {
-                container.classList.remove('checked');  // Remover la clase 'checked' si está desmarcado
+                container.classList.remove('checked');
                 minimumFour -= 1;
             }
 
@@ -103,14 +104,19 @@
         });
     });
 
-    // Función para abrir el modal
+    // Funciones para abrir y cerrar la ventana de ayuda
     function openNotification() {
         document.getElementById("myModal").style.display = "block";
+    }
+
+    function closeNotification() {
+        document.getElementById("myModal").style.display = "none";
     }
 
     // Variable para almacenar los datos en caché
     let cacheData = {};
 
+    // Función para obtener los datos del juego y mostrarlos en el modal
     function getDataGame(idGame) {
         // Validar que el ID sea un número antes de enviarlo al servidor
         if (!idGame || isNaN(idGame)) {
@@ -150,13 +156,14 @@
         });
     }
 
+    // Función para escribir los datos del juego en la ventana
     function displayGameData(response) {
         document.getElementById("infoKeys").textContent = response.categories + " " + response.types + " " + response.contexts;
         document.getElementById("infoDescription").textContent = response.description;
         document.getElementById("infoTitle").textContent = response.name;
     }
 
-    // Función para abrir la ventana de información del juego
+    // Funciones para abrir y cerrar la ventana de información del juego
     function openInformation(id, title, imageUrl) {
         document.getElementById("infoGame").style.display = "block";
         
@@ -165,19 +172,13 @@
         getDataGame(id)
     }
 
-    // Función para cerrar el modal
-    function closeNotification() {
-        document.getElementById("myModal").style.display = "none";
-    }
-
-    // Función para cerrar la ventana de información del juego
     function closeInformation() {
         document.getElementById("infoGame").style.display = "none";
         document.getElementById("infoKeys").textContent = "{% trans "Loading" %}...";
         document.getElementById("infoDescription").textContent = "";
     }
 
-    // Cerrar el modal si se hace clic fuera de él
+    // Función para cerrar el modal si se hace clic fuera de él
     window.onclick = function (event) {
         var modal = document.getElementById("myModal");
         var info = document.getElementById("infoGame");
@@ -186,7 +187,6 @@
         }
         if (event.target == info) {
             closeInformation();
-
         }
     }
 </script>

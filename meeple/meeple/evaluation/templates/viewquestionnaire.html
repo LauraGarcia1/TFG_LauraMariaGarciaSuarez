@@ -8,12 +8,13 @@
     {% endblock overflow %}
 
     {% block body %}
-    
+
+    <!-- Ventana con la información del juego de mesa -->
     <div id="infoGame" class="modal information">
         <div class="d-flex justify-content-center align-items-center" style="height: 100vh; padding-top: 5%;">
             <div class="position-relative info-content p-5 border-1 m-auto">
                 <span class="close" onclick="closeInformation()">&times;</span>
-    
+
                 <div class="row">
                     <div class="col-md-4">
                         <img id="infoImage" src="" class="img-fluid p-3" draggable="false">
@@ -31,6 +32,7 @@
             </div>
         </div>
     </div>
+    <!-- Ventana de ayuda para el usuario -->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeNotification()">&times;</span>
@@ -39,12 +41,13 @@
     </div>
     <form action="" method="post">
         {% csrf_token %}
-    <div id="finish" class="modal">
-        <div class="modal-content info-content">
-            <h2>{% trans "CreatorPtOne" %} &hearts; </h2>
-            <br>
-            <div class="form-control form-rounded">
-                <h5>{% trans "CreatorPtTwo" %}</h5>
+        <!-- Pestaña con un mensaje de agradecimiento para mostrar antes de salir de la página -->
+        <div id="finish" class="modal">
+            <div class="modal-content info-content">
+                <h2>{% trans "CreatorPtOne" %} &hearts; </h2>
+                <br>
+                <div class="form-control form-rounded">
+                    <h5>{% trans "CreatorPtTwo" %}</h5>
                     <br>
                     <div class="d-flex flex-column flex-md-row justify-content-between custom-width mx-auto">
                         <button type="submit" class="btn btn-primary rounded-pill btn-terracota px-4 mb-3"
@@ -52,131 +55,168 @@
                         <button type="submit" class="btn btn-primary rounded-pill btn-mostaza px-4 mb-3" value="exit"
                             name="button">{% trans "CreatorButtonPtTwo" %}</button>
                     </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="position-relative custom-container">
-        <div class="position-absolute top-0 start-0">
-            <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
-                style="transform: rotate(64deg);">
-        </div>
+        <div class="position-relative custom-container">
+            <div class="position-absolute top-0 start-0">
+                <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+                    style="transform: rotate(64deg);">
+            </div>
 
-        <div class="position-absolute bottom-0 end-0">
-            <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
-                style="transform: rotate(31deg);">
-        </div>
+            <div class="position-absolute bottom-0 end-0">
+                <img src="{% static 'images/dicesRight.png' %}" alt="Image" draggable="false"
+                    style="transform: rotate(31deg);">
+            </div>
 
-        <!-- Se guarda el token en esta etiqueta para permitir mandar con ajax la petición -->
-        <meta name="csrf-token" content="{{ csrf_token }}">
-        <div
-        class="justify-content-start shadow-lg p-4 p-md-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-            <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme m-auto">
-                <!-- Form de Questionnaire -->
-                <div class="row align-items-center mb-3">
-                    <div class="col-md-10">
-                        <h2>{{ questionnaire_name }}</h2>
-                        {{ questionnaire_description }} <i class="bi bi-info-circle" onclick="openNotification()"></i>
+            <!-- Se guarda el token en esta etiqueta para permitir mandar con ajax la petición -->
+            <meta name="csrf-token" content="{{ csrf_token }}">
+            <div
+                class="justify-content-start shadow-lg p-4 p-md-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+                <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme m-auto">
+                    <!-- Form de Questionnaire -->
+                    <div class="row align-items-center mb-3">
+                        <div class="col-md-10">
+                            <h2>{{ questionnaire_name }}</h2>
+                            {{ questionnaire_description }} <i class="bi bi-info-circle"
+                                onclick="openNotification()"></i>
+                        </div>
+                        <div class="col-md-2 justify-content-end">
+                            <form method="GET" action="{% url 'my-studies' %}" class="d-inline">
+                                {% csrf_token %}
+                                <a href="{% url 'list-questionnaires' %}"
+                                    class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "Return" %}</a>
+                            </form>
+                        </div>
                     </div>
-                    <div class="col-md-2 justify-content-end">
-                        <form method="GET" action="{% url 'my-studies' %}" class="d-inline">
-                            {% csrf_token %}
-                            <a href="{% url 'list-questionnaires' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "Return" %}</a>
-                        </form>
-                    </div>
-                </div>
 
-                <div id="sections-container">
-                {% for section, data in sections_dict.items %}
-                    <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body m-auto mb-3">
-                        <div class="section-form">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <h3 class="m-0">{{ section.0 }}</h3>
+                    <div id="sections-container">
+                        {% for section, data in sections_dict.items %}
+                        <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body m-auto mb-3">
+                            <div class="section-form">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <h3 class="m-0">{{ section.0 }}</h3>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- Contenedor para las preguntas de esta sección -->
-                            <div class="questions-container">
-                            <!-- Se agregarán los formularios de preguntas aquí -->
-                                <div class="question-form">
-                                    <div class="container m-auto">
-                                        <div class="row align-items-stretch">
-                                            <!-- Columna 1: Imagen -->
-                                            <div class="col-lg-3 col-md-12 mb-3 text-center d-flex flex-column justify-content-center h-100">
-                                                <img src="{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg" class="img-fluid rounded shadow-lg" alt="Juego de mesa" onclick="openInformation('{{ data.game }}', '{{ data.game }}', '{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg')" draggable="false">
-                                            </div>
-                                    
-                                            <!-- Columna 2: Preguntas y Opciones -->
-                                            <div class="col-lg-9 col-md-12 h-100">
-                                                {% for question, choices in data.questions.items %}
-                                                <div class="row mb-3">
-                                                    <!-- Pregunta -->
-                                                    <div class="col-lg-4 col-md-12 fw-bold mb-3">
-                                                        {{ question.0 }}
-                                                        <input type="hidden" id="game-{{ section.1 }}" name="game-{{ section.1 }}" value="{{ data.game }}">
-                                                    </div>
-                                    
-                                                    <!-- Opciones -->
-                                                    <div class="col-lg-8 col-md-12">
-                                                        {% if question.1 == "OAS" %}
-                                                        <input type="text" class="form-control" id="choice-{{ question.2 }}" name="choice-{{ question.2 }}">
-                                    
-                                                        {% elif question.1 == "OAL" %}
-                                                        <input type="text" class="form-control" id="choice-{{ question.2 }}" name="choice-{{ question.2 }}">
-                                    
-                                                        {% elif question.1 == "N" %}
-                                                        <input type="number" class="form-control" id="choice-{{ question.2 }}" name="choice-{{ question.2 }}" min="0" max="10">
-                                    
-                                                        {% else %}
-                                                        <div class="d-flex flex-wrap gap-2">
-                                                            {% for choice in choices %}
-                                                            {% if question.1 == "MCCB" %}
-                                                            <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold" name="question-{{ question.2 }}" value="{{ choice.instance.id }}" onclick="pressedButton(this)">{{ choice.choice_text.value }}</button>
-                                    
-                                                            {% elif question.1 == "SCCB" %}
-                                                            <button type="button" class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold" name="question-{{ question.2 }}" value="{{ choice.instance.id }}" onclick="pressedButtonSingle(this)">{{ choice.choice_text.value }}</button>
-                                    
-                                                            {% elif question.1 == "SCRB" %}
-                                                            <div>
-                                                                <span class="tab"></span>
-                                                                <input type="radio" name="singlequestion-{{ question.2 }}" id="choice-{{ choice.instance.id }}" value="{{ choice.instance.id }}" onclick="pressedRadio(this)">
-                                                                <label for="choice-{{ choice.instance.id }}">{{ choice.choice_text.value }}</label>
-                                                            </div>
-                                    
-                                                            {% elif question.1 == "MCRB" %}
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" name="question-{{ question.2 }}" id="choice-{{ choice.instance.id }}"
-                                                                value="{{ choice.instance.id }}" onclick="pressedCheckbox(this)">
-                                                                <label class="form-check-label" for="choice-{{ choice.instance.id }}">
-                                                                    {{ choice.choice_text.value }}
-                                                                </label>
-                                                            </div>
-                                    
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                        </div>
-                                                        {% endif %}
-                                                    </div>
+                                <!-- Contenedor para las preguntas de esta sección -->
+                                <div class="questions-container">
+                                    <div class="question-form">
+                                        <div class="container m-auto">
+                                            <div class="row align-items-stretch">
+                                                <!-- Imagen del juego recomendado para la sección -->
+                                                <div
+                                                    class="col-lg-3 col-md-12 mb-3 text-center d-flex flex-column justify-content-center h-100">
+                                                    <img src="{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg"
+                                                        class="img-fluid rounded shadow-lg" alt="Juego de mesa"
+                                                        onclick="openInformation('{{ data.game }}', '{{ data.game }}', '{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg')"
+                                                        draggable="false">
                                                 </div>
-                                                {% endfor %}
+
+                                                <!-- Listado de preguntas -->
+                                                <div class="col-lg-9 col-md-12 h-100">
+                                                    {% for question, choices in data.questions.items %}
+                                                    <div class="row mb-3">
+                                                        <!-- Pregunta -->
+                                                        <div class="col-lg-4 col-md-12 fw-bold mb-3">
+                                                            {{ question.0 }}
+                                                            <input type="hidden" id="game-{{ section.1 }}"
+                                                                name="game-{{ section.1 }}" value="{{ data.game }}">
+                                                        </div>
+
+                                                        <!-- Listado de opciones -->
+                                                        <div class="col-lg-8 col-md-12">
+                                                            {% if question.1 == "OAS" %}
+                                                            <input type="text" class="form-control"
+                                                                id="choice-{{ question.2 }}"
+                                                                name="choice-{{ question.2 }}">
+
+                                                            {% elif question.1 == "OAL" %}
+                                                            <input type="text" class="form-control"
+                                                                id="choice-{{ question.2 }}"
+                                                                name="choice-{{ question.2 }}">
+
+                                                            {% elif question.1 == "N" %}
+                                                            <input type="number" class="form-control"
+                                                                id="choice-{{ question.2 }}"
+                                                                name="choice-{{ question.2 }}" min="0" max="10">
+
+                                                            {% else %}
+                                                            <div class="d-flex flex-wrap gap-2">
+                                                                {% for choice in choices %}
+                                                                {% if question.1 == "MCCB" %}
+                                                                <button type="button"
+                                                                    class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold"
+                                                                    name="question-{{ question.2 }}"
+                                                                    value="{{ choice.instance.id }}"
+                                                                    onclick="pressedButton(this)">
+                                                                    {{ choice.choice_text.value }}
+                                                                </button>
+
+                                                                {% elif question.1 == "SCCB" %}
+                                                                <button type="button"
+                                                                    class="btn btn-primary rounded-pill btn-inverse-mostaza px-4 fw-bold"
+                                                                    name="question-{{ question.2 }}"
+                                                                    value="{{ choice.instance.id }}"
+                                                                    onclick="pressedButtonSingle(this)">
+                                                                    {{ choice.choice_text.value }}
+                                                                </button>
+
+                                                                {% elif question.1 == "SCRB" %}
+                                                                <div>
+                                                                    <span class="tab"></span>
+                                                                    <input type="radio"
+                                                                        name="singlequestion-{{ question.2 }}"
+                                                                        id="choice-{{ choice.instance.id }}"
+                                                                        value="{{ choice.instance.id }}"
+                                                                        onclick="pressedRadio(this)">
+                                                                    <label for="choice-{{ choice.instance.id }}">
+                                                                        {{ choice.choice_text.value }}
+                                                                    </label>
+                                                                </div>
+
+                                                                {% elif question.1 == "MCRB" %}
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        name="question-{{ question.2 }}"
+                                                                        id="choice-{{ choice.instance.id }}"
+                                                                        value="{{ choice.instance.id }}"
+                                                                        onclick="pressedCheckbox(this)">
+                                                                    <label class="form-check-label"
+                                                                        for="choice-{{ choice.instance.id }}">
+                                                                        {{ choice.choice_text.value }}
+                                                                    </label>
+                                                                </div>
+
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
-                {% endfor %}
+
+                    <!-- Lista de opciones escogidas para enviar de vuelta -->
+                    <input type="hidden" id="selections" name="selections" value="">
+                    <!-- Botón para aceptar las opciones escogidas -->
+                    <button type="button" class="btn btn-primary rounded-pill btn-terracota w-50 mt-auto" name="button"
+                        id="button" value="newrecommendation" onclick="sendRecomOpenInfo()">{% trans
+                        "PreferencesSubmitButton" %}</button>
                 </div>
-        
-                <input type="hidden" id="selections" name="selections" value="">
-                <button type="button" class="btn btn-primary rounded-pill btn-terracota w-50 mt-auto" name="button"
-                    id="button" value="newrecommendation" onclick="sendRecomOpenInfo()">{% trans "PreferencesSubmitButton" %}</button>
             </div>
         </div>
-    </div>
     </form>
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
@@ -204,12 +244,12 @@
         function toggleActiveOnlyOne(event) {
             // Obtener el contenedor padre donde ocurrió el evento
             var parent = event.target.closest('.d-flex');  // Encuentra el contenedor con la clase 'd-flex'
-            
+
             // Seleccionar solo los botones dentro de ese contenedor
             var buttons = parent.querySelectorAll('button');
-            
+
             // Eliminar la clase 'active' de todos los botones dentro del contenedor
-            buttons.forEach(function(btn) {
+            buttons.forEach(function (btn) {
                 btn.classList.remove('active');
             });
 
@@ -328,7 +368,7 @@
 
             // Actualizar campo oculto
             document.getElementById('selections').value = JSON.stringify(selections);
-            
+
             // Log the updated hidden input value
             console.log("Hidden input value updated:", document.getElementById('selections').value);
         }
@@ -354,11 +394,11 @@
             $.ajax({
                 type: 'POST',
                 url: "{% url 'get_data_game' %}",
-                data: {id: idGame},
+                data: { id: idGame },
                 headers: {
                     "X-CSRFToken": document.querySelector("meta[name='csrf-token']").getAttribute("content")
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.error) {
                         document.getElementById("infoKeys").textContent = "";
                         document.getElementById("infoDescription").textContent = "";
@@ -369,7 +409,7 @@
                         displayGameData(response);
                     }
                 },
-                error: function() {
+                error: function () {
                     document.getElementById("infoKeys").textContent = "Internal error.";
                 }
             });
@@ -384,7 +424,7 @@
         // Función para abrir la ventana de información del juego
         function openInformation(id, title, imageUrl) {
             document.getElementById("infoGame").style.display = "block";
-        
+
             document.getElementById("infoImage").src = imageUrl;
             getDataGame(id);
         }

@@ -53,6 +53,7 @@ class QuestionnaireForm(forms.ModelForm):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.fields['name'].widget.attrs.update({'id': 'q-name'})
+            self.fields['algorithm'].required = False  # Hace que el campo sea opcional
 
 class SectionForm(forms.ModelForm):
     """Formulario para las secciones

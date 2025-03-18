@@ -3,143 +3,154 @@
 {% load i18n %}
 
 {% block overflow %}
+
     {% if questionnaires.exists %}
-    <body style="overflow-x: hidden;">
+        <body style="overflow-x: hidden;">
     {% else %}
-    <body style="overflow-x: hidden; overflow-y: hidden;">
+        <body style="overflow-x: hidden; overflow-y: hidden;">
     {% endif %}
+
 {% endblock overflow %}
 
-        {% block body %}
+{% block body %}
 
-        <div class="position-relative custom-container">
-            <div class="position-absolute bottom-0 end-0">
-                <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
-                    style="transform: rotate(31deg);">
-            </div>
-
-            <div
-            class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-            
-                    <form action="" method="post">
-                    {% csrf_token %}
-                    <div class="m-auto text-end">
-                        <a href="{% url 'list-algorithms' %}" class="btn btn-primary rounded-pill btn-terracota w-25 mt-auto">
-                            {% trans "AlgorithmsButtom" %}
-                        </a>
-                        <a href="{% url 'create-questionnaire' %}" class="btn btn-primary rounded-pill btn-mostaza w-25 mt-auto">
-                            {% trans "StudiesButtom" %}
-                        </a>
-                    </div>
-                    </form>
-
-                    {% if questionnaires.exists %}
-                    <ul class="list-group list-group-flush pt-5">
-                        <h2>{% trans "MyStudies" %}</h2>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>{% trans "Study Name" %}</th>
-                                    <th>
-                                        <div class="text-center">
-                                            {% trans "Uploaded" %}
-                                        </div>
-                                    </th>
-                                    <th>{% trans "Actions" %}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for qtnn in questionnaires %}
-                                <tr>
-                                    <td>{{ qtnn.name }}</td>
-                                    <td>
-                                        <div class="text-center">
-                                            {% if qtnn.uploaded %}
-                                                <i class="fas fa-check text-success"></i>
-                                            {% else %}
-                                                <i class="fas fa-times text-danger"></i>
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-inline">
-                                            {% if not qtnn.uploaded %}
-                                            <form method="GET" action="{% url 'edit-questionnaire' qtnn.id %}" class="d-inline">
-                                                {% csrf_token %}
-                                                <button class="btn btn-link">
-                                                    <i class="fas fa-edit" title="{% trans 'EditStudy' %}"></i>
-                                                </button>
-                                            </form>
-                                            {% else %}
-                                            <button class="btn btn-link" disabled>
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            {% endif %}
-                                            <form method="POST" action="{% url 'view-questionnaire' qtnn.id %}" class="d-inline">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-link">
-                                                    <i class="fas fa-eye text-warning" title="{% trans 'ViewStudy' %}"></i>
-                                                </button>
-                                            </form>
-                                            {% if not qtnn.uploaded %}
-                                            <form method="POST" action="{% url 'upload-questionnaire' qtnn.id %}" class="d-inline">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-link" onclick="confirmUpload()">
-                                                    <i class="fas fa-upload text-dark" title="{% trans 'UploadStudy' %}"></i>
-                                                </button>
-                                            </form>
-                                            {% else %}
-                                            <button type="button" class="btn btn-link" disabled>
-                                                <i class="fas fa-upload text-dark" disabled></i>
-                                            </button>
-                                            {% endif %}
-                                            <form method="POST" action="{% url 'delete-questionnaire' qtnn.id %}" class="d-inline">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-link" onclick="return confirm({% trans 'WarningDelete' %});">
-                                                    <i class="fas fa-trash-alt text-danger" title="{% trans 'DeleteStudy' %}"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        
-                    </ul>
-                    
-                    {% else %}
-                    <p class="text-muted mt-5">{% trans "liststudies" %}</p>
-                    {% endif %}
-                </div>
+    <div class="position-relative custom-container">
+        <div class="position-absolute bottom-0 end-0">
+            <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
+                style="transform: rotate(31deg);">
         </div>
+
+        <div
+            class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="m-auto text-end">
+                    <!-- Botón que redirigue a la página con el listado de algoritmos -->
+                    <a href="{% url 'list-algorithms' %}"
+                        class="btn btn-primary rounded-pill btn-terracota w-25 mt-auto">
+                        {% trans "AlgorithmsButtom" %}
+                    </a>
+                    <!-- Botón que redirigue a la página de creación de estudio -->
+                    <a href="{% url 'create-questionnaire' %}"
+                        class="btn btn-primary rounded-pill btn-mostaza w-25 mt-auto">
+                        {% trans "StudiesButtom" %}
+                    </a>
+                </div>
+            </form>
+
+            {% if questionnaires.exists %}
+            <!-- Listado de estudios del usuario -->
+            <ul class="list-group list-group-flush pt-5">
+                <h2>{% trans "MyStudies" %}</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Study Name" %}</th>
+                            <th>
+                                <div class="text-center">
+                                    {% trans "Uploaded" %}
+                                </div>
+                            </th>
+                            <th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for qtnn in questionnaires %}
+                        <tr>
+                            <td>{{ qtnn.name }}</td>
+                            <td>
+                                <div class="text-center">
+                                    {% if qtnn.uploaded %}
+                                    <i class="fas fa-check text-success"></i>
+                                    {% else %}
+                                    <i class="fas fa-times text-danger"></i>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-inline">
+                                    {% if not qtnn.uploaded %}
+                                    <form method="GET" action="{% url 'edit-questionnaire' qtnn.id %}"
+                                        class="d-inline">
+                                        {% csrf_token %}
+                                        <button class="btn btn-link">
+                                            <i class="fas fa-edit" title="{% trans 'EditStudy' %}"></i>
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <button class="btn btn-link" disabled>
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    {% endif %}
+                                    <form method="POST" action="{% url 'view-questionnaire' qtnn.id %}"
+                                        class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link">
+                                            <i class="fas fa-eye text-warning" title="{% trans 'ViewStudy' %}"></i>
+                                        </button>
+                                    </form>
+                                    {% if not qtnn.uploaded %}
+                                    <form method="POST" action="{% url 'upload-questionnaire' qtnn.id %}"
+                                        class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link" onclick="confirmUpload()">
+                                            <i class="fas fa-upload text-dark"
+                                                title="{% trans 'UploadStudy' %}"></i>
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <button type="button" class="btn btn-link" disabled>
+                                        <i class="fas fa-upload text-dark" disabled></i>
+                                    </button>
+                                    {% endif %}
+                                    <form method="POST" action="{% url 'delete-questionnaire' qtnn.id %}"
+                                        class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link"
+                                            onclick="return confirm({% trans 'WarningDelete' %});">
+                                            <i class="fas fa-trash-alt text-danger"
+                                                title="{% trans 'DeleteStudy' %}"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </ul>
+
+            {% else %}
+            <p class="text-muted mt-5">{% trans "liststudies" %}</p>
+            {% endif %}
+        </div>
+    </div>
 
     {% if messages %}
     <script>
+        // Función para mostrar los mensajes de error
         document.addEventListener('DOMContentLoaded', function () {
             // Retrasar la alerta para que no bloquee el renderizado
             setTimeout(function () {
-                // Crear una cadena con todos los mensajes para mostrarlos en el alert()
                 var messageText = "";
 
                 {% for message in messages %}
-                    messageText += "{{ message }}\n";  // Agregar cada mensaje a la cadena con salto de línea
+                messageText += "{{ message }}\n";
                 {% endfor %}
 
                 // Mostrar la alerta con los mensajes después de que la página haya cargado
                 if (messageText !== "") {
-                    alert(messageText);  // Mostrar los mensajes en un alert()
+                    alert(messageText);
                 }
-            }, 100);  // 100ms de retraso, puedes ajustarlo si necesitas más tiempo
+            }, 100);
         });
     </script>
     {% endif %}
-    
-    
-    
-
 
     <script>
+        // Función para confirmar la acción de subida del estudio
         function confirmUpload() {
             const confirmAction = confirm("¿Estás seguro de que deseas subir el cuestionario?");
             if (confirmAction) {
@@ -148,4 +159,4 @@
         }
     </script>
 
-    {% endblock body %}
+{% endblock body %}

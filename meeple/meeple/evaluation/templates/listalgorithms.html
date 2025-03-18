@@ -31,6 +31,7 @@
             <div class="col-md-10">
                 <h2>{% trans "Algorithms" %}</h2>
             </div>
+            <!-- Botón para volver a la lista de estudios del usuario -->
             <div class="col-md-2 justify-content-end">
                 <form method="GET" action="{% url 'my-studies' %}" class="d-inline">
                     {% csrf_token %}
@@ -38,6 +39,7 @@
                 </form>
             </div>
         </div>
+        <!-- Listado de algoritmos -->
         <div class="row text-center h-100">
             {% for aelem in algorithms %}
                 <div class="col-md-6">
