@@ -40,16 +40,15 @@
             </div>
         </div>
         <!-- Listado de algoritmos -->
-        <div class="row text-center h-100">
+        <div class="row text-center">
             {% for aelem in algorithms %}
-                <div class="col-md-6">
-                    <div class="btn btn-primary btn-mostaza btn-large w-100 h-75 p-3" value="{{ qelem.id }}" name="button" data-mdb-ripple-init>
-                        <h3 class="responsive-title" >{{ aelem.0 }}</h3>
-                        <p>{{ aelem.1 }}</p>
+                <div class="col-md-6 mb-4">
+                    <div class="btn btn-primary btn-mostaza btn-large w-100 p-3 d-flex flex-column justify-content-between" value="{{ qelem.id }}" name="button" data-mdb-ripple-init>
+                        <h3 class="responsive-title" style="word-wrap: break-word;">{{ aelem.0 }}</h3>
+                        <p style="word-wrap: break-word; white-space: normal; overflow: visible;">{{ aelem.1 }}</p>
                     </div>
                 </div>
             {% endfor %}
-            </div>
         </div>
 </div>
 

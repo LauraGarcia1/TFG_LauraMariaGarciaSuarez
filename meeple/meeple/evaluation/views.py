@@ -15,6 +15,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import connections
+from django.db.models import Prefetch
 from django.views.generic.list import ListView
 from django.utils.translation import gettext_lazy as _
 from django.utils import translation
@@ -379,7 +380,7 @@ def edit_study(request, pk):
             question_ids = request.POST.getlist('questions-id')
             # TODO: este campo hay que solucionarlo
             question_texts = request.POST.getlist('question_text')
-            question_types = request.POST.getlist('question_type')
+            question_types = request.POST.getlist('type')
 
             choice_ids = request.POST.getlist('choices-id')
             choice_texts = request.POST.getlist('choice_text')
@@ -579,7 +580,7 @@ def view_study(request, pk):
 
 
 @login_required
-def recommendPage(request):
+def homeParticipant(request):
     """Función que muestra la página principal del usuario Participante
 
     Args:
@@ -595,10 +596,10 @@ def recommendPage(request):
 
         return redirect(reverse('home'))
 
-    user_evaluations = Evaluation.objects.filter(user=request.user).order_by('-date_created')
+    evaluations_data = get_data_evaluations(request.user)
 
     # Uso de páginas para poder visualizar las evaluaciones mejor
-    paginator = Paginator(user_evaluations, 5)
+    paginator = Paginator(evaluations_data, 5)
 
     # Obtener el número de página de la URL
     page_number = request.GET.get('page')
@@ -716,10 +717,10 @@ def view_questionnaire(request, pk):
 
 ###### FUNCIONES GENERALES
 def get_data_questions():
-    """
-        Función que obtiene las opciones de las preguntas
+    """Función que obtiene las opciones de las preguntas
 
-        Autor: Laura Mª García Suárez
+    Returns:
+        dict: parámetros del usuario contenido en un diccionario
     """
 
     # TODO: como hago con los cuestionarios
@@ -733,6 +734,15 @@ def get_data_questions():
     return questions_and_choices
 
 async def translate_text(text, target_language):
+    """Traduce un texto al idioma deseado usando Google Translate.
+
+    Args:
+        text (str): texto de entrada a traducir.
+        target_language (str): código del idioma de destino.
+
+    Returns:
+        str: texto traducido.
+    """
     # Crear un objeto de traductor
     translator = Translator()
 
@@ -808,7 +818,7 @@ def get_responses_for_code(user):
         user (User): Objeto tipo User que hace referencia al usuario actual
 
     Returns:
-        _type_: parámetros del usuario contenido en un diccionario
+        dict: parámetros del usuario contenido en un diccionario
     """
     responses = {}
     # Obtener todas las categorías
@@ -833,6 +843,71 @@ def get_responses_for_code(user):
     responses['contexts'] = list(set(ctx for ctx in contexts_list if ctx.strip()))
 
     return responses
+
+from django.db.models import Prefetch
+
+def get_data_evaluations(user):
+    """Obtiene las evaluaciones del usuario con sus respuestas organizadas eficientemente.
+
+    Args:
+        user (User): El usuario autenticado
+
+    Returns:
+        list: Lista de evaluaciones con información estructurada.
+    """
+
+    # Obtenemos todas las evaluaciones del usuario con la recomendación y el juego asociado.
+    evaluations = Evaluation.objects.filter(user=user).select_related('recommendation__game').order_by('-date_created')
+    
+    evaluations_data = []
+    
+    for evaluation in evaluations:
+        answers_json = evaluation.answers
+        if not answers_json:
+            continue
+        
+        # Extraemos todos los IDs de preguntas presentes en la evaluación
+        question_ids = [Answer.objects.get(id=ans).question.id for ans in answers_json]
+        if not question_ids:
+            continue
+        
+        # Obtenemos todas las preguntas, la sección y el cuestionario de la evaluación
+        questions = (
+            Question.objects.filter(id__in=question_ids)
+            .select_related('section__questionnaire')
+        )
+        questions_dict = {q.id: q for q in questions}
+        
+        # Obtenemos las preguntas de la sección
+        first_qid = question_ids[0]
+        first_question = questions_dict.get(first_qid)
+        section = first_question.section if first_question else None
+        questionnaire = section.questionnaire if section else None
+        
+        # Construimos la lista de preguntas con sus respuestas
+        questions_data = []
+        for ans in answers_json:
+            answer = Answer.objects.get(id=ans)
+            qid = answer.question.id
+            question_obj = questions_dict.get(qid)
+            if not question_obj:
+                continue
+            questions_data.append({
+                'question_text': question_obj.question_text,
+                'answer_text': answer.text,
+                'answer_choice': answer.choice
+            })
+        
+        evaluations_data.append({
+            'evaluation_id': evaluation.id,
+            'questionnaire_title': questionnaire.name if questionnaire else "Unknown",
+            'section_title': section.title if section else "Unknown",
+            'date_created': evaluation.date_created,
+            'game_id': evaluation.recommendation.game.id_BGG if evaluation.recommendation and evaluation.recommendation.game else None,
+            'questions': questions_data
+        })
+
+    return evaluations_data
 
 
 def execute_algorithm(code, user, responses, number_sections = 1):

@@ -62,21 +62,21 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Poner páginas de recomendaciones anteriores hechas (*/03/2025)
 - [X] edit y create study -> tipos de preguntas (*/03/2025)
 - [X] Página de visualización de algoritmos (13/03/2025)
+- [X] Probar cambios questionnaire y language
+- [X] Al crear cuestionarios no debería obligar meter algoritmo (18/03/2025)
+- [X] Documentar correctamente el código (17/03/2025)
+- [X] Información de evaluaciones anteriores (19/03/2025)
+- [ ] Revisar traducciones de todas las páginas (19/03/2025)
+- [ ] Revisar interfaz móvil (19/03/2025)
+- [ ] Limpiar código que no se use (18/03/2025)
+- [ ] al crear el cuestionario sigue pidiendo rellenar los campos
 - [ ] Ver los juegos que poner en preferences
 - [ ] En caso de ser Creador, no pedir ciertos parámetros
-- [X] Al crear cuestionarios no debería obligar meter algoritmo (18/03/2025)
 - [ ] Cambiar parámetros en el diagrama
-- [ ] Probar cambios questionnaire y language
-- [ ] Revisar traducciones de todas las páginas
 - [ ] Ver diferentes accesos
-- [ ] Documentar correctamente el código
-- [ ] Comprobar el error que está ocasionando algunos juegos en la página de preferencias
-- [ ] edad a fecha de nacimiento ???
-- [ ] Mostrar mensaje de error de que no existe el usuario (pag. inicial)
-- [ ] Comprimir HTML
-- [ ] Limpiar código que no se use
-- [ ] Comprobar CSS inutilizable
 - [ ] Mostrar errores del registro
+- [ ] Comprimir HTML
+- [ ] Comprobar CSS inutilizable
 
 ### Evaluación del participante
 
@@ -139,9 +139,24 @@ Carlos evalúa cada uno de los juegos recomendados respondiendo a las preguntas 
 4. **Permite análisis posteriores:**
 
    * A nivel de plataforma, puedes identificar tendencias como:
+
      * ¿Cuáles son los factores más importantes para los usuarios (precio, calidad, etc.)?
      * ¿Qué juegos tienen las mejores evaluaciones?
      * ¿Qué juegos necesitan mejoras (por ejemplo, en personalización)?
+
+## Algoritmo para obtener informacion de las evaluaciones
+
+1. **Obtener las Evaluaciones del Usuario:**
+   * Filtrar las evaluaciones realizadas por el usuario actual.
+2. **Relacionar la Evaluación con el Cuestionario:**
+   * Cada evaluación pertenece a un cuestionario.
+   * Obtener el título del cuestionario.
+3. **Obtener las Secciones del Cuestionario:**
+   * Un cuestionario tiene varias secciones.
+4. **Obtener las Preguntas de Cada Sección:**
+   * Cada sección tiene múltiples preguntas.
+5. **Obtener las Respuestas del Usuario:**
+   * Filtrar las respuestas que el usuario ha dado para cada pregunta dentro de la evaluación.
 
 ## Análisis de requisitos
 

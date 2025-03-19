@@ -309,6 +309,10 @@ msgstr "Creador"
 msgid "Participant"
 msgstr "Participante"
 
+#: evaluation/templates/register.html:49
+msgid "Date of Birth"
+msgstr "Fecha de nacimiento"
+
 #: evaluation/templates/register.html:50
 msgid "Frequency"
 msgstr "Con cuánta frecuencia ha jugado a juegos de mesa"

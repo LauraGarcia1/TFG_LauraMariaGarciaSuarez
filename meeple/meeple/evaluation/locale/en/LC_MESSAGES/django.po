@@ -306,6 +306,10 @@ msgstr "Creator"
 msgid "Participant"
 msgstr "Participant"
 
+#: evaluation/templates/register.html:49
+msgid "Date of Birth"
+msgstr "Date of Birth"
+
 #: evaluation/templates/register.html:50
 msgid "Frequency"
 msgstr "Frequency"

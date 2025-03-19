@@ -47,7 +47,7 @@
 
       <div
         class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-        <div class="row h-100 p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
+        <div class="row h-100 p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme m-auto">
           <div class="col-md-6 mb-3 text-start">
             <h3 class="fw-bold">{% trans "RecommendationFirstTitle" %}</h3>
             <h3>{% trans "RecommendationSecondTitle" %}</h3>
@@ -70,11 +70,26 @@
           <li class="list-group-item">
             <div class="row">
               <div class="col-3">
-                <img src="{{ MEDIA_URL }}images_zacatrus/{{ eval.recommendation.game.id_BGG }}.jpg" alt="Image"
+                <img src="{{ MEDIA_URL }}images_zacatrus/{{ eval.game_id }}.jpg" alt="Image"
                   class="img-fluid">
               </div>
               <div class="col-9">
-                <p>{{ eval.game.title }}</p>
+                <h4>{{ eval.questionnaire_title }} - {{ eval.section_title }}</h4>
+                <table class="table table-invisible">
+                  <tbody>
+                    {% for data in eval.questions %}
+                    <tr>
+                      <td class="w-50">{{ data.question_text }}</td>
+                      {% if data.answer_text %}
+                        <td>{{ data.answer_text }}</td>
+                      {% else %}
+                        <td>{{ data.answer_choice }}</td>
+                      {% endif %}
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                <br>
                 <p>{{ eval.date_created }}</p>
               </div>
             </div>

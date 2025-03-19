@@ -20,13 +20,13 @@
         </div>
 
         <div
-            class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
-            <div class="row p-5 rounded rounded-5 border border-dark border-1 w-100 background-creme">
+            class="justify-content-start shadow-lg p-4 p-md-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+            <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme">
                 <!-- Form del cuestionario -->
                 <h1>{% trans "EditStudy" %}</h1>
                 <form action="" method="post" id="formSubmit">
                     {% csrf_token %}
-                    <div id="questionnaire-form">
+                    <div id="questionnaire-form" class="w-100 px-3 overflow-auto">
                         {{ questionnaire.as_p }}
                     </div>
                     
@@ -36,7 +36,7 @@
                     <!-- Forms de las secciones que forman parte del cuestionario -->
                 {% for section, questions in sections_dict.items %}
                 <div class="section-form" id="{{ section.instance.id }}" data-section-index="{{ section.instance.id }}">
-                    <div class="row p-3 rounded rounded-5 border border-dark border-1 w-100 bg-body m-auto mb-3">
+                    <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body mb-3">
                       <h3>{% trans "Section" %}</h3>
                         <div>
                             {{ section.as_p }}
@@ -57,7 +57,7 @@
                                 <!-- Forms de las preguntas que forman parte de la sección -->
                                 {% for question, choices in questions.items %}
                                 <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}" data-question-index="{{ question.instance.id }}" data-section-index="{{ section.instance.id }}">
-                                        <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 background-creme m-auto mt-3">
+                                        <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme mt-3">
                                         <h4>{% trans "Question" %}</h4>
                                         <div>
                                             {{ question.as_p }}
@@ -74,7 +74,7 @@
                                                 <button class="del-choices-btn btn btn-danger rounded-pill" id="del-choices-{{ section.instance.id }}-{{ question.instance.id }}-btn" disabled>{% trans "DelChoices" %}</button>
                                             </div>
                                             {{ choice_formset.management_form }}
-                                            <div class="row p-2 rounded rounded-5 border border-dark border-1 w-100 bg-body m-auto mt-3">
+                                            <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 bg-body m-auto mt-3">
                                                 <h4>{% trans "Choices" %}</h4>
                                                 <div class="choices-container">
                                                 <!-- Forms de las opciones que forman parte de la pregunta -->
@@ -226,9 +226,10 @@
                 uniqueChoiceIndexes = [...new Set(choiceIndexes)];
                 uniqueQuestionIndexes = [...new Set(questionIndexes)];
 
+                
                 // Llamamos a la función para mostrar/ocultar el div en todos los selects al cargar la página
                 document.querySelectorAll("select[name^='questions-'], select[name='type']").forEach(function(select) {
-                    toggleChoices(select);
+                    toggleChoices($(select));
                 });
 
             }, 100); // Para aseguramos que el DOM esté completamente cargado
@@ -243,11 +244,9 @@
 
             // Dependiendo del select, ocultamos la creación de opciones o no
             if ($selectType.val() === "SCRB" || $selectType.val() === "MCRB" || $selectType.val() === "SCCB" || $selectType.val() === "MCCB") {
-                console.log("lo muestro", $choicesContainer);
-                $choicesContainer.show(); // Mostrar el div
+                $choicesContainer.show();
             } else {
-                console.log("lo oculto", $choicesContainer);
-                $choicesContainer.hide(); // Ocultar el div
+                $choicesContainer.hide();
             }
         }
 

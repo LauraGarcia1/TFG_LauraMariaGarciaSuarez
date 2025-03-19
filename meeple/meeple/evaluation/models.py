@@ -302,7 +302,7 @@ class Choice(models.Model):
         Returns:
             str: Una cadena con la información clave de la respuesta.
         """
-        return f"Choice text: {self.choice_text}"
+        return f"{self.choice_text}"
     
 
 class Answer(models.Model):
