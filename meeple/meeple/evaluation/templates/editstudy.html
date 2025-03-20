@@ -355,9 +355,10 @@
                 var $sectionForm = $(this).closest(".section-form");
                 var sindex = $sectionForm.attr("data-section-index");
                 var qCount = $sectionForm.find(".questions-container .question-form").length;
-                while (uniqueSectionIndexes.includes(qCount.toString())) {
+                
+                /*while (uniqueQuestionIndexes.includes(qCount.toString())) {
                     qCount++;
-                }
+                }*/
 
                 var questionTemplate = $(document).find("#question-template").html();
 
@@ -377,9 +378,9 @@
                 var sindex = $questionForm.attr("data-section-index");
                 var qindex = $questionForm.attr("data-question-index");
                 var cCount = $questionForm.find(".choices-container .choice-form").length;
-                while (uniqueSectionIndexes.includes(cCount.toString())) {
+                /*while (uniqueChoiceIndexes.includes(cCount.toString())) {
                     cCount++;
-                }
+                }*/
 
                 var choiceTemplate = $("#choice-template").html();
 

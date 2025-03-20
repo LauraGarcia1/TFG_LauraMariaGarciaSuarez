@@ -314,6 +314,10 @@ msgstr "Date of Birth"
 msgid "Frequency"
 msgstr "Frequency"
 
+#: evaluation/templates/register.html:50
+msgid "LeastAge"
+msgstr "You must be at least 15 years old to register."
+
 #: evaluation/templates/register.html:54
 msgid "More than"
 msgstr "More than once in a week"

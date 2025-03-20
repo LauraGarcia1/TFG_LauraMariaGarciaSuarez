@@ -5,7 +5,7 @@ Description: Este archivo contiene los forms del administrador del proyecto eval
 """
 from django.contrib import admin
 import nested_admin
-from .models import Choice, User , Questionnaire, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, Section
+from .models import Choice, Creator, Participant, User, Questionnaire, Question, Answer, Recommendation, Game, Algorithm, Evaluation, Preference, Section
 
 class ChoiceInline(nested_admin.NestedTabularInline):
     """Clase para manejar la visualización anidada de opciones en el panel de administración.
@@ -43,9 +43,35 @@ class UserAdmin(admin.ModelAdmin):
     Args:
         admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
     """
-    list_display = ['username', 'email', 'rol', 'location', 'birthdate', 'frequencyGame', 'expertiseGame', 'gender', 'date_created']
+    list_display = ['username', 'email', 'location', 'birthdate', 'date_created', 'rol']
     search_fields = ['username', 'email']
-    list_filter = ['gender', 'frequencyGame', 'expertiseGame', 'date_created']
+    list_filter = ['date_created']
+
+@admin.register(Creator)
+class CreatorAdmin(UserAdmin):
+    """Administra la interfaz de usuario de tipo Creador en el panel de administración de Django.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
+    fieldsets = UserAdmin.fieldsets
+    list_display = ('username', 'email', 'location', 'date_created')
+    search_fields = ('username', 'email')
+
+@admin.register(Participant)
+class ParticipantAdmin(UserAdmin):
+    """Administra la interfaz de usuario de tipo Participante en el panel de administración de Django.
+
+    Args:
+        admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
+    """
+    fieldsets = (
+        ("User Info", {"fields": ("username", "email", "password")}),
+        ("Additional Info", {"fields": ("rol", "gender", "frequencyGame", "expertiseGame")}),
+    )
+
+    list_display = ('username', 'email', 'gender', 'frequencyGame', 'expertiseGame', 'date_created')
+    search_fields = ('username', 'email')
 
 @admin.register(Questionnaire)
 class QuestionnaireAdmin(nested_admin.NestedModelAdmin):

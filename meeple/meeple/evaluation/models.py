@@ -27,46 +27,18 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     location = models.CharField(max_length=200, blank=True, null=True)
     birthdate = models.DateField(null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
     rol = models.CharField(
-        max_length = 5,
-        choices = [
+        max_length=5,
+        choices=[
             ('CR', 'Creator'),
             ('PT', 'Participant')
         ],
         default='PT'
     )
-    frequencyGame = models.CharField(
-        max_length = 10,
-        choices = [
-            ('N', 'Never'),
-            ('L', 'Once in a lifetime'),
-            ('W', 'Once in a week'),
-            ('MW', 'More than once in a week')
-        ],
-        default='N'
-    )
-    expertiseGame = models.CharField(
-        max_length = 10,
-        choices = [
-            ('B', 'Beginner'),
-            ('I', 'Intermediate'),
-            ('A', 'Advanced')
-        ],
-        default='B'
-    )
-    gender = models.CharField(
-        max_length = 10,
-        choices = [
-            ('M', 'Male'),
-            ('F', 'Female'),
-            ('O', 'Other')
-        ],
-        default='O'
-    )
-    date_created = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['password', 'email', 'location', 'birthdate', 'frequencyGame', 'expertiseGame']
+    REQUIRED_FIELDS = ['password', 'email', 'location', 'birthdate']
 
     def __str__(self):
         """Devuelve el nombre de usuario como representación del objeto.
@@ -116,6 +88,41 @@ class User(AbstractUser):
             str: Una cadena con el nombre de usuario del usuario.
         """
         return f"Username: {self.username}"
+    
+class Creator(User):
+    """Modelo para usuarios tipo 'Creator'."""
+    pass 
+
+class Participant(User):
+    """Modelo para usuarios tipo 'Participant', con atributos extra."""
+    frequencyGame = models.CharField(
+        max_length = 10,
+        choices = [
+            ('N', 'Never'),
+            ('L', 'Once in a lifetime'),
+            ('W', 'Once in a week'),
+            ('MW', 'More than once in a week')
+        ],
+        default='N'
+    )
+    expertiseGame = models.CharField(
+        max_length = 10,
+        choices = [
+            ('B', 'Beginner'),
+            ('I', 'Intermediate'),
+            ('A', 'Advanced')
+        ],
+        default='B'
+    )
+    gender = models.CharField(
+        max_length = 10,
+        choices = [
+            ('M', 'Male'),
+            ('F', 'Female'),
+            ('O', 'Other')
+        ],
+        default='O'
+    )
 
 class Algorithm(models.Model):
     """Modelo que representa un algoritmo de recomendación.
@@ -165,7 +172,6 @@ class Questionnaire(models.Model):
     user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     uploaded = models.BooleanField(default=False)
-    algorithm = models.ForeignKey(Algorithm, related_name='algorithm', on_delete=models.SET_NULL, null=True)
     language = models.CharField(
         max_length = 10,
         choices = [
@@ -202,6 +208,7 @@ class Section(models.Model):
         Section: Un objeto que representa una sección dentro de un cuestionario.
     """
     questionnaire = models.ForeignKey(Questionnaire, related_name='sections', on_delete=models.CASCADE)
+    algorithm = models.ForeignKey(Algorithm, related_name='algorithm', on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=255, null=True, blank=True)
 
     def are_fields_filled(self):

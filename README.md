@@ -44,7 +44,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Puede haber coincidencias en edit-study!! (23/02/2025) (Comprobar)
 - [X] Cambiar de "questionnaire" a "questionaire" (27/02/2025)
 - [X] Vista de estudio (27/02/2025)
-- [X] Subir a plantilla los análisis de requisitos (06/03/2025)
+- [X] Subir a plantilla los análisis de requisitos (06/03/2025) ----
 - [X] Quitar campo de algoritmo de secciones (06/03/2025)
 - [X] Cambiar algoritmo de seccion a cuestionario (06/03/2025)
 - [X] Guardar información en caché de preferences y de questionnaries. (09/03/2025)
@@ -70,8 +70,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Revisar interfaz móvil (19/03/2025)
 - [ ] Limpiar código que no se use (18/03/2025)
 - [ ] al crear el cuestionario sigue pidiendo rellenar los campos
-- [ ] Ver los juegos que poner en preferences
-- [ ] En caso de ser Creador, no pedir ciertos parámetros
+- [ ] Ver los juegos que poner en preferences (futuro) primeras categorias los mas conocidos
 - [ ] Cambiar parámetros en el diagrama
 - [ ] Ver diferentes accesos
 - [ ] Mostrar errores del registro

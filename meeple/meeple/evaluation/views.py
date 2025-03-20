@@ -20,9 +20,10 @@ from django.views.generic.list import ListView
 from django.utils.translation import gettext_lazy as _
 from django.utils import translation
 from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnaireForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
-from .models import Preference, User, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation, Section
+from .models import Preference, User, Creator, Participant, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation, Section
 import json
 import random
+import re
 
 def home(request):
     """Gestiona la página de inicio de Meeple
@@ -40,24 +41,28 @@ def home(request):
     signup_home = _("Sign up")
 
     if request.user.is_authenticated:
-        if User.objects.get(id=request.session.get('userid')).rol == "CR":
+        if Creator.objects.filter(id=request.session.get('userid')).exists():
             return redirect(reverse('my-studies'))
-        
-        return redirect(reverse('my-recommendations'))
+        if Participant.objects.filter(id=request.session.get('userid')).exists():
+            return redirect(reverse('my-recommendations'))
 
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
         if request.POST.get("button") == "signin":
             user = authenticate(username=username, password=password)
+            # Si existe el usuario
             if user is not None:
                 login(request, user)
                 request.session['userid'] = user.id
-                if user.rol == "CR":
+                # Comprobamos el tipo de usuario que es y redirigimos a la página correcta
+                if Creator.objects.filter(id=user.id).exists():
                     return redirect(reverse('my-studies'))
-                return redirect(reverse('my-recommendations'))
+                if Participant.objects.filter(id=user.id).exists():
+                    return redirect(reverse('my-recommendations'))
             
-            if User.objects.filter(username=username).exists():
+            # Si el nombre de usuario existe, seguramente la contraseña es errónea
+            if Creator.objects.filter(username=username).exists() or Participant.objects.filter(username=username).exists():
                 # TODO: Mensaje de que la contrasñea es errónea
                 message_error = ""
                 return render(request, 'home.html', {'title': title_home, 'username': username_home, 'password': password_home, 'login': login_home, 'signup': signup_home, 'redirect_to': request.path})
@@ -85,13 +90,7 @@ def signup(request):
 
         username = request.POST.get("username")
         password = request.POST.get("password")
-        email = request.POST.get("email")
-        location = request.POST.get("location")
-        birthdate = request.POST.get("birthdate")
-        gender = request.POST.get("gender")
         rol = request.POST.get("rol")
-        frequencyGame = request.POST.get("frequencyGame")
-        expertiseGame = request.POST.get("expertiseGame")
 
         if form.is_valid():
             form.save()
@@ -99,23 +98,21 @@ def signup(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
 
-            user = authenticate(username=username, password=password, email=email, location=location,
-                                birthdate=birthdate, rol=rol, frequencyGame=frequencyGame, expertiseGame=expertiseGame, gender=gender)
+            user = authenticate(username=username, password=password)
 
             request.session['userid'] = user.id
-            request.session['rol'] = user.rol
 
             if user is not None:
                 login(request, user)
-                if user.rol == "PT":
+                # Comprobamos el tipo de usuario que es y redirigimos a la página correcta
+                if rol == "CR":
+                    return redirect('my-studies')
+                if rol == "PT":
                     return redirect('preferences')
-                return redirect('my-studies')
         else:
             print(form.errors)
-    else:
-        form = SignUpForm()
 
-    return render(request, 'register.html', {'username': request.session['username'], 'password': request.session['password'], 'form': form})
+    return render(request, 'register.html', {'username': request.session['username'], 'password': request.session['password']})
 
 def logout(request):
     """Cierra la sesión del usuario.
@@ -154,7 +151,7 @@ def preferences(request):
                 contexts = cursor.fetchone()
 
             Preference.objects.create(text=Game.objects.get_or_create(id_BGG=int(pref))[0], category=str(
-                categories), context=str(contexts),value=0, user=User.objects.get(id=request.session.get('userid')))
+                categories), context=str(contexts),value=0, user=Participant.objects.get(id=request.session.get('userid')))
 
         if request.session.get('rol') == "CR":
             return redirect(reverse('my-studies'))
@@ -274,11 +271,13 @@ def create_study(request):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
+        print(request.POST)
         questionnaire_form = QuestionnaireForm(request.POST)
 
         if questionnaire_form.is_valid():
             questionnaire = questionnaire_form.save(commit=False)
-            questionnaire.user = User.objects.get(id=request.session.get('userid'))
+            print(request.session.get('userid'))
+            questionnaire.user = Creator.objects.filter(id=request.session.get('userid'))[0]
             questionnaire.save()
         
             number_sections = int(request.POST.get("sections-TOTAL_FORMS", "").strip() or 0)
@@ -341,13 +340,11 @@ def edit_study(request, pk):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
+        print(request.POST)
         questionnaire = Questionnaire.objects.get(id=pk)
         questionnaire.name = request.POST.get('name')
         questionnaire.description = request.POST.get('description')
         questionnaire.language = request.POST.get('language')
-        algorithm = request.POST.get('algorithm')
-        if (algorithm != ''):
-            questionnaire.algorithm = Algorithm.objects.get(id=algorithm)
 
         questionnaire.save()
 
@@ -443,7 +440,7 @@ def edit_study(request, pk):
             return redirect('my-studies')
     
     # Si es GET, simplemente mostramos el formulario con los objetos existentes
-    questionnaire = get_object_or_404(Questionnaire, id=pk, user=User.objects.get(id=request.session.get('userid')))
+    questionnaire = get_object_or_404(Questionnaire, id=pk, user=Creator.objects.get(id=request.session.get('userid')))
     sections_dict = {}
     for section in questionnaire.sections.all():
         question_forms = {}
@@ -551,7 +548,7 @@ def upload_study(request, pk):
 @login_required
 def view_study(request, pk):
     # Obtener el cuestionario
-    questionnaire = get_object_or_404(Questionnaire, id=pk, user=User.objects.get(id=request.session.get('userid')))
+    questionnaire = get_object_or_404(Questionnaire, id=pk, user=Creator.objects.get(id=request.session.get('userid')))
 
     # Crear el diccionario de secciones y preguntas con sus elecciones
     sections_dict = {}
@@ -628,7 +625,7 @@ def view_questionnaire(request, pk):
         _type_: renderización de la página de visualización del cuestionario
     """
 
-    user = User.objects.get(id=request.session.get('userid'))
+    user = Participant.objects.get(id=request.session.get('userid'))
 
     if request.method == "POST":
         try:
@@ -766,23 +763,36 @@ def create_questions(request, section_index, language, list_questions = None):
         list_questions (List, optional): Lista de preguntas existentes. Defaults to None.
     """
     if list_questions is None:
-        question_index = 0
-        while True: # Creamos las preguntas nuevas y comprobamos su contenido
-            question_key_prefix = f"questions-{question_index}-{section_index}"
-            question_keys = [value for key, value in request.POST.items() if key.startswith(question_key_prefix)]
-            if not question_keys:
-                # No se encontró más preguntas para esta sección
-                break
+        # Expresión regular para encontrar los preguntas que comienzan con "questions-" y terminan con "{section_index}-question_text"
+        first_pattern = re.compile(r"^questions-(\d+)-{}-question_text$".format(section_index))
+        second_pattern = re.compile(r"^questions-(\d+)-{}-type$".format(section_index))
+
+        # Filtrar las claves que coincidan con el patrón en request.POST
+        matching_question_text = []
+        matching_type = []
+        matching_question_indexes = []
+        for key, value in request.POST.items():
+            match_text = first_pattern.match(key)
+            match_type = second_pattern.match(key)
+
+            if match_text:
+                matching_question_text.append(value)
+                matching_question_indexes.append(match_text.group(1))  # Extraer el índice (\d+)
+
+            if match_type:
+                matching_type.append(value)
+
+
+        for question_text, type, question_index in zip(matching_question_text, matching_type, matching_question_indexes):
             # Crear la pregunta para la sección
             question = Question.objects.create(
                 section=Section.objects.get(id=section_index),
-                question_text=question_keys[0],
-                type=question_keys[1],
+                question_text=question_text,
+                type=type,
                 language=language
             )
 
-            create_choices(request, question, section_index = section_index, question_index = question_index) # Creamos las opciones nuevas
-            question_index += 1
+            create_choices(request, question.id, section_index = section_index, question_index = question_index) # Creamos las opciones nuevas 
     else:
         for question in list_questions: # Comprobamos en preguntas existentes
             create_choices(request, question, section_index = section_index, question_index = question) # Creamos las opciones nuevas
@@ -797,10 +807,15 @@ def create_choices(request, question, section_index, question_index):
         section_index (text): Identificador de la Sección asociada a las opciones
         question_index (text): Identificador de la Pregunta asociada a las opciones
     """
-    choice_index = 0
-    while True:
-        choice_text_key = f"choices-{choice_index}-{section_index}-{question_index}-choice_text"
-        choice_keys = request.POST.get(choice_text_key, "").strip()
+    # Expresión regular para encontrar los choices que comienzan con "choices-" y terminan con "{section_index}-{question_index}-choice_text"
+    pattern = re.compile(r"^choices-(\d+)-{}-{}-choice_text$".format(section_index, question_index))
+
+    # Filtrar las claves que coincidan con el patrón en request.POST
+    matching_keys = [key for key in request.POST.keys() if pattern.match(key)]
+
+    for choice in matching_keys:
+
+        choice_keys = request.POST.get(choice, "").strip()
         if not choice_keys:
             # No se encontró más preguntas para esta sección
             break
@@ -809,7 +824,6 @@ def create_choices(request, question, section_index, question_index):
             question=Question.objects.get(id=question),
             choice_text=choice_keys,
         )
-        choice_index += 1
 
 def get_responses_for_code(user):
     """Función para obtener los datos del usuario que usaremos para los algoritmos de recomendación
@@ -843,8 +857,6 @@ def get_responses_for_code(user):
     responses['contexts'] = list(set(ctx for ctx in contexts_list if ctx.strip()))
 
     return responses
-
-from django.db.models import Prefetch
 
 def get_data_evaluations(user):
     """Obtiene las evaluaciones del usuario con sus respuestas organizadas eficientemente.

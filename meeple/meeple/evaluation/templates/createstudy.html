@@ -229,6 +229,7 @@
                 var qindex = $questionForm.attr("data-question-index");
                 // Contar las opciones existentes en esa sección para determinar el índice de la nueva pregunta
                 var cCount = $questionForm.find(".choices-container .choice-form").length;
+                
                 // Obtener la plantilla del formulario de opción
                 var choiceTemplate = $("#choice-template").html();
                 var newChoiceHtml = choiceTemplate.replace(/__cindex__/g, cCount).replace(/__sindexc__/g, sindex).replace(/__qindexc__/g, qindex).replace(/choices-\d+/g, "choices-" + cCount + "-" + sindex + "-" + qindex);
