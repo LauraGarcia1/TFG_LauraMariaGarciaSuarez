@@ -188,7 +188,7 @@ class Questionnaire(models.Model):
         Returns:
             bool: Devuelve True si description, name, algorithm y language tiene contenido, False si está vacío.
         """
-        return bool(self.description and self.name and self.algorithm and self.language)
+        return bool(self.description and self.name and self.language)
 
     def __str__(self):
         """Devuelve una representación en cadena de la respuesta.
@@ -217,7 +217,7 @@ class Section(models.Model):
         Returns:
             bool: Devuelve True si title tiene contenido, False si está vacío.
         """
-        return bool(self.title)
+        return bool(self.title and self.algorithm)
 
     def __str__(self):
         """Devuelve una representación en cadena de la respuesta.
@@ -239,7 +239,6 @@ class Question(models.Model):
     section = models.ForeignKey('Section', on_delete=models.CASCADE, null=False, related_name='questions')
     date_created = models.DateTimeField(auto_now_add=True)
     question_text = models.CharField(max_length=150, blank=False, null=False)
-    # TODO: tendría sentido que hubiese otros tipos?
     type = models.CharField(
         max_length=20,
         choices=[
@@ -323,17 +322,17 @@ class Answer(models.Model):
     """
     question = models.ForeignKey('Question', on_delete=models.CASCADE, null=False)
     user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-    text = models.CharField(max_length=250, blank=True, null=True)
     choice = models.ForeignKey('Choice', on_delete=models.SET_NULL, null=True)
+    text = models.CharField(max_length=250, blank=True, null=True)
     language = models.CharField(
         max_length = 10,
         choices = [
-            ('en', 'English'),
-            ('es', 'Español')
+            ('EN', 'English'),
+            ('ES', 'Español')
         ],
-        default='en'
+        default='EN'
     )
+    date_created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         """Configura el modelo, los campos y opciones del formulario en un ModelForm de Django.
@@ -391,10 +390,10 @@ class Game(models.Model):
     id_BGG = models.IntegerField(default=0)
 
     def __str__(self):
-        """_summary_
+        """Devuelve una representación en cadena del juego.
 
         Returns:
-            _type_: _description_
+            str: Una cadena con el identificador del objeto y el identificador del juego en la Base de Datos de BGG.
         """
         return f"Game id: {self.id}\nBGG id: {self.id_BGG}"
 
@@ -408,6 +407,7 @@ class Evaluation(models.Model):
         Evaluation: Un objeto que representa una evaluación de recomendación por parte de un usuario.
     """
     recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=True)
+    # TODO: REvisar si me da problemas
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
     answers = models.JSONField(default=list)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -429,10 +429,9 @@ class Preference(models.Model):
     Returns:
         Preference: Un objeto que representa las preferencias del usuario relacionadas con un juego.
     """
-    text = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
+    game = models.ForeignKey('Game', on_delete=models.CASCADE, null=True)
     category = models.CharField(max_length=100, blank=True, null=True)
     context = models.CharField(max_length=100, blank=True, null=True)
-    value = models.FloatField(default=0.0) # TODO: Es necesario?
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
