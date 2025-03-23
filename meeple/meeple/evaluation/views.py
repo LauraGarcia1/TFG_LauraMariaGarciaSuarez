@@ -349,7 +349,7 @@ def edit_study(request, pk):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
-        print(request.POST)
+        #print(request.POST)
         questionnaire = Questionnaire.objects.get(id=pk)
         questionnaire.name = request.POST.get('name')
         questionnaire.description = request.POST.get('description')
