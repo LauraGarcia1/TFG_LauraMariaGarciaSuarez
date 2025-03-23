@@ -270,6 +270,14 @@ msgstr "Previous recommendations"
 msgid "Questionnaire"
 msgstr "Discover your ideal game! Answer these questions and find the best recommendation for you."
 
+#: evaluation/templates/liststudies.html:31
+msgid "TitleListStudies"
+msgstr "Available questionnaires"
+
+#: evaluation/templates/liststudies.html:32
+msgid "DescriptionListStudies"
+msgstr "Click on any of the questionnaries and discover personalized recommendations just for you! 🎮✨ It's time to find your next favorite game!"
+
 #: evaluation/templates/register.html:20 evaluation/views.py:34
 msgid "Username"
 msgstr "Username"
@@ -513,6 +521,14 @@ msgstr "Upload study"
 #: evaluation/templates/mystudies.html:87
 msgid "DeleteStudy"
 msgstr "Delete study"
+
+#: evaluation/templates/createstudy.html:15
+msgid "HelpfulCreateEditTitle"
+msgstr "🔍 Need help? Here’s the deal!"
+
+#: evaluation/templates/createstudy.html:16
+msgid "HelpfulCreateEditBody"
+msgstr "<br><br>The algorithms you can use are listed on your <strong>Created Studies</strong> page—go check them out!<br><br>And here’s a quick guide to the different question types:<br>- <strong>SCRB</strong> 🎯 Pick ONE option (radio buttons).<br>- <strong>MCRB</strong> ✅ Pick MULTIPLE options (checkbox-style).<br>- <strong>SCCB</strong> 📜 Dropdown, choose ONE.<br>- <strong>MCCB</strong> 📜✅ Dropdown, choose MANY.<br>- <strong>OAS</strong> ✏️ Short text answer.<br>- <strong>OAL</strong> 📝 Long text answer.<br>- <strong>N</strong> 🔢 Numbers from 1 to 10.<br><br>Now go rock that study! 🚀"
 
 #: evaluation/templates/createstudy.html:32
 msgid "CreateStudyTitle"

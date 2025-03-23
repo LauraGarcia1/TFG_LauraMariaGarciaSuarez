@@ -157,9 +157,9 @@ class PreferenceAdmin(admin.ModelAdmin):
     Args:
         admin (ModelAdmin): Clase base que permite personalizar la visualización y gestión de un modelo en el panel de administración de Django.
     """
-    list_display = ['text', 'category', 'value', 'user']
+    list_display = ['game', 'category', 'user']
     search_fields = ['category']
-    list_filter = ['value', 'user']
+    list_filter = ['user']
 
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):

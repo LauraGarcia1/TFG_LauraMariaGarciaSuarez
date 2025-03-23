@@ -8,6 +8,14 @@
     {% endblock overflow %}
 
     {% block body %}
+    <!-- Ventana de ayuda para el usuario -->
+    <div id="myModal" class="modal">
+        <div class="modal-content mt-5">
+            <span class="close" onclick="closeNotification()">&times;</span>
+            <h5>{% trans "HelpfulCreateEditTitle" %}</h5>
+            <p>{% trans "HelpfulCreateEditBody" %}</p>
+        </div>
+    </div>
     <div class="position-relative custom-container">
         <div class="position-absolute top-0 start-0">
             <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
@@ -23,7 +31,7 @@
             class="justify-content-start shadow-lg p-4 p-md-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
             <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme">
                 <!-- Form del cuestionario -->
-                <h1>{% trans "EditStudy" %}</h1>
+                <h1><span>{% trans "EditStudy" %}</span> <i class="bi bi-info-circle" onclick="openNotification()"></i></h1>
                 <form action="" method="post" id="formSubmit">
                     {% csrf_token %}
                     <div id="questionnaire-form" class="w-100 px-3 overflow-auto">
@@ -327,16 +335,22 @@
 
                 // Cambiamos los campos de id y name del form
                 var newSection = $("#sections-container .section-form").last();
-                newSection.find("input[id^='id_sections-']").each(function () {
-                    var $input = $(this);
-                    var currentName = $input.attr('name');
-                    var currentId = $input.attr('id');
+                // **Actualizar todos los inputs dentro de la nueva sección**
+                newSection.find("input, select, textarea").each(function () {
+                    var $element = $(this);
+                    var currentName = $element.attr('name') || "";
+                    var currentId = $element.attr('id') || "";
 
-                    var newName = currentName.replace(/sections-\d+/, "sections-" + (sectionIndex - 1));
-                    var newId = currentId.replace(/sections-\d+/, "sections-" + (sectionIndex - 1));
+                    // Reemplazar **todas** las coincidencias dentro del div
+                    if (currentName.match(/sections-\d+/g)) {
+                        var newName = currentName.replace(/sections-\d+/g, "sections-" + sectionIndex);
+                        $element.attr('name', newName);
+                    }
 
-                    $input.attr('name', newName);
-                    $input.attr('id', newId);
+                    if (currentId.match(/sections-\d+/g)) {
+                        var newId = currentId.replace(/sections-\d+/g, "sections-" + sectionIndex);
+                        $element.attr('id', newId);
+                    }
                 });
 
                 // Añadimos el identificador en el botón para eliminar preguntas
@@ -507,6 +521,16 @@
                 toggleChoices($(this));
             });
         });
+
+        // Función para abrir el modal
+        function openNotification() {
+            document.getElementById("myModal").style.display = "block";
+        }
+
+        // Función para cerrar el modal
+        function closeNotification() {
+            document.getElementById("myModal").style.display = "none";
+        }
     </script>
 
     {% endblock body %}

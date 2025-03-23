@@ -150,8 +150,8 @@ def preferences(request):
                     "SELECT GROUP_CONCAT(DISTINCT zgc.name ORDER BY zgc.name ASC) AS contexts FROM (SELECT DISTINCT gameid, name FROM zacatrus_game_contexts) zgc WHERE zgc.gameid = %s;", [pref])
                 contexts = cursor.fetchone()
 
-            Preference.objects.create(text=Game.objects.get_or_create(id_BGG=int(pref))[0], category=str(
-                categories), context=str(contexts),value=0, user=Participant.objects.get(id=request.session.get('userid')))
+            Preference.objects.create(game=Game.objects.get_or_create(id_BGG=int(pref))[0], category=str(
+                categories), context=str(contexts), user=Participant.objects.get(id=request.session.get('userid')))
 
         if request.session.get('rol') == "CR":
             return redirect(reverse('my-studies'))
@@ -271,12 +271,11 @@ def create_study(request):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
-        print(request.POST)
+        #print(request.POST)
         questionnaire_form = QuestionnaireForm(request.POST)
 
         if questionnaire_form.is_valid():
             questionnaire = questionnaire_form.save(commit=False)
-            print(request.session.get('userid'))
             questionnaire.user = Creator.objects.filter(id=request.session.get('userid'))[0]
             questionnaire.save()
         
@@ -284,12 +283,22 @@ def create_study(request):
             for section_index in range(0, number_sections+1):
                 section_title_key = f"sections-{section_index}-title"
                 section_title = request.POST.get(section_title_key, "").strip()
+                section_algorithm_key = f"sections-{section_index}-algorithm"
+                section_algorithm = request.POST.get(section_algorithm_key, "").strip()
                 if section_title:
                     # Si hay secciones del cuestionario, las guardamos
-                    section = Section.objects.create(
-                        questionnaire=questionnaire,
-                        title=section_title
-                    )
+                    if section_algorithm == '':
+                        section = Section.objects.create(
+                            questionnaire=questionnaire,
+                            title=section_title,
+                            algorithm=Algorithm.objects.get(id=section_algorithm)
+                        )
+                    else:
+                        section = Section.objects.create(
+                            questionnaire=questionnaire,
+                            title=section_title,
+                            algorithm=None
+                        )
                     # Procesar las preguntas de esta sección
                     number_questions = int(request.POST.get(f"questions-{section_index}-TOTAL_FORMS", "").strip() or 0)
                     for question_index in range(0, number_questions+1):
@@ -373,6 +382,7 @@ def edit_study(request, pk):
             # Comprobamos si hay que actualizar algún objeto
             section_ids = request.POST.getlist('sections-id')
             section_titles = request.POST.getlist('title')
+            section_algorithms = request.POST.getlist('algorithm')
             
             question_ids = request.POST.getlist('questions-id')
             # TODO: este campo hay que solucionarlo
@@ -384,13 +394,16 @@ def edit_study(request, pk):
 
             # ---- Actualizar secciones ---- > title
             sections_to_update = []
-            for section_id, title in zip(section_ids, section_titles):
-                section = Section(id=section_id, title=title)
+            for section_id, title, algorithm in zip(section_ids, section_titles, section_algorithms):
+                if algorithm == '':
+                    section = Section(id=section_id, title=title)
+                else:
+                    section = Section(id=section_id, title=title, algorithm=Algorithm.objects.get(id=algorithm))
                 sections_to_update.append(section)
 
             # Realizar la actualización en masa para las secciones
             if sections_to_update:
-                Section.objects.bulk_update(sections_to_update, ['title'])
+                Section.objects.bulk_update(sections_to_update, ['title', 'algorithm'])
 
             # ---- Actualizar preguntas ---- > question_text, type, language
             questions_to_update = []
@@ -412,29 +425,10 @@ def edit_study(request, pk):
             if choices_to_update:
                 Choice.objects.bulk_update(choices_to_update, ['choice_text'])
 
-            # Comprobamos si hay objetos nuevos, si es así los creamos
-            for section in section_ids: # Comprobamos en secciones existentes
-                create_questions(request, section_index=section, list_questions=question_ids, language=questionnaire.language)
-                create_questions(request, section_index=section, language=questionnaire.language)
+            # Comprobamos si hay objetos nuevos dentro de las secciones existentes, si es así los creamos
+            create_sections(request, questionnaire, question_ids, section_ids) # Comprobamos en secciones existentes
 
-            section_index = 0
-            while True: # Creamos las secciones nuevas y comprobamos su contenido
-                section_title_key = f"sections-{section_index}-title"
-                section_title = request.POST.get(section_title_key, "").strip()
-                if not section_title:
-                    # Si no se encuentra un título, asumimos que ya no hay más secciones
-                    break
-
-                section = Section.objects.create(
-                    questionnaire=questionnaire,
-                    title=section_title
-                )
-                # Procesar las preguntas de esta sección
-                create_questions(request, section_index=section, list_questions=question_ids, language=questionnaire.language)
-                create_questions(request, section_index=section, language=questionnaire.language)
-
-                # Incrementamos el índice de sección y seguimos con la siguiente
-                section_index += 1
+            create_sections(request, questionnaire, question_ids)
 
             # Redireccionar o mostrar mensaje de éxito
             return redirect('my-studies')
@@ -662,7 +656,7 @@ def view_questionnaire(request, pk):
 
             # Guardamos la recomendación dada al usuario
             # TODO: metrics
-            recommendation = Recommendation.objects.create(game=Game.objects.get_or_create(id_BGG=int(recommendation_game))[0], algorithm=questionnaire.algorithm, metrics=get_responses_for_code(user=user))
+            recommendation = Recommendation.objects.create(game=Game.objects.get_or_create(id_BGG=int(recommendation_game))[0], algorithm=section.algorithm, metrics=get_responses_for_code(user=user))
 
             Evaluation.objects.create(recommendation=recommendation, user=user, answers=answers[section.id])
 
@@ -677,15 +671,14 @@ def view_questionnaire(request, pk):
 
     # Revisar que el cuestionario está subido/validado
     if questionnaire.uploaded:
-        # TODO: que necesita el código?
-        responses = get_responses_for_code(user)
-        
-        # Obtener el juego del algoritmo
-        assigned_games = execute_algorithm(code=questionnaire.algorithm.code, user=user, responses=responses, number_sections=len(questionnaire.sections.all()))
-
         # Crear el diccionario de secciones y preguntas con sus elecciones
+        responses = get_responses_for_code(user) # Obtenemos la información relevante de las preferencias del usuario
         sections_dict = {}
-        for section, game in zip(questionnaire.sections.all(), assigned_games):
+        for section in questionnaire.sections.all():
+            # TODO: que necesita el código?
+            
+            # Obtener el juego del algoritmo
+            game = execute_algorithm(code=section.algorithm.code, user=user, responses=responses)
             questions_dict = {}
 
             for question in section.questions.all():
@@ -698,7 +691,7 @@ def view_questionnaire(request, pk):
 
             sections_dict[(section.title, section.id)] = {
                 'questions': questions_dict,
-                'game': game
+                'game': game[0]
             }
 
         return render(request, 'viewquestionnaire.html', {
@@ -753,6 +746,59 @@ async def translate_text(text, target_language):
     
     return translated.text  # Devolver el texto traducido
 
+def create_sections(request, questionnaire, question_ids, list_sections = None):
+    """Función para crear las secciones desde las páginas de creación y edición de estudios
+
+    Args:
+        request (HttpRequest): instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web
+        questionnaire (Questionnaire): cuestionario al que pertenecen las secciones
+        question_ids (list): Lista de preguntas existentes 
+        list_questions (List, optional): Lista de preguntas existentes. Defaults to None.
+    """
+    if list_sections is None:
+        # Expresión regular para encontrar los preguntas que comienzan con "section-" y terminan con "-title"
+        first_pattern = re.compile(r"^sections-(\d+)-title$")
+        second_pattern = re.compile(r"^sections-(\d+)-algorithm$")
+
+        # Filtrar las claves que coincidan con el patrón en request.POST
+        matching_title = []
+        matching_algorithm = []
+        matching_section_indexes = []
+        for key, value in request.POST.items():
+            match_title = first_pattern.match(key)
+            match_algorithm = second_pattern.match(key)
+
+            if match_title:
+                matching_title.append(value)
+                matching_section_indexes.append(match_title.group(1))  # Extraer el índice (\d+)
+
+            if match_algorithm:
+                matching_algorithm.append(value)
+
+
+        for title, algorithm, section_index in zip(matching_title, matching_algorithm, matching_section_indexes):
+            # Crear la pregunta para la sección
+            if algorithm == '':
+                section = Section.objects.create(
+                    questionnaire=questionnaire,
+                    title=title
+                )
+            else:
+                section = Section.objects.create(
+                    questionnaire=questionnaire,
+                    title=title,
+                    algorithm=Algorithm.objects.get(id=algorithm)
+                )
+
+            # Procesar las preguntas de esta sección
+            create_questions(request, section_index=section_index, list_questions=question_ids, language=questionnaire.language)
+            create_questions(request, section_index=section_index, language=questionnaire.language)
+
+    else:
+        for section in list_sections: # Comprobamos en secciones existentes
+            create_questions(request, section_index=section, list_questions=question_ids, language=questionnaire.language)
+            create_questions(request, section_index=section, language=questionnaire.language)
+
 def create_questions(request, section_index, language, list_questions = None):
     """Función para crear las preguntas desde las páginas de creación y edición de estudios
 
@@ -762,7 +808,7 @@ def create_questions(request, section_index, language, list_questions = None):
         language (text): Idioma del cuestionario
         list_questions (List, optional): Lista de preguntas existentes. Defaults to None.
     """
-    if list_questions is None:
+    if list_questions is None: # Creamos las preguntas nuevas
         # Expresión regular para encontrar los preguntas que comienzan con "questions-" y terminan con "{section_index}-question_text"
         first_pattern = re.compile(r"^questions-(\d+)-{}-question_text$".format(section_index))
         second_pattern = re.compile(r"^questions-(\d+)-{}-type$".format(section_index))
@@ -931,7 +977,7 @@ def execute_algorithm(code, user, responses, number_sections = 1):
         responses (List, optional): Las categorías encontradas en las preferencias del usuario. Defaults to None.
 
     Returns:
-        _type_: Juego recomendado
+        list: Listado de juegos recomendados
     """
     environment = {}
 

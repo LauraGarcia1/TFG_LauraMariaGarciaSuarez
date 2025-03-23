@@ -28,6 +28,8 @@
             {% csrf_token %}
             <div
                 class="justify-content-start shadow-lg p-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
+                <h1>{% trans "TitleListStudies" %}</h1>
+                <p>{% trans "DescriptionListStudies" %}</p>
                 <div class="row text-center g-3">
                     <!-- Listado de cuestionarios disponibles para el usuario Participante -->
                     {% for qelem in questionnaires %}

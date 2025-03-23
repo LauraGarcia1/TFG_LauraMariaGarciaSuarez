@@ -123,6 +123,14 @@ msgstr "Escribe aquí..."
 msgid "Questionnaire"
 msgstr "¡Descubre tu juego ideal! Responde estas preguntas y encuentra la mejor recomendación para ti."
 
+#: evaluation/templates/liststudies.html:31
+msgid "TitleListStudies"
+msgstr "Cuestionarios disponibles"
+
+#: evaluation/templates/liststudies.html:32
+msgid "DescriptionListStudies"
+msgstr "¡Haz clic en cualquiera de los cuestionarios y descubre las recomendaciones personalizadas solo para ti! 🎮✨ ¡Es hora de encontrar tu próximo juego favorito!"
+
 #: evaluation/templates/preferences.html:18
 msgid "Loading"
 msgstr "Cargando"
@@ -517,6 +525,14 @@ msgstr "Subir estudio"
 #: evaluation/templates/mystudies.html:87
 msgid "DeleteStudy"
 msgstr "Delete study"
+
+#: evaluation/templates/createstudy.html:15
+msgid "HelpfulCreateEditTitle"
+msgstr "🔍 ¿Necesitas ayuda? ¡Aquí va!"
+
+#: evaluation/templates/createstudy.html:16
+msgid "HelpfulCreateEditBody"
+msgstr "<br><br>Los algoritmos que puedes usar están en tu página de <strong>Estudios Creados</strong>—¡échales un ojo!<br><br>Y aquí tienes una guía rápida de los tipos de preguntas:<br>- <strong>SCRB</strong> 🎯 Escoge <strong>UNA</strong> opción (botones de radio).<br>- <strong>MCRB</strong> ✅ Escoge <strong>VARIAS</strong> opciones (tipo checkbox).<br>- <strong>SCCB</strong> 📜 Menú desplegable, <strong>una</strong> opción.<br>- <strong>MCCB</strong> 📜✅ Menú desplegable, <strong>varias</strong> opciones.<br>- <strong>OAS</strong> ✏️ Respuesta corta.<br>- <strong>OAL</strong> 📝 Respuesta larga.<br>- <strong>N</strong> 🔢 Números del 1 al 10.<br><br>¡A por ese estudio! 🚀"
 
 #: evaluation/templates/createstudy.html:32
 msgid "CreateStudyTitle"

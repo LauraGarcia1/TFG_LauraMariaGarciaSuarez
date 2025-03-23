@@ -8,6 +8,14 @@
     {% endblock overflow %}
 
     {% block body %}
+    <!-- Ventana de ayuda para el usuario -->
+    <div id="myModal" class="modal pt-3 zindex-200">
+        <div class="modal-content">
+            <span class="close" onclick="closeNotification()">&times;</span>
+            <h5>{% trans "HelpfulCreateEditTitle" %}</h5>
+            <p>{% trans "HelpfulCreateEditBody" %}</p>
+        </div>
+    </div>
     <div class="position-relative custom-container">
         <div class="position-absolute top-0 start-0">
             <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false"
@@ -22,7 +30,10 @@
         <div
             class="justify-content-start shadow-lg p-4 p-md-5 bg-body rounded rounded-5 position-absolute top-0 start-50 translate-middle-x border border-dark border-2 custom-width">
             <!-- Form del cuestionario -->
-            <h1>{% trans "CreateStudyTitle" %}</h1>
+            <h1>
+                <span>{% trans "CreateStudyTitle" %}</span> 
+                <i class="bi bi-info-circle" onclick="openNotification()"></i>
+            </h1>
             <form action="" method="post">
                 <div class="row p-3 p-md-5 rounded rounded-5 border border-dark border-1 background-creme">
                     {% csrf_token %}
@@ -144,21 +155,27 @@
                 $("#sections-container").append(newSectionHtml);
                 sectionIndex++;
 
+                // Aumentamos el conteo de secciones
                 var totalFormsInput = $("input[name='sections-TOTAL_FORMS']");
                 totalFormsInput.val(sectionIndex);
 
                 var newSection = $("#sections-container .section-form").last();
-                newSection.find("input[id^='id_sections-']").each(function () {
-                    var $input = $(this);
-                    var currentName = $input.attr('name');
-                    var currentId = $input.attr('id');
-                    // Reemplazar el índice de 'sections-0' a 'sections-<sectionIndex>'
-                    var newName = currentName.replace(/sections-\d+/, "sections-" + (sectionIndex - 1));
-                    var newId = currentId.replace(/sections-\d+/, "sections-" + (sectionIndex - 1));
+                // **Actualizar todos los inputs dentro de la nueva sección**
+                newSection.find("input, select, textarea").each(function () {
+                    var $element = $(this);
+                    var currentName = $element.attr('name') || "";
+                    var currentId = $element.attr('id') || "";
 
-                    // Asignar los nuevos name e id al input
-                    $input.attr('name', newName);
-                    $input.attr('id', newId);
+                    // Reemplazar **todas** las coincidencias dentro del div
+                    if (currentName.match(/sections-\d+/g)) {
+                        var newName = currentName.replace(/sections-\d+/g, "sections-" + sectionIndex);
+                        $element.attr('name', newName);
+                    }
+
+                    if (currentId.match(/sections-\d+/g)) {
+                        var newId = currentId.replace(/sections-\d+/g, "sections-" + sectionIndex);
+                        $element.attr('id', newId);
+                    }
                 });
                 newSection.find("button[id='del-questions-btn']").each(function () {
                     var $button = $(this);
@@ -357,6 +374,16 @@
             });
 
         });
+
+        // Función para abrir el modal
+        function openNotification() {
+            document.getElementById("myModal").style.display = "block";
+        }
+
+        // Función para cerrar el modal
+        function closeNotification() {
+            document.getElementById("myModal").style.display = "none";
+        }
 
     </script>
 
