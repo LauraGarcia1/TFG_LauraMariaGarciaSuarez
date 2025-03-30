@@ -77,14 +77,16 @@
                 <h4>{{ eval.questionnaire_title }} - {{ eval.section_title }}</h4>
                 <table class="table table-invisible">
                   <tbody>
-                    {% for question, answer in eval.questions %}
+                    {% for question, answers in eval.questions.items %}
                     <tr>
-                      <td class="w-50">{{ data.question_text }}</td>
-                      {% if data.answer_text %}
-                        <td>{{ data.answer_text }}</td>
-                      {% else %}
-                        <td>{{ data.answer_choice }}</td>
-                      {% endif %}
+                      <td class="w-50">{{ question }}</td>
+                      <td>
+                        <ul>
+                          {% for value in answers %}
+                              <li>{{ value }}</li>
+                          {% endfor %}
+                        </ul>
+                      </td>
                     </tr>
                     {% endfor %}
                   </tbody>

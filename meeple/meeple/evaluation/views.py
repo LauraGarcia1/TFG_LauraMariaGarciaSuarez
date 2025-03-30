@@ -921,50 +921,44 @@ def get_data_evaluations(user):
     evaluations_data = []
     
     for evaluation in evaluations:
+        print("Qué es evaluation------------------>", evaluation) 
         answers_json = evaluation.answers
         if not answers_json:
             continue
         
         # Extraemos todos los IDs de preguntas presentes en la evaluación
-        question_ids = [Answer.objects.get(id=ans).question.id for ans in answers_json]
-        if not question_ids:
-            continue
-        
-        # Obtenemos todas las preguntas, la sección y el cuestionario de la evaluación
-        questions = (
-            Question.objects.filter(id__in=question_ids)
-            .select_related('section__questionnaire')
-        )
-        questions_dict = {q.id: q for q in questions}
-        
-        # Obtenemos las preguntas de la sección
-        first_qid = question_ids[0]
-        first_question = questions_dict.get(first_qid)
-        section = first_question.section if first_question else None
-        questionnaire = section.questionnaire if section else None
-        
-        # Construimos la lista de preguntas con sus respuestas
-        grouped_questions = {}
+        question_answers = {}
+        question_info = {}
         for ans in answers_json:
             answer = Answer.objects.get(id=ans)
-            qid = answer.question.id
-            question_obj = questions_dict.get(qid)
-            if not question_obj:
-                continue
-            grouped_questions[question_obj.question_text] = {'answer_text': answer.text,'answer_choice': answer.choice}
 
+            if answer.question.id not in question_answers:
+                question_answers[answer.question.id] = []
+            if answer.question.id not in question_info:
+                question_info[answer.question.id] = answer.question.question_text
+
+            question_answers[answer.question.id].append(answer.text if answer.text is not None else answer.choice.choice_text)
         
+        if not question_answers:
+            continue
+        print("Qué es preguntas------------>", question_answers) 
+        print("Qué es preguntas------------>", question_info) 
+
+        # Obtenemos el título del cuestionario y de la sección
+        first_qid = next(iter(question_answers))
+        first_question = Question.objects.get(id=first_qid)
+        section = first_question.section if first_question else None
+        questionnaire = section.questionnaire if section else None
+
+        formatted_data = {question_info[q_id]: answers for q_id, answers in question_answers.items()}
+
         evaluations_data.append({
-            'evaluation_id': evaluation.id,
             'questionnaire_title': questionnaire.name if questionnaire else "Unknown",
             'section_title': section.title if section else "Unknown",
             'date_created': evaluation.date_created,
             'game_id': evaluation.recommendation.game.id_BGG if evaluation.recommendation and evaluation.recommendation.game else None,
-            'questions': grouped_questions
+            'questions': formatted_data
         })
-
-        
-    print(evaluations_data)
 
     return evaluations_data
 
