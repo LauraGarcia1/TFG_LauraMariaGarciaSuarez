@@ -77,7 +77,7 @@
                 <h4>{{ eval.questionnaire_title }} - {{ eval.section_title }}</h4>
                 <table class="table table-invisible">
                   <tbody>
-                    {% for data in eval.questions %}
+                    {% for question, answer in eval.questions %}
                     <tr>
                       <td class="w-50">{{ data.question_text }}</td>
                       {% if data.answer_text %}

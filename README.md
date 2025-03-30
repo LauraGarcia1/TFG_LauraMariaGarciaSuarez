@@ -273,3 +273,5 @@ Un meeple es una figura o ficha que se utiliza en muchos juegos de mesa, especia
 -> Traducción dinámica -> Librería googletrans
 
 -> Localización -> API Nominatim para la localización
+
+-> aiven

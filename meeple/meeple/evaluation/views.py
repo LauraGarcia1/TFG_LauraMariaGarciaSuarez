@@ -21,6 +21,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import translation
 from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnaireForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
 from .models import Preference, User, Creator, Participant, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation, Section
+from collections import defaultdict
 import json
 import random
 import re
@@ -490,7 +491,7 @@ def upload_study(request, pk):
         pk (text): variable con la clave pública del objeto cuestionario
 
     Returns:
-        _type_: redirección a la página de todos los estudios del usuario
+        HttpResponseRedirect: redirección a la página de todos los estudios del usuario
     """
     questionnaire = get_object_or_404(Questionnaire, pk=pk)
     if not questionnaire.are_fields_filled():
@@ -578,7 +579,7 @@ def homeParticipant(request):
         request (HttpRequest): instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web
 
     Returns:
-        _type_: renderización de la página de inicio del Participante
+        HttpResponse: renderización de la página de inicio del Participante
     """
 
     if request.method == "POST":
@@ -616,7 +617,7 @@ def view_questionnaire(request, pk):
         pk (text): variable con la clave pública del objeto cuestionario
 
     Returns:
-        _type_: renderización de la página de visualización del cuestionario
+        HttpResponseRedirect: renderización de la página de visualización del cuestionario
     """
 
     user = Participant.objects.get(id=request.session.get('userid'))
@@ -943,18 +944,15 @@ def get_data_evaluations(user):
         questionnaire = section.questionnaire if section else None
         
         # Construimos la lista de preguntas con sus respuestas
-        questions_data = []
+        grouped_questions = {}
         for ans in answers_json:
             answer = Answer.objects.get(id=ans)
             qid = answer.question.id
             question_obj = questions_dict.get(qid)
             if not question_obj:
                 continue
-            questions_data.append({
-                'question_text': question_obj.question_text,
-                'answer_text': answer.text,
-                'answer_choice': answer.choice
-            })
+            grouped_questions[question_obj.question_text] = {'answer_text': answer.text,'answer_choice': answer.choice}
+
         
         evaluations_data.append({
             'evaluation_id': evaluation.id,
@@ -962,8 +960,11 @@ def get_data_evaluations(user):
             'section_title': section.title if section else "Unknown",
             'date_created': evaluation.date_created,
             'game_id': evaluation.recommendation.game.id_BGG if evaluation.recommendation and evaluation.recommendation.game else None,
-            'questions': questions_data
+            'questions': grouped_questions
         })
+
+        
+    print(evaluations_data)
 
     return evaluations_data
 

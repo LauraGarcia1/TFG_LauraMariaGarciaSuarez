@@ -1,7 +1,17 @@
+# Imagen oficial de Python
 FROM python:3.10.12
+
+# Directorio de trabajo del contenedor
 RUN mkdir /DjangoMeepleDocker
 WORKDIR /DjangoMeepleDocker
 COPY / .
-RUN pip install -r requirements.txt
-EXPOSE 8000
-CMD python manage.py runserver 0.0.0.0:8000
+
+# Dependencias (no usamos la caché para asegurarnos de que están bien configuradas)
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Puerto que usaremos
+EXPOSE 10000
+#CMD python manage.py runserver 0.0.0.0:8000
+
+# Comando para ejecutar meeple
+CMD ["sh", "-c", "echo 'Iniciando contenedor' && python manage.py check && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:10000 meeple.wsgi:application"]
