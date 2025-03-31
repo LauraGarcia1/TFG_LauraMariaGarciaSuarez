@@ -407,7 +407,6 @@ class Evaluation(models.Model):
         Evaluation: Un objeto que representa una evaluación de recomendación por parte de un usuario.
     """
     recommendation = models.ForeignKey('Recommendation', on_delete=models.CASCADE, null=True)
-    # TODO: REvisar si me da problemas
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
     answers = models.JSONField(default=list)
     date_created = models.DateTimeField(auto_now_add=True)

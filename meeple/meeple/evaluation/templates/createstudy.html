@@ -47,18 +47,18 @@
                         <!-- Forms de las secciones. Se generan aquí dinámicamente. -->
                     </div>
                     <!-- Botones para tomar acciones en las secciones, cancelar la creación o guardar el cuestionario y los cambios -->
-                    <div class="row">
-                        <div class="col-6 col-md-3 mb-2">
-                            <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple" disabled>{% trans "CreateSection" %}</button>
+                    <div class="row m-auto">
+                        <div class="col-6 col-md-3 mb-2 text-center">
+                            <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple h-100" disabled>{% trans "CreateSection" %}</button>
                         </div>
-                        <div class="col-6 col-md-3 mb-2">
-                            <button type="button" id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
+                        <div class="col-6 col-md-3 mb-2 text-center">
+                            <button type="button" id="delete-sections-btn" class="btn btn-danger rounded-pill h-100" disabled>{% trans "DelSections" %}</button>
                         </div>
-                        <div class="col-6 col-md-3 mb-2">
-                            <button type="submit" class="btn btn-primary rounded-pill btn-mostaza">{% trans "StudiesButtom" %}</button>
+                        <div class="col-6 col-md-3 mb-2 text-center">
+                            <button type="submit" class="btn btn-primary rounded-pill btn-mostaza h-100">{% trans "StudiesButtom" %}</button>
                         </div>
-                        <div class="col-6 col-md-3 mb-2">
-                            <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "Cancel" %}</a>
+                        <div class="col-6 col-md-3 mb-2 text-center">
+                            <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2 h-100">{% trans "Cancel" %}</a>
                         </div>
                     </div>
                 </div>
@@ -153,11 +153,6 @@
                 var sectionTemplate = $("#section-template").html();
                 var newSectionHtml = sectionTemplate.replace(/__index__/g, sectionIndex).replace(/questions-TOTAL_FORMS/g, "questions-" + sectionIndex + "-TOTAL_FORMS");
                 $("#sections-container").append(newSectionHtml);
-                sectionIndex++;
-
-                // Aumentamos el conteo de secciones
-                var totalFormsInput = $("input[name='sections-TOTAL_FORMS']");
-                totalFormsInput.val(sectionIndex);
 
                 var newSection = $("#sections-container .section-form").last();
                 // **Actualizar todos los inputs dentro de la nueva sección**
@@ -184,6 +179,12 @@
                     var newId = currentId.replace(/del-questions-btn/, "del-questions-" + (sectionIndex - 1) + "-btn");
                     $button.attr('id', newId);
                 });
+
+                sectionIndex++;
+
+                // Aumentamos el conteo de secciones
+                var totalFormsInput = $("input[name='sections-TOTAL_FORMS']");
+                totalFormsInput.val(sectionIndex);
             });
 
             // Función para habilitar el botón para añadir preguntas en caso de haber datos en el campo de sección

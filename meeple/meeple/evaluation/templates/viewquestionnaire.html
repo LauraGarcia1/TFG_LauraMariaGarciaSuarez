@@ -225,12 +225,13 @@
         function sendRecomOpenInfo() {
             document.getElementById("finish").style.display = "block";
         }
-        // TODO:
+        
         // Función para cerrar la ventana de agradecimiento
         function closeInformation() {
             document.getElementById("finish").style.display = "none";
         }
 
+        // Función para activar y desactivar los botones
         function toggleActive(button) {
             // Verificar si el botón ya tiene la clase 'active'
             if (button.classList.contains('active')) {
@@ -242,6 +243,7 @@
             }
         }
 
+        // Función para mantener que sólo haya un botón presionado del conjunto
         function toggleActiveOnlyOne(event) {
             // Obtener el contenedor padre donde ocurrió el evento
             var parent = event.target.closest('.d-flex');  // Encuentra el contenedor con la clase 'd-flex'
@@ -258,37 +260,13 @@
             event.target.classList.add('active');
         }
 
-        // Funciones de traducción de contenido TODO:
-        async function translateText(text, targetLanguage) {
-            const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=YOUR_API_KEY`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    q: text,
-                    target: targetLanguage
-                })
-            });
-            const data = await response.json();
-            return data.data.translations[0].translatedText;
-        }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            const userLanguage = "{{ LANGUAGE_CODE }}";
-            const questions = document.querySelectorAll('[id^="question-"]');
-
-            for (const question of questions) {
-                const originalText = question.textContent;
-                const translatedText = await translateText(originalText, userLanguage);
-                question.textContent = translatedText;
-            }
-        });
-
         // Función de manejo cuando una opción de tipo botón es pulsada
         function pressedButton(button) {
             button.classList.toggle('checked-button');
             updateselections();
         }
 
+        // Función para manejar un conjunto de botones y que sólo uno esté pulsado
         function pressedButtonSingle(button) {
             const buttonName = button.getAttribute('name');
             const type = buttonName.split('-')[0];

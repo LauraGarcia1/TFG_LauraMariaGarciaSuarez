@@ -64,9 +64,8 @@ def home(request):
             
             # Si el nombre de usuario existe, seguramente la contraseña es errónea
             if Creator.objects.filter(username=username).exists() or Participant.objects.filter(username=username).exists():
-                # TODO: Mensaje de que la contrasñea es errónea
-                message_error = ""
-                return render(request, 'home.html', {'title': title_home, 'username': username_home, 'password': password_home, 'login': login_home, 'signup': signup_home, 'redirect_to': request.path})
+                message_error = _("WrongPassword")
+                return render(request, 'home.html', {'title': title_home, 'username': username_home, 'password': password_home, 'login': login_home, 'signup': signup_home, 'redirect_to': request.path, 'message_error' : message_error})
 
         request.session['username'] = username
         request.session['password'] = password
@@ -288,17 +287,17 @@ def create_study(request):
                 section_algorithm = request.POST.get(section_algorithm_key, "").strip()
                 if section_title:
                     # Si hay secciones del cuestionario, las guardamos
-                    if section_algorithm == '':
+                    if section_algorithm == '' or section_algorithm is None:
                         section = Section.objects.create(
                             questionnaire=questionnaire,
                             title=section_title,
-                            algorithm=Algorithm.objects.get(id=section_algorithm)
+                            algorithm=None
                         )
                     else:
                         section = Section.objects.create(
                             questionnaire=questionnaire,
                             title=section_title,
-                            algorithm=None
+                            algorithm=Algorithm.objects.get(id=section_algorithm)
                         )
                     # Procesar las preguntas de esta sección
                     number_questions = int(request.POST.get(f"questions-{section_index}-TOTAL_FORMS", "").strip() or 0)
@@ -386,7 +385,6 @@ def edit_study(request, pk):
             section_algorithms = request.POST.getlist('algorithm')
             
             question_ids = request.POST.getlist('questions-id')
-            # TODO: este campo hay que solucionarlo
             question_texts = request.POST.getlist('question_text')
             question_types = request.POST.getlist('type')
 
@@ -395,16 +393,20 @@ def edit_study(request, pk):
 
             # ---- Actualizar secciones ---- > title
             sections_to_update = []
+            sections_alg_to_update = []
             for section_id, title, algorithm in zip(section_ids, section_titles, section_algorithms):
                 if algorithm == '':
                     section = Section(id=section_id, title=title)
+                    sections_to_update.append(section)
                 else:
                     section = Section(id=section_id, title=title, algorithm=Algorithm.objects.get(id=algorithm))
-                sections_to_update.append(section)
+                    sections_alg_to_update.append(section)
 
             # Realizar la actualización en masa para las secciones
             if sections_to_update:
-                Section.objects.bulk_update(sections_to_update, ['title', 'algorithm'])
+                Section.objects.bulk_update(sections_to_update, ['title'])
+            if sections_alg_to_update:
+                Section.objects.bulk_update(sections_alg_to_update, ['title', 'algorithm'])
 
             # ---- Actualizar preguntas ---- > question_text, type, language
             questions_to_update = []
@@ -656,7 +658,6 @@ def view_questionnaire(request, pk):
             recommendation_game = request.POST.get(f"game-{section.id}")
 
             # Guardamos la recomendación dada al usuario
-            # TODO: metrics
             recommendation = Recommendation.objects.create(game=Game.objects.get_or_create(id_BGG=int(recommendation_game))[0], algorithm=section.algorithm, metrics=get_responses_for_code(user=user))
 
             Evaluation.objects.create(recommendation=recommendation, user=user, answers=answers[section.id])
@@ -676,8 +677,6 @@ def view_questionnaire(request, pk):
         responses = get_responses_for_code(user) # Obtenemos la información relevante de las preferencias del usuario
         sections_dict = {}
         for section in questionnaire.sections.all():
-            # TODO: que necesita el código?
-            
             # Obtener el juego del algoritmo
             game = execute_algorithm(code=section.algorithm.code, user=user, responses=responses)
             questions_dict = {}
@@ -714,7 +713,6 @@ def get_data_questions():
         dict: parámetros del usuario contenido en un diccionario
     """
 
-    # TODO: como hago con los cuestionarios
     questionnaire = Questionnaire.objects.first()
     questions = questionnaire.questions.all()
 
@@ -792,8 +790,8 @@ def create_sections(request, questionnaire, question_ids, list_sections = None):
                 )
 
             # Procesar las preguntas de esta sección
-            create_questions(request, section_index=section_index, list_questions=question_ids, language=questionnaire.language)
-            create_questions(request, section_index=section_index, language=questionnaire.language)
+            create_questions(request, section_index=section.id, list_questions=question_ids, language=questionnaire.language)
+            create_questions(request, section_index=section.id, language=questionnaire.language)
 
     else:
         for section in list_sections: # Comprobamos en secciones existentes
@@ -833,7 +831,7 @@ def create_questions(request, section_index, language, list_questions = None):
         for question_text, type, question_index in zip(matching_question_text, matching_type, matching_question_indexes):
             # Crear la pregunta para la sección
             question = Question.objects.create(
-                section=Section.objects.get(id=section_index),
+                section=Section.objects.get(id=int(section_index)),
                 question_text=question_text,
                 type=type,
                 language=language
@@ -921,7 +919,6 @@ def get_data_evaluations(user):
     evaluations_data = []
     
     for evaluation in evaluations:
-        print("Qué es evaluation------------------>", evaluation) 
         answers_json = evaluation.answers
         if not answers_json:
             continue
@@ -941,8 +938,6 @@ def get_data_evaluations(user):
         
         if not question_answers:
             continue
-        print("Qué es preguntas------------>", question_answers) 
-        print("Qué es preguntas------------>", question_info) 
 
         # Obtenemos el título del cuestionario y de la sección
         first_qid = next(iter(question_answers))

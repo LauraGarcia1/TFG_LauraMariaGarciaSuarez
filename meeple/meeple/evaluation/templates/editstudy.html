@@ -108,18 +108,18 @@
                 {% endfor %}
             </div>
                 <!-- Botones para tomar acciones en las secciones, cancelar la creación o guardar el cuestionario y los cambios -->
-                <div class="row">
-                    <div class="col-6 col-md-3 mb-2">
-                        <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple">{% trans "CreateSection" %}</button>
+                <div class="row m-auto">
+                    <div class="col-6 col-md-3 mb-2 text-center">
+                        <button type="button" id="create-section-btn" class="btn btn-primary rounded-pill btn-purple h-100">{% trans "CreateSection" %}</button>
                     </div>
-                    <div class="col-6 col-md-3 mb-2">
-                        <button type="button" id="delete-sections-btn" class="btn btn-danger rounded-pill" disabled>{% trans "DelSections" %}</button>
+                    <div class="col-6 col-md-3 mb-2 text-center">
+                        <button type="button" id="delete-sections-btn" class="btn btn-danger rounded-pill h-100" disabled>{% trans "DelSections" %}</button>
                     </div>
-                    <div class="col-6 col-md-3 mb-2">
-                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza" id="submitBtn">{% trans "SaveChanges" %}</button>
+                    <div class="col-6 col-md-3 mb-2 text-center">
+                        <button type="submit" class="btn btn-primary rounded-pill btn-mostaza h-100" id="submitBtn">{% trans "SaveChanges" %}</button>
                     </div>
-                    <div class="col-6 col-md-3 mb-2">
-                        <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2">{% trans "Cancel" %}</a>
+                    <div class="col-6 col-md-3 mb-2 text-center">
+                        <a href="{% url 'my-studies' %}" class="btn btn-primary rounded-pill btn-terracota ms-2 h-100">{% trans "Cancel" %}</a>
                     </div>
                 </div>
                 <input type="hidden" name="deleted_section_ids" id="deleted-section-ids">
@@ -328,10 +328,6 @@
                 var sectionTemplate = $("#section-template").html();
                 var newSectionHtml = sectionTemplate.replace(/__index__/g, sectionIndex).replace(/questions-TOTAL_FORMS/g, "questions-" + sectionIndex + "-TOTAL_FORMS");
                 $("#sections-container").append(newSectionHtml);
-                sectionIndex++;
-
-                var totalFormsInput = $("input[name='sections-TOTAL_FORMS']");
-                totalFormsInput.val(sectionIndex);
 
                 // Cambiamos los campos de id y name del form
                 var newSection = $("#sections-container .section-form").last();
@@ -357,10 +353,15 @@
                 newSection.find("button[id='del-questions-btn']").each(function () {
                     var $button = $(this);
                     var currentId = $button.attr('id');
-                    var newId = currentId.replace(/del-questions-btn/, "del-questions-" + (sectionIndex - 1) + "-btn");
+                    var newId = currentId.replace(/del-questions-btn/, "del-questions-" + sectionIndex + "-btn");
 
                     $button.attr('id', newId);
                 });
+
+                sectionIndex++;
+
+                var totalFormsInput = $("input[name='sections-TOTAL_FORMS']");
+                totalFormsInput.val(sectionIndex);
             });
 
             // Función con acciones al añadir una nueva pregunta
@@ -369,10 +370,6 @@
                 var $sectionForm = $(this).closest(".section-form");
                 var sindex = $sectionForm.attr("data-section-index");
                 var qCount = $sectionForm.find(".questions-container .question-form").length;
-                
-                /*while (uniqueQuestionIndexes.includes(qCount.toString())) {
-                    qCount++;
-                }*/
 
                 var questionTemplate = $(document).find("#question-template").html();
 

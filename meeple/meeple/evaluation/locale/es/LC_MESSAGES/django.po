@@ -289,6 +289,10 @@ msgstr "Nombre de usuario"
 msgid "Password"
 msgstr "Contraseña"
 
+#: evaluation/templates/register.html:25 evaluation/views.py:68
+msgid "WrongPassword"
+msgstr "Contraseña errónea"
+
 #: evaluation/templates/register.html:31
 msgid "Name"
 msgstr "Nombre completo"

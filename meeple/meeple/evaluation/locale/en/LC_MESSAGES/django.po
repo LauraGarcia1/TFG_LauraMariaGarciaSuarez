@@ -286,6 +286,10 @@ msgstr "Username"
 msgid "Password"
 msgstr "Password"
 
+#: evaluation/templates/register.html:25 evaluation/views.py:68
+msgid "WrongPassword"
+msgstr "Wrong password"
+
 #: evaluation/templates/register.html:31
 msgid "Name"
 msgstr "Name"

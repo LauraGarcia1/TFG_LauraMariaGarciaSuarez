@@ -53,20 +53,20 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% block navig %}
                         <li class="nav-item active ps-5">
-                            <button type="button" class="btn btn-inverse-mostaza nav-link rounded-pill fw-bold"
+                            <button type="button" class="btn btn-inverse-mostaza nav-link rounded-pill fw-bold my-1"
                                 onclick="window.location.href='{% url 'home' %}'">
                                 <span class="mx-3">{% trans "Home" %}</span>
                             </button>
                         </li>
                         {% if request.user.is_authenticated %}
                         <li class="nav-item ps-5">
-                            <button type="button" class="btn btn-inverse-light nav-link rounded-pill" disabled>
+                            <button type="button" class="btn btn-inverse-light nav-link rounded-pill my-1" disabled>
                                 <i class="bi bi-person-circle"></i>
                                 <span class="mx-3">{{ user.username }}</span>
                             </button>
                         </li>
                         <li class="nav-item active ps-5">
-                            <button type="button" class="btn btn-inverse-mostaza nav-link rounded-pill fw-bold"
+                            <button type="button" class="btn btn-inverse-mostaza nav-link rounded-pill fw-bold my-1"
                                 onclick="window.location.href='{% url 'logout' %}'">
                                 <span class="mx-3">{% trans "Logout" %}</span>
                             </button>
@@ -74,7 +74,7 @@
                         {% endif %}
                         {% endblock navig %}
 
-                        <li class="nav-item ps-5 my-auto">
+                        <li class="nav-item ps-5 my-auto my-1">
                             <form method="post" action="{% url 'set_language' %}">
                                 {% csrf_token %}
                                 <!-- Indica a qué página redirigir después de cambiar idioma -->
