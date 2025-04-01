@@ -163,13 +163,19 @@ def preferences(request):
 
 
 def get_preferences_games():
-    """Obtiene las preferencias de juegos del usuario.
+    """Obtiene los juegos a mostrar en la página de preferencias.
 
     Returns:
-        list: Lista de juegos basada en las preferencias del usuario.
+        list: Lista de juegos
     """
+    game_ids = [295947, 230802, 163412, 256952, 172931, 230914, 684487, 30933, 260605, 251219, 162886, 174430, 316554, 12333, 11825]
+    ids_str = ', '.join(map(str, game_ids))
+
+    # Construye la consulta con el filtro IN
+    query = f"SELECT id, name FROM zacatrus_games WHERE id IN ({ids_str});"
+
     with connections['external_db'].cursor() as cursor:
-        cursor.execute("SELECT id, name FROM zacatrus_games LIMIT 5;")
+        cursor.execute(query)
         zacatrus_games = cursor.fetchall()
 
         return zacatrus_games

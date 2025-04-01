@@ -514,6 +514,14 @@ msgstr "You have no studies created yet. You can create them with the buttom abo
 msgid "WarningDelete"
 msgstr "Are you sure you want to delete this study?"
 
+#: evaluation/templates/mystudies.html:65
+msgid "InfoUploadSuc"
+msgstr "Your study is visible to participants"
+
+#: evaluation/templates/mystudies.html:67
+msgid "InfoUploadDan"
+msgstr "Your study is not visible to participants"
+
 #: evaluation/templates/mystudies.html:73
 msgid "ViewStudy"
 msgstr "View study"

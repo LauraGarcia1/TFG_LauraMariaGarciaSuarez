@@ -108,9 +108,9 @@
                                                 <!-- Imagen del juego recomendado para la sección -->
                                                 <div
                                                     class="col-lg-3 col-md-12 mb-3 text-center d-flex flex-column justify-content-center h-100">
-                                                    <img src="{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg"
+                                                    <img src="{% static 'images/media/images_zacatrus/' %}{{ data.game }}.jpg"
                                                         class="img-fluid rounded shadow-lg" alt="Juego de mesa"
-                                                        onclick="openInformation('{{ data.game }}', '{{ data.game }}', '{{ MEDIA_URL }}images_zacatrus/{{ data.game }}.jpg')"
+                                                        onclick="openInformation('{{ data.game }}', '{{ data.game }}', '{% static 'images/media/images_zacatrus/' %}{{ data.game }}.jpg')"
                                                         draggable="false">
                                                 </div>
 

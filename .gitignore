@@ -1,5 +1,5 @@
 meeple/meeple/database/
-meeple/meeple/media/
+meeple/meeple/static/images/media/images_zacatrus/
 **/__pycache__/
 meeple/meeple/evaluation/migrations/
 vendor/

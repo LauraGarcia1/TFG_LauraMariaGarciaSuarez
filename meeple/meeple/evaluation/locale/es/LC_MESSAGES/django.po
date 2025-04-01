@@ -518,6 +518,14 @@ msgstr "No tienes estudios creados aún. Puedes hacerlos con el botón de arriba
 msgid "WarningDelete"
 msgstr "¿Estás seguro de que quieres eliminar este estudio?"
 
+#: evaluation/templates/mystudies.html:65
+msgid "InfoUploadSuc"
+msgstr "Tu estudio es visible para los participantes"
+
+#: evaluation/templates/mystudies.html:67
+msgid "InfoUploadDan"
+msgstr "Tu estudio NO es visible para los participantes"
+
 #: evaluation/templates/mystudies.html:73
 msgid "ViewStudy"
 msgstr "Visualizar estudio"

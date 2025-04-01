@@ -50,6 +50,7 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Guardar información en caché de preferences y de questionnaries. (09/03/2025)
 - [X] Verificar actualización de choices (09/03/2025)
 - [X] Hacer validación de la página de creación de questionarios (09/03/2025)
+
   - [X] Que haya datos en el cuestionario, secciones, preguntas y choices (este último si fuese necesario)
   - [X] Que tenga secciones
   - [X] Que las secciones tengan preguntas
@@ -66,11 +67,13 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [X] Al crear cuestionarios no debería obligar meter algoritmo (18/03/2025)
 - [X] Documentar correctamente el código (17/03/2025)
 - [X] Información de evaluaciones anteriores (19/03/2025)
+- [X] Arrglar vista de imagenes de juegos de mesa en produccion (01/04/2025)
+- [X] Ayuda de subida de cuestionario (que no se puede modificar e icono) (01/04/2025)
+- [X] Ver los juegos que poner en preferences (futuro) primeras categorias los mas conocidos (01/04/2025)
 - [ ] Revisar traducciones de todas las páginas (19/03/2025)
 - [ ] Revisar interfaz móvil (19/03/2025)
 - [ ] Limpiar código que no se use (18/03/2025)
 - [ ] al crear el cuestionario sigue pidiendo rellenar los campos
-- [ ] Ver los juegos que poner en preferences (futuro) primeras categorias los mas conocidos
 - [ ] Cambiar parámetros en el diagrama
 - [ ] Ver diferentes accesos
 - [ ] Mostrar errores del registro
