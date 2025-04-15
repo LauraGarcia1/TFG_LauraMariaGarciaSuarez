@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 if 'DEBUG' in os.environ :
-    DEBUG = os.environ.get('DEBUG').lower() in ['true', 't', 'l']
+    DEBUG = os.environ.get('DEBUG').lower() in ['true', 't', '1']
     
 else :
     DEBUG = 'RENDER' not in os.environ
