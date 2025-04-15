@@ -36,6 +36,10 @@
 
   <form action="" method="post">
     {% csrf_token %}
+
+    <!-- Se guarda el token en esta etiqueta para permitir mandar con ajax la petición -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    
     <div class="position-relative custom-container">
       <div class="position-absolute top-0 start-0">
         <img src="{% static 'images/dicesLeft.png' %}" alt="Image" draggable="false" style="transform: rotate(64deg);">
@@ -209,7 +213,6 @@
     function openInformation(id, title, imageUrl) {
         document.getElementById("infoGame").style.display = "block";
         
-        document.getElementById("infoTitle").textContent = title;
         document.getElementById("infoImage").src = imageUrl;
         getDataGame(id)
     }

@@ -663,7 +663,6 @@ def view_questionnaire(request, pk):
 
             # Guardamos la recomendación dada al usuario
             recommendation = Recommendation.objects.create(game=Game.objects.get_or_create(id_BGG=int(recommendation_game))[0], algorithm=section.algorithm, metrics=get_responses_for_code(user=user))
-            print("Log ->", recommendation. user, answers[section.id])
             if section.id in answers:
                 Evaluation.objects.create(recommendation=recommendation, user=user, answers=answers[section.id])
 
