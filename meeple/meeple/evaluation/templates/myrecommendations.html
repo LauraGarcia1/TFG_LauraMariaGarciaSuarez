@@ -70,27 +70,28 @@
           <li class="list-group-item">
             <div class="row">
               <div class="col-3">
-                <img src="{% static 'images/media/images_zacatrus/' %}{{ eval.game_id }}.jpg" alt="Image"
-                  class="img-fluid">
+                <img src="{{ MEDIA_URL }}images_zacatrus/{{ eval.game_id }}.jpg" class="img-fluid rounded shadow-lg" alt="Juego de mesa"  onclick="openInformation('{{ eval.game_id }}', '{{ eval.game_id }}', '{{ MEDIA_URL }}images_zacatrus/{{ eval.game_id }}.jpg')"  draggable="false">
               </div>
-              <div class="col-9">
+              <div class="col-9 w-100 px-3 overflow-auto">
                 <h4>{{ eval.questionnaire_title }} - {{ eval.section_title }}</h4>
-                <table class="table table-invisible">
-                  <tbody>
-                    {% for question, answers in eval.questions.items %}
-                    <tr>
-                      <td class="w-50">{{ question }}</td>
-                      <td>
-                        <ul>
-                          {% for value in answers %}
+                <div class="table-responsive">
+                  <table class="table table-invisible">
+                    <tbody>
+                      {% for question, answers in eval.questions.items %}
+                      <tr>
+                        <td class="w-50">{{ question }}</td>
+                        <td>
+                          <ul>
+                            {% for value in answers %}
                               <li>{{ value }}</li>
-                          {% endfor %}
-                        </ul>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
+                            {% endfor %}
+                          </ul>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
                 <br>
                 <p>{{ eval.date_created }}</p>
               </div>

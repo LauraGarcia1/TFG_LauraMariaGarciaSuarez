@@ -73,10 +73,8 @@ A continuación, encontrará información acerca del TFG "Sistema de evaluación
 - [ ] Revisar traducciones de todas las páginas (19/03/2025)
 - [ ] Revisar interfaz móvil (19/03/2025)
 - [ ] Limpiar código que no se use (18/03/2025)
-- [ ] al crear el cuestionario sigue pidiendo rellenar los campos
 - [ ] Cambiar parámetros en el diagrama
 - [ ] Ver diferentes accesos
-- [ ] Mostrar errores del registro
 - [ ] Comprimir HTML
 - [ ] Comprobar CSS inutilizable
 
@@ -235,12 +233,11 @@ composer require vlucas/phpdotenv
 
 ## Mejoras
 
-- Control de rol creador de la aplicación
-- El usuario puede modificar sus datos
-- El perfil se puede definir para cada experimento
-- Que se haga una comprobación de que los cuestionarios añadidos estén en el idioma seleccionado
-- Se debe registrar quién crea, edita y elimina cuestionarios y respuestas.
-- Que una evaluacion tenga tipos, pública o privada.
+- [X] Control de rol creador de la aplicación
+- [X] El usuario puede modificar sus datos
+- [X] El perfil se puede definir para cada experimento
+- [X] Que se haga una comprobación de que los cuestionarios añadidos estén en el idioma seleccionado
+- [X] Que una evaluacion tenga tipos, pública o privada.
 
 ## Palabras clave
 

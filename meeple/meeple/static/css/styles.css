@@ -1,5 +1,4 @@
-/******************************************************/
-/************************ BODY ************************/
+/*------------------ GENERAL ------------------ */
 
 body {
     background: linear-gradient(45deg, #4a7729, #95ff4a);
@@ -166,6 +165,23 @@ body {
     border: #666666;
     cursor: not-allowed;
 }
+
+.sm-maxwidth {
+    max-width: 100px;
+}
+
+.med-maxwidth {
+    max-width: 500px;
+}
+
+.responsive-title {
+    font-size: clamp(1rem, 5vw, 2rem);;
+}
+
+.zindex-200 {
+    z-index: 200 !important;
+}
+
 
 /*-------------- REGISTER ----------------*/
 
@@ -366,24 +382,6 @@ label.required.valid::after {
     }
 }
 
-/*------------------ GENERAL ------------------ */
-
-.sm-maxwidth {
-    max-width: 100px;
-}
-
-.med-maxwidth {
-    max-width: 500px;
-}
-
-.responsive-title {
-    font-size: clamp(1rem, 5vw, 2rem);;
-}
-
-.zindex-200 {
-    z-index: 200 !important;
-}
-
 /*----------------- QUESTIONS ----------------- */
 
 .checked-button {
@@ -407,6 +405,4 @@ label.required.valid::after {
 input[type="checkbox"] {
     accent-color: #d24a28;
 }
-
-/*------------ QUESTIONNAIRE ------------ */
 

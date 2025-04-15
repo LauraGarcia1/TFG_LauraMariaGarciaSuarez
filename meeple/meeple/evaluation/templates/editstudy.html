@@ -46,7 +46,7 @@
                 <div class="section-form" id="{{ section.instance.id }}" data-section-index="{{ section.instance.id }}">
                     <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body mb-3">
                       <h3>{% trans "Section" %}</h3>
-                        <div>
+                        <div class="w-100 px-3 overflow-auto">
                             {{ section.as_p }}
                             
                             <p>
@@ -67,7 +67,7 @@
                                 <div class="question-form" id="{{ question.instance.id }}-{{ section.instance.id }}" data-question-index="{{ question.instance.id }}" data-section-index="{{ section.instance.id }}">
                                         <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme mt-3">
                                         <h4>{% trans "Question" %}</h4>
-                                        <div>
+                                        <div class="w-100 px-3 overflow-auto">
                                             {{ question.as_p }}
                                             <p>
                                                 <label for="id_questions-{{ question.instance.id }}-{{ section.instance.id }}-DELETE">Eliminar:</label>
@@ -87,7 +87,7 @@
                                                 <div class="choices-container">
                                                 <!-- Forms de las opciones que forman parte de la pregunta -->
                                                     {% for choice in choices %}
-                                                    <div class="choice-form" id="{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}" data-choice-index="{{ choice.instance.id }}" data-section-index="{{ section.instance.id }}" data-question-index="{{ question.instance.id }}">
+                                                    <div class="choice-form w-100 px-3 overflow-auto" id="{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}" data-choice-index="{{ choice.instance.id }}" data-section-index="{{ section.instance.id }}" data-question-index="{{ question.instance.id }}">
                                                         {{ choice.as_p }}
                                                         <p>
                                                             <label for="id_choices-{{ choice.instance.id }}-{{ section.instance.id }}-{{ question.instance.id }}-DELETE">Eliminar:</label>
@@ -136,7 +136,7 @@
             <div class="row p-2 p-md-3 rounded rounded-5 border border-dark border-1 bg-body mb-3">
                 <h3>{% trans "Section" %}</h3>
                 {% for form in section_formset %}
-                <div>
+                <div class="w-100 px-3 overflow-auto">
                     {{ form.as_p }}
                 </div>
 
@@ -160,7 +160,7 @@
             <div class="row p-1 p-md-2 pt-sm-2 rounded rounded-5 border border-dark border-1 background-creme mt-3">
                 <h4>{% trans "Question" %}</h4>
                 {% for form_q in question_formset %}
-                <div>
+                <div class="w-100 px-3 overflow-auto">
                     {{ form_q.as_p }}
                 </div>
 
@@ -186,7 +186,7 @@
     <!-- Form de la opción -->
     <script type="text/template" id="choice-template">
         {% for form_c in choice_formset %}
-        <div class="choice-form" data-choice-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
+        <div class="choice-form w-100 px-3 overflow-auto" data-choice-index="__cindex__" data-section-index="__sindexc__" data-question-index="__qindexc__">
             {{ form_c.as_p }}
         </div>
         {% endfor %}

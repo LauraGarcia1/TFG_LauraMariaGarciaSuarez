@@ -6,7 +6,7 @@ Description: Este archivo contiene funciones o clases del proyecto evaluation qu
 import asyncio
 from googletrans import Translator
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,13 +15,11 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import connections
-from django.db.models import Prefetch
 from django.views.generic.list import ListView
 from django.utils.translation import gettext_lazy as _
 from django.utils import translation
 from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnaireForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
-from .models import Preference, User, Creator, Participant, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation, Section
-from collections import defaultdict
+from .models import Preference, Creator, Participant, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation, Section
 import json
 import random
 import re
