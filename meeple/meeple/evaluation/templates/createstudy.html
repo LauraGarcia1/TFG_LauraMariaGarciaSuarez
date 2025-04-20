@@ -176,7 +176,7 @@
                     var $button = $(this);
                     var currentId = $button.attr('id');
                     // Reemplazar el índice 0 en el ID con el nuevo índice dinámico
-                    var newId = currentId.replace(/del-questions-btn/, "del-questions-" + (sectionIndex - 1) + "-btn");
+                    var newId = currentId.replace(/del-questions-btn/, "del-questions-" + sectionIndex + "-btn");
                     $button.attr('id', newId);
                 });
 

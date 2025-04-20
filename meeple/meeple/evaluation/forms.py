@@ -97,7 +97,10 @@ class QuestionnaireForm(forms.ModelForm):
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
-            self.fields['name'].widget.attrs.update({'id': 'q-name'})
+            self.fields['name'].widget.attrs.update({
+                'id': 'q-name',
+                'class': 'w-100',
+                })
 
 class SectionForm(forms.ModelForm):
     """Formulario para las secciones
@@ -134,6 +137,9 @@ class SectionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['algorithm'].required = False  # Hace que el campo sea opcional
+        self.fields['title'].widget.attrs.update({
+            'class': 'w-100',
+        })
 
 class QuestionForm(forms.ModelForm):
     """Formulario para las preguntas
@@ -155,6 +161,7 @@ class QuestionForm(forms.ModelForm):
         self.fields['question_text'].widget.attrs.update({
             'data-index': '__qindex__',
             'data-section-index': '__section_index__',
+            'class': 'w-100',
         })
         self.fields['type'].widget.attrs.update({
             'data-index': '__qindex__',
@@ -181,6 +188,7 @@ class ChoiceForm(forms.ModelForm):
             'data-index': '__cindex__',
             'data-section-index': '__sindexc__',
             'data-question-index': '__qindexc__',
+            'class': 'w-100',
         })
 
 class AlgorithmForm(forms.ModelForm):

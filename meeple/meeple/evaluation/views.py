@@ -353,7 +353,7 @@ def edit_study(request, pk):
         HttpResponse: Respuesta HTTP con una redirección o una plantilla renderizada.
     """
     if request.method == 'POST':
-        #print(request.POST)
+        print(request.POST)
         questionnaire = Questionnaire.objects.get(id=pk)
         questionnaire.name = request.POST.get('name')
         questionnaire.description = request.POST.get('description')
@@ -794,20 +794,19 @@ def create_sections(request, questionnaire, question_ids, list_sections = None):
                 )
 
             # Procesar las preguntas de esta sección
-            create_questions(request, section_index=section.id, list_questions=question_ids, language=questionnaire.language)
-            create_questions(request, section_index=section.id, language=questionnaire.language)
+            create_questions(request, section_index=section_index, language=questionnaire.language, assoc_section=section.id)
 
     else:
         for section in list_sections: # Comprobamos en secciones existentes
             create_questions(request, section_index=section, list_questions=question_ids, language=questionnaire.language)
             create_questions(request, section_index=section, language=questionnaire.language)
 
-def create_questions(request, section_index, language, list_questions = None):
+def create_questions(request, section_index, language, list_questions = None, assoc_section = None):
     """Función para crear las preguntas desde las páginas de creación y edición de estudios
 
     Args:
         request (HttpRequest): instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web
-        section_index (text): Identificador de la Sección asociada a las opciones
+        section_index (text): Identificador de la Sección asociada a las preguntas
         language (text): Idioma del cuestionario
         list_questions (List, optional): Lista de preguntas existentes. Defaults to None.
     """
@@ -831,11 +830,15 @@ def create_questions(request, section_index, language, list_questions = None):
             if match_type:
                 matching_type.append(value)
 
+        if assoc_section is None:
+            section = Section.objects.get(id=int(section_index))
+        else:
+            section = Section.objects.get(id=int(assoc_section))
 
         for question_text, type, question_index in zip(matching_question_text, matching_type, matching_question_indexes):
             # Crear la pregunta para la sección
             question = Question.objects.create(
-                section=Section.objects.get(id=int(section_index)),
+                section=section,
                 question_text=question_text,
                 type=type,
                 language=language
