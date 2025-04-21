@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-17 21:40+0100\n"
+"POT-Creation-Date: 2025-04-21 19:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,257 +18,128 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: evaluation/templates/base.html:57
+#: evaluation/templates/base.html:58
 msgid "Home"
 msgstr "Home"
 
-#: evaluation/templates/base.html:62
-msgid "Photo"
-msgstr "Photo"
-
-#: evaluation/templates/base.html:67
-msgid "About Us"
-msgstr "About us"
-
-#: evaluation/templates/base.html:72
-msgid "Contact"
-msgstr "Contact"
-
-#: evaluation/templates/base.html:78
+#: evaluation/templates/base.html:71
 msgid "Logout"
 msgstr "Logout"
 
-#: evaluation/templates/base.html:99
-msgid "ChangeLanguage"
-msgstr "Change Language"
+#: evaluation/templates/createstudy.html:15
+#: evaluation/templates/editstudy.html:15
+msgid "HelpfulCreateEditTitle"
+msgstr "🔍 Need help? Here’s the deal!"
 
-#: evaluation/templates/newrecommendations.html:18
-msgid "CreatorPtOne"
-msgstr "Thank you Participant"
-
-#: evaluation/templates/newrecommendations.html:20
-msgid "CreatorPtTwo"
-msgstr "We are grateful for your interest and time, and appreciate your evaluation/evaluations."
-
-#: evaluation/templates/newrecommendations.html:24
-msgid "CreatorButtonPtOne"
-msgstr "One more!"
-
-#: evaluation/templates/newrecommendations.html:26
-msgid "CreatorButtonPtTwo"
-msgstr "Exit :("
-
-#: evaluation/templates/newrecommendations.html:46
-msgid "NewRecommendationTitle"
-msgstr "New recommendations"
-
-#: evaluation/templates/newrecommendations.html:69
-msgid "SendEval"
-msgstr "Send choices"
-
-#: evaluation/templates/newrecommendations.html:71
-msgid "Q1 recomm"
-msgstr "How interested are you in the game?"
-
-#: evaluation/templates/newrecommendations.html:72
-msgid "Q2 recomm"
-msgstr "How likely are you to buy/recommend it?"
-
-#: evaluation/templates/newrecommendations.html:73
-msgid "Q3 recomm"
-msgstr "It does match your preferences."
-
-#: evaluation/templates/newrecommendations.html:74
-msgid "Q4 recomm"
-msgstr "Would you like it to have more options (For example:  difficulty, customization options, game modes...)?"
-
-#: evaluation/templates/newrecommendations.html:75
-msgid "Q5 recomm"
-msgstr "What was the main factor influencing your purchase/recommendation decision? "
-
-#: evaluation/templates/newrecommendations.html:76
-msgid "Q5 choice 1"
-msgstr "Price"
-
-#: evaluation/templates/newrecommendations.html:77
-msgid "Q5 choice 2"
-msgstr "Quality"
-
-#: evaluation/templates/newrecommendations.html:78
-msgid "Q5 choice 3"
-msgstr "Features"
-
-#: evaluation/templates/newrecommendations.html:79
-msgid "Q5 choice 4"
-msgstr "Popularity"
-
-#: evaluation/templates/newrecommendations.html:80
-msgid "Q5 choice 5"
-msgstr "Recommendations from other users"
-
-#: evaluation/templates/newrecommendations.html:81
-msgid "Q5 choice 6"
-msgstr "Other"
-
-#: evaluation/templates/newrecommendations.html:125
-msgid "textfield"
-msgstr "Write here..."
-
-#: evaluation/templates/preferences.html:18
-msgid "Loading"
-msgstr "Loading"
-
-#: evaluation/templates/preferences.html:33
-msgid "PreferencesNotTitle"
-msgstr "Preferences page information"
-
-#: evaluation/templates/preferences.html:34
-msgid "PreferencesNotInfo"
-msgstr "Click on titles to see more information about the table games!"
-
-#: evaluation/templates/preferences.html:46
-msgid "PreferencesTitle"
-msgstr "Game preferences"
-
-#: evaluation/templates/preferences.html:50
-msgid "PreferencesInfo"
-msgstr "Choose the ones that could interest you. At least 4."
-
-#: evaluation/templates/preferences.html:69
-msgid "PreferencesSubmitButton"
-msgstr "Choose preferences"
-
-#: evaluation/templates/question-one.html:18
-msgid "FirstQuestion"
-msgstr "What length of game are you looking for?"
-
-#: evaluation/templates/question-one.html:21
-msgid "Quick"
-msgstr "Quick"
-
-#: evaluation/templates/question-one.html:23
-msgid "Short"
-msgstr "Short"
-
-#: evaluation/templates/question-one.html:25
-msgid "Moderate"
-msgstr "Moderate"
-
-#: evaluation/templates/question-one.html:27
-msgid "Long"
-msgstr "Long"
-
-#: evaluation/templates/question-one.html:29
-msgid "VeryLong"
-msgstr "Very Long"
-
-#: evaluation/templates/question-one.html:34
-#: evaluation/templates/question-three.html:38
-#: evaluation/templates/question-two.html:38
-msgid "SubmitQuestion"
-msgstr "Send choices"
-
-#: evaluation/templates/question-one.html:46
-msgid "WelcomeQuestion"
-msgstr "Welcome friend!"
-
-#: evaluation/templates/question-one.html:48
-msgid "AlertThanksPtOne"
+#: evaluation/templates/createstudy.html:16
+#: evaluation/templates/editstudy.html:16
+msgid "HelpfulCreateEditBody"
 msgstr ""
-"Before you begin, we’d like to thank you for your time and interest. Your "
-"feedback is essential to the research that supports this platform. We hope "
-"you find this evaluation clear and comprehensive."
+"<br><br>The algorithms you can use are listed on your <strong>Created "
+"Studies</strong> page—go check them out!<br><br>And here’s a quick guide to "
+"the different question types:<br>- <strong>SCRB</strong> 🎯 Pick ONE option "
+"(radio buttons).<br>- <strong>MCRB</strong> ✅ Pick MULTIPLE options "
+"(checkbox-style).<br>- <strong>SCCB</strong> 📜 Dropdown, choose ONE.<br>- "
+"<strong>MCCB</strong> 📜✅ Dropdown, choose MANY.<br>- <strong>OAS</strong> "
+"✏️ Short text answer.<br>- <strong>OAL</strong> 📝 Long text answer.<br>- "
+"<strong>N</strong> 🔢 Numbers from 1 to 10.<br><br>Now go rock that study! 🚀"
 
-#: evaluation/templates/question-one.html:49
-msgid "AlertThanksPtTwo"
-msgstr ""
-"All the data you provide will be used solely for evaluation purposes and "
-"will not be shared or used for any other reason. Your privacy is our "
-"priority."
+#: evaluation/templates/createstudy.html:34
+msgid "CreateStudyTitle"
+msgstr "Create a New Study"
 
-#: evaluation/templates/question-three.html:18
-msgid "ThirdQuestion"
-msgstr "Which type of social companion are you looking for?"
+#: evaluation/templates/createstudy.html:44
+#: evaluation/templates/editstudy.html:41
+msgid "Sections"
+msgstr "Sections"
 
-#: evaluation/templates/question-three.html:21
-msgid "OnePlayer"
-msgstr "1-player"
+#: evaluation/templates/createstudy.html:52
+#: evaluation/templates/editstudy.html:113
+msgid "CreateSection"
+msgstr "Create section"
 
-#: evaluation/templates/question-three.html:23
-msgid "TwoPlayers"
-msgstr "2-players"
+#: evaluation/templates/createstudy.html:55
+#: evaluation/templates/editstudy.html:116
+msgid "DelSections"
+msgstr "Delete sections"
 
-#: evaluation/templates/question-three.html:25
-msgid "Toddlers"
-msgstr "Toddlers"
+#: evaluation/templates/createstudy.html:58
+#: evaluation/templates/mystudies.html:37
+msgid "StudiesButtom"
+msgstr "Create study"
 
-#: evaluation/templates/question-three.html:27
-msgid "Preschoolers"
-msgstr "Preschoolers"
+#: evaluation/templates/createstudy.html:61
+#: evaluation/templates/editstudy.html:122
+msgid "Cancel"
+msgstr "Cancel"
 
-#: evaluation/templates/question-three.html:29
-msgid "Children"
-msgstr "Children"
+#: evaluation/templates/createstudy.html:73
+#: evaluation/templates/editstudy.html:48
+#: evaluation/templates/editstudy.html:137
+msgid "Section"
+msgstr "Section"
 
-#: evaluation/templates/question-three.html:31
-msgid "Family"
-msgstr "Family"
+#: evaluation/templates/createstudy.html:85
+#: evaluation/templates/editstudy.html:60
+#: evaluation/templates/editstudy.html:149
+msgid "CreateQuestion"
+msgstr "Create question"
 
-#: evaluation/templates/question-three.html:33
-msgid "Friends"
-msgstr "Friends"
+#: evaluation/templates/createstudy.html:86
+#: evaluation/templates/editstudy.html:61
+#: evaluation/templates/editstudy.html:150
+msgid "DelQuestions"
+msgstr "Delete questions"
 
-#: evaluation/templates/question-two.html:18
-msgid "SecondQuestion"
-msgstr "What kind of gaming mood are you looking for?"
+#: evaluation/templates/createstudy.html:97
+#: evaluation/templates/editstudy.html:69
+#: evaluation/templates/editstudy.html:161
+msgid "Question"
+msgstr "Question"
 
-#: evaluation/templates/question-two.html:21
-msgid "Party"
-msgstr "Party"
+#: evaluation/templates/createstudy.html:106
+#: evaluation/templates/editstudy.html:86
+#: evaluation/templates/editstudy.html:170
+msgid "Choices"
+msgstr "Opciones"
 
-#: evaluation/templates/question-two.html:23
-msgid "EasyToPlay"
-msgstr "EasyToPlay"
+#: evaluation/templates/createstudy.html:113
+#: evaluation/templates/editstudy.html:81
+#: evaluation/templates/editstudy.html:177
+msgid "CreateChoice"
+msgstr "Create choice"
 
-#: evaluation/templates/question-two.html:25
-msgid "Expert"
-msgstr "Experto"
+#: evaluation/templates/createstudy.html:114
+#: evaluation/templates/editstudy.html:82
+#: evaluation/templates/editstudy.html:178
+msgid "DelChoices"
+msgstr "Delete choices"
 
-#: evaluation/templates/question-two.html:27
-msgid "Cooperative"
-msgstr "Cooperative"
+#: evaluation/templates/editstudy.html:34
+#: evaluation/templates/mystudies.html:78
+msgid "EditStudy"
+msgstr "Edit Study"
 
-#: evaluation/templates/question-two.html:29
-msgid "Strategic"
-msgstr "Strategic"
+#: evaluation/templates/editstudy.html:119
+msgid "SaveChanges"
+msgstr "Save Changes"
 
-#: evaluation/templates/question-two.html:31
-msgid "StoryBased"
-msgstr "StoryBased"
+#: evaluation/templates/listalgorithms.html:18
+#: evaluation/templates/liststudies.html:21
+msgid "NoExperiments"
+msgstr "There are no experiments at the moment. Please check back later!"
 
-#: evaluation/templates/question-two.html:33
-msgid "Thematic"
-msgstr "Thematic"
+#: evaluation/templates/listalgorithms.html:32
+#, fuzzy
+#| msgid "AlgorithmsButtom"
+msgid "Algorithms"
+msgstr "Visualize algorithms"
 
-#: evaluation/templates/recommendations.html:34
-msgid "RecommendationFirstTitle"
-msgstr "Eager to discover new worlds?"
-
-#: evaluation/templates/recommendations.html:35
-msgid "RecommendationSecondTitle"
-msgstr "Enter a new adventure"
-
-#: evaluation/templates/recommendations.html:42
-msgid "RecommendationSearch"
-msgstr "Search new recommendations"
-
-#: evaluation/templates/recommendations.html:50
-msgid "RecommendationThirdTitle"
-msgstr "Previous recommendations"
-
-#: evaluation/templates/questionnaire.html:30
-msgid "Questionnaire"
-msgstr "Discover your ideal game! Answer these questions and find the best recommendation for you."
+#: evaluation/templates/listalgorithms.html:38
+#: evaluation/templates/viewquestionnaire.html:89
+#: evaluation/templates/viewstudy.html:66
+msgid "Return"
+msgstr "Return"
 
 #: evaluation/templates/liststudies.html:31
 msgid "TitleListStudies"
@@ -276,243 +147,58 @@ msgstr "Available questionnaires"
 
 #: evaluation/templates/liststudies.html:32
 msgid "DescriptionListStudies"
-msgstr "Click on any of the questionnaries and discover personalized recommendations just for you! 🎮✨ It's time to find your next favorite game!"
+msgstr ""
+"Click on any of the questionnaries and discover personalized recommendations "
+"just for you! 🎮✨ It's time to find your next favorite game!"
 
-#: evaluation/templates/register.html:20 evaluation/views.py:34
-msgid "Username"
-msgstr "Username"
+#: evaluation/templates/myrecommendations.html:25
+#: evaluation/templates/myrecommendations.html:222
+#: evaluation/templates/preferences.html:19
+#: evaluation/templates/preferences.html:177
+#: evaluation/templates/viewquestionnaire.html:23
+#: evaluation/templates/viewquestionnaire.html:415
+msgid "Loading"
+msgstr "Loading"
 
-#: evaluation/templates/register.html:25 evaluation/views.py:35
-msgid "Password"
-msgstr "Password"
+#: evaluation/templates/myrecommendations.html:56
+msgid "RecommendationFirstTitle"
+msgstr "Eager to discover new worlds?"
 
-#: evaluation/templates/register.html:25 evaluation/views.py:68
-msgid "WrongPassword"
-msgstr "Wrong password"
+#: evaluation/templates/myrecommendations.html:57
+msgid "RecommendationSecondTitle"
+msgstr "Enter a new adventure"
 
-#: evaluation/templates/register.html:31
-msgid "Name"
-msgstr "Name"
+#: evaluation/templates/myrecommendations.html:64
+msgid "RecommendationSearch"
+msgstr "Search new recommendations"
 
-#: evaluation/templates/register.html:35
-msgid "Email"
-msgstr "Email"
+#: evaluation/templates/myrecommendations.html:71
+msgid "RecommendationThirdTitle"
+msgstr "Previous recommendations"
 
-#: evaluation/templates/register.html:40
-msgid "Location"
-msgstr "Location"
+#: evaluation/templates/myrecommendations.html:106
+msgid "NoEval"
+msgstr "No evaluations found."
 
-#: evaluation/templates/register.html:45
-msgid "Age"
-msgstr "Age"
-
-#: evaluation/templates/register.html:45
-msgid "Rol"
-msgstr "Rol"
-
-#: evaluation/templates/register.html:45
-msgid "Creator"
-msgstr "Creator"
-
-#: evaluation/templates/register.html:45
-msgid "Participant"
-msgstr "Participant"
-
-#: evaluation/templates/register.html:49
-msgid "Date of Birth"
-msgstr "Date of Birth"
-
-#: evaluation/templates/register.html:50
-msgid "Frequency"
-msgstr "Frequency"
-
-#: evaluation/templates/register.html:50
-msgid "LeastAge"
-msgstr "You must be at least 15 years old to register."
-
-#: evaluation/templates/register.html:54
-msgid "More than"
-msgstr "More than once in a week"
-
-#: evaluation/templates/register.html:59
-msgid "Week"
-msgstr "Once a week"
-
-#: evaluation/templates/register.html:64
-msgid "Lifetime"
-msgstr "One in a lifetime"
-
-#: evaluation/templates/register.html:69
-msgid "Never"
-msgstr "Never"
-
-#: evaluation/templates/register.html:73
-msgid "Expertise"
-msgstr "Gaming expertise"
-
-#: evaluation/templates/register.html:76
-msgid "Beginner"
-msgstr "Beginner"
-
-#: evaluation/templates/register.html:81
-msgid "Intermediate"
-msgstr "Intermediate"
-
-#: evaluation/templates/register.html:86
-msgid "Advanced"
-msgstr "Advanced"
-
-#: evaluation/templates/register.html:87
-msgid "Gender"
-msgstr "Gender"
-
-#: evaluation/templates/register.html:90
-msgid "Male"
-msgstr "Male"
-
-#: evaluation/templates/register.html:95
-msgid "Female"
-msgstr "Female"
-
-#: evaluation/templates/register.html:10
-msgid "Other"
-msgstr "Other"
-
-#: evaluation/templates/register.html:97 evaluation/views.py:37
-msgid "Sign up"
-msgstr "Sign up"
-
-#: evaluation/templates/register.html:98
-msgid "RequiredFields"
-msgstr "* Please fill all required fields to enable this button."
-
-#: evaluation/templates/register.html:332
-msgid "PasswordReqOne"
-msgstr "Password must be at least 8 characters long.<br>"
-
-#: evaluation/templates/register.html:335
-msgid "PasswordReqTwo"
-msgstr "Password must contain at least one uppercase letter.<br>"
-
-#: evaluation/templates/register.html:338
-msgid "PasswordReqThree"
-msgstr "Password must contain at least one lowercase letter.<br>"
-
-#: evaluation/templates/register.html:341
-msgid "PasswordReqFour"
-msgstr "Password must contain at least one number.<br>"
-
-#: evaluation/templates/register.html:344
-msgid "PasswordReqFive"
-msgstr "Password must contain at least one special character.<br>"
-
-#: evaluation/templates/register.html:372
-msgid "EmailReqOne"
-msgstr "Please enter a valid email address.<br>"
-
-#: evaluation/templates/register.html:378
-msgid "EmailReqTwo"
-msgstr "Only email addresses from"
-
-#: evaluation/templates/register.html:378
-msgid "EmailReqThree"
-msgstr "are allowed.<br>"
-
-#: evaluation/templates/userhomepage.html:16
-msgid "FirstExperiment"
-msgstr "1st experiment: evaluation of recommendation algorithms system"
-
-#: evaluation/templates/userhomepage.html:19
-msgid "SecondExperiment"
-msgstr "2nd experiment"
-
-#: evaluation/templates/userhomepage.html:23
-msgid "ThirdExperiment"
-msgstr "3rd experiment"
-
-#: evaluation/templates/userhomepage.html:26
-msgid "ForthExperiment"
-msgstr "4th experiment"
-
-#: evaluation/templates/userhomepage.html:26
-msgid "NoExperiments"
-msgstr "There are no experiments at the moment. Please check back later!"
-
-#: evaluation/views.py:33
-msgid "Welcome"
-msgstr "Welcome"
-
-#: evaluation/views.py:36
-msgid "Login"
-msgstr "Login"
-
-#: evaluation/views.py:447
-msgid "UploadME1"
-msgstr "Missing data in the questionnaire."
-
-#: evaluation/views.py:454
-msgid "UploadME2"
-msgstr "The questionnaire must have at least one section."
-
-#: evaluation/views.py:460
-msgid "UploadME3"
-msgstr "Missing data in the sections."
-
-#: evaluation/views.py:466
-msgid "UploadME4"
-msgstr "Sections must have at least one question."
-
-#: evaluation/views.py:472
-msgid "UploadME5"
-msgstr "Missing data in the questions."
-
-#: evaluation/views.py:479
-msgid "UploadME6"
-msgstr "There are questions that must have at least one option."
-
-#: evaluation/views.py:483
-msgid "UploadME7"
-msgstr "Missing data in the choices."
-
-#: evaluation/templates/mystudies.html:24
-msgid "InformationGameView"
-msgstr "Here goes the information about the game."
-
-#: evaluation/templates/mystudies.html:28
+#: evaluation/templates/mystudies.html:32
 msgid "AlgorithmsButtom"
 msgstr "Visualize algorithms"
 
-#: evaluation/templates/mystudies.html:31
-msgid "StudiesButtom"
-msgstr "Create study"
-
-#: evaluation/templates/mystudies.html:35
+#: evaluation/templates/mystudies.html:45
 msgid "MyStudies"
 msgstr "My Studies"
 
-#: evaluation/templates/mystudies.html:38
-msgid "HelpfulInfoStudy"
-msgstr "Click on the images to learn more about the board games!"
-
-#: evaluation/templates/mystudies.html:39
+#: evaluation/templates/mystudies.html:49
 msgid "Study Name"
 msgstr "Study Name"
 
-#: evaluation/templates/mystudies.html:40
+#: evaluation/templates/mystudies.html:52
 msgid "Uploaded"
 msgstr "Uploaded"
 
-#: evaluation/templates/mystudies.html:41
+#: evaluation/templates/mystudies.html:55
 msgid "Actions"
 msgstr "Actions"
-
-#: evaluation/templates/mystudies.html:55
-msgid "liststudies"
-msgstr "You have no studies created yet. You can create them with the buttom above."
-
-#: evaluation/templates/mystudies.html:58
-msgid "WarningDelete"
-msgstr "Are you sure you want to delete this study?"
 
 #: evaluation/templates/mystudies.html:65
 msgid "InfoUploadSuc"
@@ -522,94 +208,241 @@ msgstr "Your study is visible to participants"
 msgid "InfoUploadDan"
 msgstr "Your study is not visible to participants"
 
-#: evaluation/templates/mystudies.html:73
+#: evaluation/templates/mystudies.html:90
 msgid "ViewStudy"
 msgstr "View study"
 
-#: evaluation/templates/mystudies.html:79
+#: evaluation/templates/mystudies.html:99
 msgid "UploadStudy"
 msgstr "Upload study"
 
-#: evaluation/templates/mystudies.html:87
+#: evaluation/templates/mystudies.html:111
+msgid "WarningDelete"
+msgstr "Are you sure you want to delete this study?"
+
+#: evaluation/templates/mystudies.html:113
 msgid "DeleteStudy"
 msgstr "Delete study"
 
-#: evaluation/templates/createstudy.html:15
-msgid "HelpfulCreateEditTitle"
-msgstr "🔍 Need help? Here’s the deal!"
+#: evaluation/templates/mystudies.html:126
+msgid "liststudies"
+msgstr ""
+"You have no studies created yet. You can create them with the buttom above."
 
-#: evaluation/templates/createstudy.html:16
-msgid "HelpfulCreateEditBody"
-msgstr "<br><br>The algorithms you can use are listed on your <strong>Created Studies</strong> page—go check them out!<br><br>And here’s a quick guide to the different question types:<br>- <strong>SCRB</strong> 🎯 Pick ONE option (radio buttons).<br>- <strong>MCRB</strong> ✅ Pick MULTIPLE options (checkbox-style).<br>- <strong>SCCB</strong> 📜 Dropdown, choose ONE.<br>- <strong>MCCB</strong> 📜✅ Dropdown, choose MANY.<br>- <strong>OAS</strong> ✏️ Short text answer.<br>- <strong>OAL</strong> 📝 Long text answer.<br>- <strong>N</strong> 🔢 Numbers from 1 to 10.<br><br>Now go rock that study! 🚀"
+#: evaluation/templates/preferences.html:35
+msgid "PreferencesNotTitle"
+msgstr "Preferences page information"
 
-#: evaluation/templates/createstudy.html:32
-msgid "CreateStudyTitle"
-msgstr "Create a New Study"
+#: evaluation/templates/preferences.html:36
+msgid "PreferencesNotInfo"
+msgstr "Click on titles to see more information about the table games!"
 
-#: evaluation/templates/createstudy.html:38
-msgid "Return"
-msgstr "Return"
+#: evaluation/templates/preferences.html:48
+msgid "PreferencesTitle"
+msgstr "Game preferences"
 
-#: evaluation/templates/createstudy.html:
-msgid "CreateSection"
-msgstr "Create section"
+#: evaluation/templates/preferences.html:51
+msgid "PreferencesInfo"
+msgstr "Choose the ones that could interest you. At least 4."
 
-#: evaluation/templates/createstudy.html:
-msgid "CreateQuestion"
-msgstr "Create question"
+#: evaluation/templates/preferences.html:75
+#: evaluation/templates/viewquestionnaire.html:214
+msgid "PreferencesSubmitButton"
+msgstr "Choose preferences"
 
-#: evaluation/templates/createstudy.html:
-msgid "CreateChoice"
-msgstr "Create choice"
+#: evaluation/templates/register.html:15 evaluation/templates/register.html:137
+#: evaluation/views.py:42
+msgid "Sign up"
+msgstr "Sign up"
 
-#: evaluation/templates/createstudy.html:
-msgid "Section"
-msgstr "Section"
+#: evaluation/templates/register.html:21 evaluation/views.py:39
+msgid "Username"
+msgstr "Username"
 
-#: evaluation/templates/createstudy.html:
-msgid "Question"
-msgstr "Question"
+#: evaluation/templates/register.html:26 evaluation/views.py:40
+msgid "Password"
+msgstr "Password"
 
-#: evaluation/templates/createstudy.html:
-msgid "Choice"
-msgstr "Choice"
+#: evaluation/templates/register.html:38
+msgid "Email"
+msgstr "Email"
 
-#: evaluation/templates/createstudy.html:
-msgid "Sections"
-msgstr "Sections"
+#: evaluation/templates/register.html:43
+msgid "Location"
+msgstr "Location"
 
-#: evaluation/templates/createstudy.html:
-msgid "Questions"
-msgstr "Questions"
+#: evaluation/templates/register.html:48
+msgid "Date of Birth"
+msgstr "Date of Birth"
 
-#: evaluation/templates/createstudy.html:
-msgid "Choices"
-msgstr "Opciones"
+#: evaluation/templates/register.html:52
+msgid "LeastAge"
+msgstr "You must be at least 15 years old to register."
 
-#: evaluation/templates/createstudy.html:
-msgid "DelSections"
-msgstr "Delete sections"
+#: evaluation/templates/register.html:56
+msgid "Rol"
+msgstr "Rol"
 
-#: evaluation/templates/createstudy.html:
-msgid "DelQuestions"
-msgstr "Delete questions"
+#: evaluation/templates/register.html:59
+msgid "Creator"
+msgstr "Creator"
 
-#: evaluation/templates/createstudy.html:
-msgid "DelChoices"
-msgstr "Delete choices"
+#: evaluation/templates/register.html:64
+msgid "Participant"
+msgstr "Participant"
 
-#: evaluation/templates/editstudy.html:32
-msgid "EditStudy"
-msgstr "Edit Study"
+#: evaluation/templates/register.html:69
+msgid "Gender"
+msgstr "Gender"
 
-#: evaluation/templates/editstudy.html:36
-msgid "SaveChanges"
-msgstr "Save Changes"
+#: evaluation/templates/register.html:72
+msgid "Male"
+msgstr "Male"
 
-#: evaluation/templates/editstudy.html:37
-msgid "Cancel"
-msgstr "Cancel"
+#: evaluation/templates/register.html:77
+msgid "Female"
+msgstr "Female"
 
-#: evaluation/templates/myrecommendations.html:63
-msgid "NoEval"
-msgstr "No evaluations found."
+#: evaluation/templates/register.html:82
+msgid "Other"
+msgstr "Other"
+
+#: evaluation/templates/register.html:88
+msgid "Frequency"
+msgstr "Frequency"
+
+#: evaluation/templates/register.html:91
+msgid "More than"
+msgstr "More than once in a week"
+
+#: evaluation/templates/register.html:96
+msgid "Week"
+msgstr "Once a week"
+
+#: evaluation/templates/register.html:101
+msgid "Lifetime"
+msgstr "One in a lifetime"
+
+#: evaluation/templates/register.html:106
+msgid "Never"
+msgstr "Never"
+
+#: evaluation/templates/register.html:110
+msgid "Expertise"
+msgstr "Gaming expertise"
+
+#: evaluation/templates/register.html:113
+msgid "Beginner"
+msgstr "Beginner"
+
+#: evaluation/templates/register.html:118
+msgid "Intermediate"
+msgstr "Intermediate"
+
+#: evaluation/templates/register.html:123
+msgid "Advanced"
+msgstr "Advanced"
+
+#: evaluation/templates/register.html:139
+msgid "RequiredFields"
+msgstr "* Please fill all required fields to enable this button."
+
+#: evaluation/templates/register.html:311
+msgid "PasswordReqOne"
+msgstr "Password must be at least 8 characters long.<br>"
+
+#: evaluation/templates/register.html:314
+msgid "PasswordReqTwo"
+msgstr "Password must contain at least one uppercase letter.<br>"
+
+#: evaluation/templates/register.html:317
+msgid "PasswordReqThree"
+msgstr "Password must contain at least one lowercase letter.<br>"
+
+#: evaluation/templates/register.html:320
+msgid "PasswordReqFour"
+msgstr "Password must contain at least one number.<br>"
+
+#: evaluation/templates/register.html:323
+msgid "PasswordReqFive"
+msgstr "Password must contain at least one special character.<br>"
+
+#: evaluation/templates/register.html:351
+msgid "EmailReqOne"
+msgstr "Please enter a valid email address.<br>"
+
+#: evaluation/templates/register.html:357
+msgid "EmailReqTwo"
+msgstr "Only email addresses from"
+
+#: evaluation/templates/register.html:357
+msgid "EmailReqThree"
+msgstr "are allowed.<br>"
+
+#: evaluation/templates/viewquestionnaire.html:39
+#: evaluation/templates/viewstudy.html:40
+msgid "HelpfulInfoStudy"
+msgstr "Click on the images to learn more about the board games!"
+
+#: evaluation/templates/viewquestionnaire.html:47
+msgid "CreatorPtOne"
+msgstr "Thank you Participant"
+
+#: evaluation/templates/viewquestionnaire.html:50
+msgid "CreatorPtTwo"
+msgstr ""
+"We are grateful for your interest and time, and appreciate your evaluation/"
+"evaluations."
+
+#: evaluation/templates/viewquestionnaire.html:54
+msgid "CreatorButtonPtOne"
+msgstr "One more!"
+
+#: evaluation/templates/viewquestionnaire.html:56
+msgid "CreatorButtonPtTwo"
+msgstr "Exit :("
+
+#: evaluation/templates/viewstudy.html:25
+#: evaluation/templates/viewstudy.html:195
+msgid "InformationGameView"
+msgstr "Here goes the information about the game."
+
+#: evaluation/views.py:38
+msgid "Welcome"
+msgstr "Welcome"
+
+#: evaluation/views.py:41
+msgid "Login"
+msgstr "Login"
+
+#: evaluation/views.py:67
+msgid "WrongPassword"
+msgstr "Wrong password"
+
+#: evaluation/views.py:514
+msgid "UploadME1"
+msgstr "Missing data in the questionnaire."
+
+#: evaluation/views.py:521
+msgid "UploadME2"
+msgstr "The questionnaire must have at least one section."
+
+#: evaluation/views.py:527
+msgid "UploadME3"
+msgstr "Missing data in the sections."
+
+#: evaluation/views.py:533
+msgid "UploadME4"
+msgstr "Sections must have at least one question."
+
+#: evaluation/views.py:539
+msgid "UploadME5"
+msgstr "Missing data in the questions."
+
+#: evaluation/views.py:546
+msgid "UploadME6"
+msgstr "There are questions that must have at least one option."
+
+#: evaluation/views.py:550
+msgid "UploadME7"
+msgstr "Missing data in the choices."

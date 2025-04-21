@@ -7,3 +7,4 @@ bgg_zacatrus_sql.zip
 database/
 meeple/meeple/meeple/migrations/
 meeple/meeple/meeple/management/
+meeple/meeple/evaluation/locale/**/django.po.txt

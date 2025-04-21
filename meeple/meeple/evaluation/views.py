@@ -18,6 +18,8 @@ from django.db import connections
 from django.views.generic.list import ListView
 from django.utils.translation import gettext_lazy as _
 from django.utils import translation
+from .decorators import role_required
+from .mixins import RoleRequiredMixin
 from .forms import QuestionForm, SectionForm, SignUpForm, QuestionnaireForm, SectionFormSet, QuestionFormSet, ChoiceForm, ChoiceFormSet
 from .models import Preference, Creator, Participant, Game, Questionnaire, Question, Answer, Choice, Evaluation, Algorithm, Recommendation, Section
 import json
@@ -126,6 +128,7 @@ def logout(request):
     
 
 @login_required
+@role_required(allowed_roles=['Participant', 'PT'])
 def preferences(request):
     """Gestiona la vista de preferencias del usuario.
 
@@ -209,6 +212,7 @@ def get_data_game(request):
                 return JsonResponse({'error': 'No se encontraron datos'})
             
 @login_required
+@role_required(allowed_roles=['Participant', 'PT'])
 def questionnaires(request):
     """Función que muestra la página principal del usuario
 
@@ -231,6 +235,7 @@ def questionnaires(request):
     return render(request, 'liststudies.html', {'questionnaires' : questionnaires})
 
 @login_required
+@role_required(allowed_roles=['Creator', 'CR'])
 def algorithms(request):
     """Función para mostrar los algoritmos existentes al usuario Creador.
 
@@ -247,7 +252,7 @@ def algorithms(request):
 
     return render(request, 'listalgorithms.html', {'algorithms' : algorithms})
 
-class StudiesView(LoginRequiredMixin, ListView):
+class StudiesView(LoginRequiredMixin, RoleRequiredMixin, ListView):
     """Función para eliminar secciones de cuestionarios/estudios.
 
     Args:
@@ -260,11 +265,13 @@ class StudiesView(LoginRequiredMixin, ListView):
     model = Questionnaire
     template_name = 'mystudies.html'
     context_object_name = 'questionnaires'
+    allowed_roles = ['Creator', 'CR']
 
     def get_queryset(self):
         return Questionnaire.objects.filter(user=self.request.user)
 
 @login_required
+@role_required(allowed_roles=['Creator', 'CR'])
 def create_study(request):
     """Función para crear cuestionarios/estudios con sus respectivas secciones, preguntas y opciones.
 
@@ -343,6 +350,7 @@ def create_study(request):
     })
     
 @login_required
+@role_required(allowed_roles=['Creator', 'CR'])
 def edit_study(request, pk):
     """Función para editar cuestionarios/estudios con sus respectivas secciones, preguntas y opciones.
 
@@ -470,6 +478,7 @@ def edit_study(request, pk):
         })
 
 @login_required
+@role_required(allowed_roles=['Creator', 'CR'])
 def delete_study(request, pk):
     """Función para eliminar cuestionarios/estudios.
 
@@ -489,6 +498,7 @@ def delete_study(request, pk):
     return redirect('my-studies')  # Redirigimos a la lista de cuestionarios
 
 @login_required
+@role_required(allowed_roles=['Creator', 'CR'])
 def upload_study(request, pk):
     """Función para subir los cuestionarios
 
@@ -547,7 +557,17 @@ def upload_study(request, pk):
     return redirect('my-studies')  # Redirige a la lista de cuestionarios
 
 @login_required
+@role_required(allowed_roles=['Creator', 'CR'])
 def view_study(request, pk):
+    """Función que muestra una visualización del cuesstionario al Creador
+
+    Args:
+        request (HttpRequest): instancia de la clase HttpRequest fundamental para manejar las solicitudes HTTP en una aplicación web
+        pk (text): variable con la clave pública del objeto cuestionario
+
+    Returns:
+        HttpResponse: renderización de la página de inicio del Participante
+    """
     # Obtener el cuestionario
     questionnaire = get_object_or_404(Questionnaire, id=pk, user=Creator.objects.get(id=request.session.get('userid')))
 
@@ -578,6 +598,7 @@ def view_study(request, pk):
 
 
 @login_required
+@role_required(allowed_roles=['Participant', 'PT'])
 def homeParticipant(request):
     """Función que muestra la página principal del usuario Participante
 
@@ -615,6 +636,7 @@ def homeParticipant(request):
     return render(request, 'myrecommendations.html', {'user_evaluations_page': user_evaluations_page, 'MEDIA_URL': settings.MEDIA_URL})
 
 @login_required
+@role_required(allowed_roles=['Participant', 'PT'])
 def view_questionnaire(request, pk):
     """Función que muestra la página del cuestionario
 
