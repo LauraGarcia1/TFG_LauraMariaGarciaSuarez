@@ -94,7 +94,7 @@
                                     <form method="POST" action="{% url 'upload-questionnaire' qtnn.id %}"
                                         class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-link" onclick="confirmUpload()">
+                                        <button type="submit" class="btn btn-link" onclick="confirmUpload(event)">
                                             <i class="fas fa-upload text-dark"
                                                 title="{% trans 'UploadStudy' %}"></i>
                                         </button>
@@ -151,11 +151,12 @@
 
     <script>
         // Función para confirmar la acción de subida del estudio
-        function confirmUpload() {
+        function confirmUpload(event) {
             const confirmAction = confirm("¿Estás seguro de que deseas subir el cuestionario?");
-            if (confirmAction) {
-                document.getElementById('upload-form').submit();  // Envía el formulario si el usuario confirma
+            if (!confirmAction) {
+                event.preventDefault(); // Cancela el envío si el usuario pulsa "Cancelar"
             }
+            // Si se confirma, no hace falta hacer nada más si ya es botón submit
         }
     </script>
 
