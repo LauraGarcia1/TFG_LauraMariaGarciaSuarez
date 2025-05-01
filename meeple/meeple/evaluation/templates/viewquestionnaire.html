@@ -143,7 +143,7 @@
                                                                 name="choice-{{ question.2 }}" min="0" max="10">
 
                                                             {% else %}
-                                                            <div class="d-flex flex-wrap gap-2">
+                                                            <div id="choices-box" class="d-flex flex-wrap gap-2">
                                                                 {% for choice in choices %}
                                                                 {% if question.1 == "MCCB" %}
                                                                 <button type="button"
@@ -248,6 +248,8 @@
             // Obtener el contenedor padre donde ocurrió el evento
             var parent = event.target.closest('.d-flex');  // Encuentra el contenedor con la clase 'd-flex'
 
+            console.log("quiern soy", parent);
+
             // Seleccionar solo los botones dentro de ese contenedor
             var buttons = parent.querySelectorAll('button');
 
@@ -269,7 +271,7 @@
         // Función para manejar un conjunto de botones y que sólo uno esté pulsado
         function pressedButtonSingle(button) {
             const buttonName = button.getAttribute('name');
-            const type = buttonName.split('-')[0];
+            const type = buttonName.split('-')[1];
             const buttons = document.querySelectorAll(`button[name*="${type}"]`);
 
             buttons.forEach(btn => btn.classList.remove('checked-button'));

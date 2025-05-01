@@ -8,3 +8,4 @@ database/
 meeple/meeple/meeple/migrations/
 meeple/meeple/meeple/management/
 meeple/meeple/evaluation/locale/**/django.po.txt
+README copy.md
